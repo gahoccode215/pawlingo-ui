@@ -1,30 +1,41 @@
-# Current Feature
-
-Landing Page Prototype
+# Current Feature: Vocabulary Learning (Week 1 MVP)
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Hero section communicating "Learn English, Raise a Pet" and the core differentiator: pet growth is driven by real Listening/Speaking/Reading/Writing progress, not coins
-- Problem section contrasting streak/XP/leaderboard-driven apps with PawLingo's emotional pet-bond approach
-- Feature section covering Pet System, Vocabulary Learning (flashcard + spaced repetition), Pronunciation Practice (marked "coming soon"), and Progress Dashboard
-- Persona/social-proof cards for beginner, parent buying for a child, working adult, and test-prep learner
-- End-of-page "Join Waitlist" CTA (static form, no backend — matches Week 1 roadmap scope)
-- Warm, friendly, lightly humorous copywriting (pet has personality); mobile-first; Tailwind CSS
+- Topic intro screen: topic name, word count, "Start" button
+- Flashcard component: word + image + example sentence (audio stubbed/hidden — no TTS yet)
+- Mandatory 4-option multiple-choice quiz immediately after each flashcard (1 correct + 3 distractors), before moving on
+- Per-word correct/wrong tracking (in-memory, or localStorage — see Open Questions in Notes)
+- Leitner-style repetition with 3 boxes: correct → move up one box, wrong → reset to box 1; box-1 words reappear more often in the remaining queue (every ~3–4 cards); cap wrong repeats at ~5, then mark "review later" instead of looping forever
+- Session summary screen: correct/wrong counts + list of words to review again
+- No `any` types, no console errors, follows naming/file conventions in `context/coding-standards.md`
 
 ## Notes
 
-- File created at `docs/pawlingo-landing/index.html` — single self-contained static HTML file (Tailwind via CDN + config, since this is a standalone prototype outside the Next.js App Router build pipeline, not a route under `app/`)
-- Fonts: "Baloo 2" (display/headings, playful but not childish) + "Inter" (body) via Google Fonts
-- Warm palette: cream background, coral/honey/teal accents; custom Tailwind theme extension for colors, shadows (`shadow-pop` = pressable button effect), and float/wiggle keyframe animations
-- Hero includes a mock pet stat card (Mochi, Stage 2) with animated XP bars for the four core skills, plus a floating "+12 XP earned today" badge, to visualize the core differentiator immediately
-- Problem section uses a side-by-side "Other apps" vs "PawLingo" comparison card layout
-- Waitlist form is non-functional by design (`onsubmit="return false;"`, disclaimer text below it) — no backend per Week 1 roadmap
-- Not yet done: static vocabulary lesson demo and basic pet/energy prototype (also Week 1 roadmap items, out of scope for this pass)
+- Spec: `context/features/volabulary-learning-spec.md` (filename has a typo — "volabulary" — kept as-is to match the actual file on disk)
+- Local state only for this pass — no backend/DB (Spring Boot integration is post-validation-MVP per `project-overview.md`); no Pet XP wiring yet (separate future feature once both Pet System and this exist independently)
+- Data shapes (keep field names mappable to `VocabWord`/`Progress` in `project-overview.md` for later backend integration):
+  - `VocabWord { id, word, definition, imageUrl, exampleSentence, topic }`
+  - `WordAttempt { wordId, correctCount, wrongCount, box }` (box: 1–3)
+- File structure per `coding-standards.md`:
+  - `src/components/vocab/Flashcard.tsx`, `QuizCard.tsx`, `SessionSummary.tsx`
+  - `src/lib/vocab/leitner.ts` — pure repetition/box logic, no side effects
+  - `src/types/vocab.ts` — `VocabWord`, `WordAttempt`
+  - `src/data/vocab/[topic].ts` — hardcoded word list (no CMS/DB for MVP)
+  - Client components (`'use client'`) throughout — fully interactive feature
+- Out of scope for this pass: backend persistence, multiple topics/topic picker UI, true date-based SRS scheduling, pronunciation scoring, video content, typed/written answers, Pet XP integration
+- Open questions to settle during implementation (from spec):
+  1. Does session progress persist across page reload (localStorage), or is losing it on refresh acceptable for MVP?
+  2. Audio/pronunciation fully stubbed for Week 1, or partially wired?
+  3. Distractor generation — random words from the same topic, or curated wrong answers per word?
+- References: `context/project-overview.md`, `context/coding-standards.md`, `context/current-feature.md`
 
 ## History
 
 - 2026-08-16: Created static landing page prototype at `docs/pawlingo-landing/index.html` per Week 1 waitlist roadmap — hero, problem/why, features, personas, and waitlist CTA sections, styled with Tailwind (CDN) per project-overview.md.
+- 2026-08-16: Reworked header to logo-left/centered-nav/login-register-right layout with mobile menu, and rebuilt footer into a 4-column layout (brand+social, Product, Support, copyright bar) with dynamic year.
+- 2026-08-16: Landing Page Implementation feature left "In Progress" (branch `feature/landing-page-implementation`) — app/ moved to src/app/, all sections rebuilt as React/Tailwind v4 components, build+lint verified — when Vocabulary Learning spec was loaded on top of it. Resume/complete that feature separately before this history entry is superseded further.
