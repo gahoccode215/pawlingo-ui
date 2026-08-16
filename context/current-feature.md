@@ -2,7 +2,7 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
@@ -28,10 +28,12 @@ Not Started
   - `src/data/vocab/[topic].ts` — hardcoded word list (no CMS/DB for MVP)
   - Client components (`'use client'`) throughout — fully interactive feature
 - Out of scope for this pass: backend persistence, multiple topics/topic picker UI, true date-based SRS scheduling, pronunciation scoring, video content, typed/written answers, Pet XP integration
-- Open questions to settle during implementation (from spec):
-  1. Does session progress persist across page reload (localStorage), or is losing it on refresh acceptable for MVP?
-  2. Audio/pronunciation fully stubbed for Week 1, or partially wired?
-  3. Distractor generation — random words from the same topic, or curated wrong answers per word?
+- Open questions resolved during implementation:
+  1. Session progress is in-memory React state only (no localStorage) — resets on refresh, acceptable for this MVP pass, matches "local state only" framing in the spec overview
+  2. Audio fully hidden — no audio UI at all in Flashcard for this pass
+  3. Distractors are 3 random words from the same topic set (`getQuizOptions` in `src/lib/vocab/quiz.ts`), not curated per word
+- Implemented: `src/types/vocab.ts`, `src/data/vocab/animals.ts` (12-word "Everyday Animals" topic, emoji used as `imageUrl` placeholder pending real image assets), `src/lib/vocab/leitner.ts` (pure `createSession`/`recordAnswer`; box 1 reappears after 3 cards, box 2 after 6, wrong answers always reset to box 1, capped at `MAX_WRONG_REPEATS = 5`), `src/lib/vocab/quiz.ts`, `src/components/vocab/{TopicIntro,Flashcard,QuizCard,SessionSummary,VocabSession}.tsx`, route at `src/app/learn/page.tsx` (matches the "Learn" tab in the bottom nav from `project-overview.md`'s UI/UX section)
+- Build (`next build`) and lint (`eslint .`) both pass; UI not yet visually verified in-browser (user tests UI themselves)
 - References: `context/project-overview.md`, `context/coding-standards.md`, `context/current-feature.md`
 
 ## History

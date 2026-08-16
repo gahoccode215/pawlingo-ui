@@ -53,67 +53,63 @@ Most English learning apps rely on abstract motivators — streaks, XP, leaderbo
 
 - Email + Password
 - Google OAuth
+- Authentication is handled by the **Spring Boot backend** (issues session/JWT). The Next.js frontend does not own user credentials or sessions directly — see Tech Stack & Architecture below.
 
 ---
 
-## 🗄️ Data Model (Rough Prisma Draft)
+## 🗄️ Data Model (Reference Only — Owned by Backend)
 
-> This schema is a starting point and **will evolve**
+> ⚠️ **This is a conceptual data shape for alignment between frontend and backend.**
+> It does **not** represent Prisma models in the Next.js app. The Next.js app (`pawlingo-ui`) has no direct database access. The actual schema is owned and implemented by the **Spring Boot backend** (e.g. JPA entities + Flyway/Liquibase migrations). This section exists so frontend devs know what shape of data to expect from the API.
 
-```prisma
-model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  password      String?
-  goal          String?  // beginner | test-prep | professional | for-child
-  pet           Pet?
-  progresses    Progress[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Pet {
-  id            String   @id @default(cuid())
-  name          String
-  stage         Int      @default(1)   // evolution stage
-  energy        Int      @default(100)
-  listeningXp   Int      @default(0)
-  speakingXp    Int      @default(0)
-  readingXp     Int      @default(0)
-  writingXp     Int      @default(0)
-  coins         Int      @default(0)
-  outfits       String[] // cosmetic item ids owned
-
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
-  updatedAt     DateTime @updatedAt
-}
-
-model VocabWord {
-  id          String   @id @default(cuid())
-  word        String
-  definition  String
-  imageUrl    String?
-  topic       String
-
-  progresses  Progress[]
-}
-
-model Progress {
-  id          String   @id @default(cuid())
-  correctCount Int     @default(0)
-  wrongCount   Int     @default(0)
-  lastReviewed DateTime?
-
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-
-  wordId      String
-  word        VocabWord @relation(fields: [wordId], references: [id])
-
-  @@unique([userId, wordId])
-}
 ```
+User
+- id
+- email
+- goal            // beginner | test-prep | professional | for-child
+- pet             (1:1)
+- progresses      (1:N)
+- createdAt / updatedAt
+
+Pet
+- id
+- name
+- stage           // evolution stage
+- energy
+- listeningXp / speakingXp / readingXp / writingXp
+- coins
+- outfits[]       // cosmetic item ids owned
+- userId
+- updatedAt
+
+VocabWord
+- id
+- word
+- definition
+- imageUrl
+- topic
+
+Progress
+- id
+- correctCount / wrongCount
+- lastReviewed
+- userId
+- wordId
+- (unique per userId + wordId)
+```
+
+---
+
+## 🔌 API Contract (Frontend ↔ Backend)
+
+> ⚠️ **Placeholder — to be filled in as the Spring Boot API takes shape.**
+
+- Base URL: TBD (e.g. `NEXT_PUBLIC_API_URL` / server-only env var for internal calls)
+- Auth flow: TBD — likely JWT issued by Spring Boot, stored via httpOnly cookie or NextAuth session bridging to the backend token
+- Response shape convention: TBD (recommend a consistent `{ success, data, error }` envelope — matches `src/lib/api.ts` error handling in coding standards)
+- Key endpoints to define first (MVP): `POST /auth/login`, `POST /auth/register`, `GET /pet`, `GET /vocab/topics/:topic`, `POST /progress`
+
+This section should be updated as soon as the Spring Boot team/repo defines real endpoints, so `src/lib/api.ts` in `pawlingo-ui` can be built against it.
 
 ---
 
@@ -121,14 +117,15 @@ model Progress {
 
 | Category | Choice |
 |---|---|
-| Framework | **Next.js (App Router)** |
+| Frontend framework | **Next.js (App Router)** — project name: `pawlingo-ui` |
 | Language | TypeScript |
-| Styling | Tailwind CSS |
+| Styling | Tailwind CSS v4 |
 | Animation | Framer Motion (pet reactions) |
-| Database | Postgres + Prisma ORM (added after MVP validated) |
-| Auth | NextAuth (email + Google) |
+| Backend | **Spring Boot REST API** (separate repo) — owns all business logic and database access |
+| Database | Postgres (owned by Spring Boot, via JPA/Hibernate — not accessed from Next.js) |
+| Auth | Handled by Spring Boot (Email + Password, Google OAuth); Next.js consumes auth via API/session, not NextAuth+Prisma adapter |
 | AI (later) | Pronunciation scoring API |
-| Deployment | Vercel |
+| Deployment | Frontend: Vercel · Backend: TBD |
 
 ---
 
@@ -164,10 +161,11 @@ model Progress {
 - Landing page (waitlist)
 - Static vocabulary lessons (10–20 words, one topic)
 - Basic pet with energy stat + simple reactions
-- No backend/DB — local state only
+- No backend/DB — local state only (`pawlingo-ui` standalone, Spring Boot not yet integrated)
 
 ### **MVP (post-validation)**
-- Auth + database
+- Spring Boot backend stood up: auth + database
+- Next.js integrates with Spring Boot API (server-side fetch + `src/lib/api.ts`)
 - Multiple vocab topics
 - Spaced repetition logic
 - Daily reminder notifications
@@ -188,7 +186,9 @@ model Progress {
 ## 📌 Status
 
 - In planning
-- Next step: build landing page + static vocabulary demo (this week)
+- Frontend project: `pawlingo-ui` (Next.js)
+- Backend: Spring Boot (separate repo, not yet started)
+- Next step: build landing page + static vocabulary demo (this week) — no backend integration yet
 
 ---
 
