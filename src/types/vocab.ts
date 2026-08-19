@@ -13,3 +13,12 @@ export interface WordAttempt {
   wrongCount: number;
   box: number;
 }
+
+export interface Topic {
+  id: string;
+  label: string;
+  icon: string;
+  words: VocabWord[];
+}
+
+export type VocabSessionPhase = "intro" | "flashcard" | "quiz" | "summary";

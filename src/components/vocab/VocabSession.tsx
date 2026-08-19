@@ -1,24 +1,40 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { VocabWord } from "@/types/vocab";
+import { useEffect, useMemo, useState } from "react";
+import type { VocabSessionPhase, VocabWord } from "@/types/vocab";
 import { createSession, recordAnswer, type VocabSessionState } from "@/lib/vocab/leitner";
 import { getQuizOptions } from "@/lib/vocab/quiz";
+import { clearStoredSession, loadStoredSession, saveStoredSession } from "@/lib/vocab/storage";
 import TopicIntro from "./TopicIntro";
 import Flashcard from "./Flashcard";
 import QuizCard from "./QuizCard";
 import SessionSummary from "./SessionSummary";
 
-type Phase = "intro" | "flashcard" | "quiz" | "summary";
-
 interface VocabSessionProps {
+  topicId: string;
   topicLabel: string;
   words: VocabWord[];
 }
 
-export default function VocabSession({ topicLabel, words }: VocabSessionProps) {
-  const [phase, setPhase] = useState<Phase>("intro");
-  const [session, setSession] = useState<VocabSessionState>(() => createSession(words));
+export default function VocabSession({ topicId, topicLabel, words }: VocabSessionProps) {
+  const wordIds = useMemo(() => words.map((word) => word.id), [words]);
+
+  const [phase, setPhase] = useState<VocabSessionPhase>(
+    () => loadStoredSession(topicId, wordIds)?.phase ?? "intro"
+  );
+  const [session, setSession] = useState<VocabSessionState>(
+    () => loadStoredSession(topicId, wordIds)?.session ?? createSession(words)
+  );
+
+  // Persist so an in-progress session survives a page reload; a fresh
+  // "intro" phase means there's nothing worth restoring, so clear instead.
+  useEffect(() => {
+    if (phase === "intro") {
+      clearStoredSession(topicId);
+      return;
+    }
+    saveStoredSession(topicId, { phase, session });
+  }, [topicId, phase, session]);
 
   const wordsById = useMemo(() => {
     const map = new Map<string, VocabWord>();

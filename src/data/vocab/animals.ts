@@ -1,10 +1,8 @@
-import type { VocabWord } from "@/types/vocab";
-
-export const ANIMALS_TOPIC_LABEL = "Everyday Animals";
+import type { Topic, VocabWord } from "@/types/vocab";
 
 // imageUrl holds an emoji placeholder for MVP — no image asset pipeline yet,
 // swap for real image URLs once the backend/CMS owns this data.
-export const animalsWords: VocabWord[] = [
+const animalsWords: VocabWord[] = [
   {
     id: "dog",
     word: "Dog",
@@ -102,3 +100,10 @@ export const animalsWords: VocabWord[] = [
     topic: "animals",
   },
 ];
+
+export const animalsTopic: Topic = {
+  id: "animals",
+  label: "Everyday Animals",
+  icon: "🐾",
+  words: animalsWords,
+};

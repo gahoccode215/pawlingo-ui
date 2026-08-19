@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import VocabSession from "@/components/vocab/VocabSession";
-import { ANIMALS_TOPIC_LABEL, animalsWords } from "@/data/vocab/animals";
+import TopicPicker from "@/components/vocab/TopicPicker";
+import { getTopics } from "@/lib/vocab/topics";
 
 export const metadata: Metadata = {
   title: "Learn — PawLingo",
-  description: "Practice vocabulary with flashcards and a quick quiz after each word.",
+  description: "Pick a vocabulary topic to practice with flashcards and a quick quiz.",
 };
 
 export default function LearnPage() {
-  return <VocabSession topicLabel={ANIMALS_TOPIC_LABEL} words={animalsWords} />;
+  return <TopicPicker topics={getTopics()} />;
 }
