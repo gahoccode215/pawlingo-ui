@@ -2,8 +2,11 @@
 
 @theme {
   --color-cream: #fff8ee;
-  --color-paper: #fffdf9;
   --color-ink: #3a2e2c;
+  --color-surface: #ffffff;
+  /* Fixed, non-theme-flipping — for the handful of UI elements (solid dark
+     buttons) that must stay dark regardless of light/dark mode. */
+  --color-charcoal: #3a2e2c;
 
   --color-coral-50: #fff1ec;
   --color-coral-100: #ffe1d6;
@@ -24,6 +27,14 @@
   --color-honey-300: #ffe08a;
   --color-honey-400: #ffcf57;
   --color-honey-500: #f7b733;
+
+  /* Fixed, non-theme-flipping neutral pastel — for tile/badge backgrounds
+     that need to read as a soft "chip" against the card in both themes
+     (mirrors how coral-100/teal-100/honey-100 behave: always a light tint,
+     so it still contrasts against a dark card surface in dark mode). Named
+     "sand" rather than "slate" to avoid colliding with Tailwind's built-in
+     slate scale, since only one step is defined here. */
+  --color-sand-100: #e7e2da;
 
   --font-display: var(--font-baloo), ui-rounded, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -64,8 +75,33 @@
   }
 }
 
+:root {
+  color-scheme: light;
+}
+
+/* Set imperatively (before hydration, see src/lib/theme.ts) rather than by
+   React, so overriding the same @theme variables here just works via the
+   normal CSS cascade — no dark: utility classes needed on most components. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-cream: #1b1512;
+  --color-ink: #f5ebe4;
+  --color-surface: #282019;
+  /* The light-mode shadow is brown-tinted at low opacity — nearly invisible
+     once the page background goes dark, so cards lose their sense of depth.
+     A darker, more opaque shadow keeps that same "lifted card" read. */
+  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
+}
+
 body {
   font-family: var(--font-body);
+}
+
+input,
+select,
+textarea {
+  color: var(--color-ink);
+  background-color: transparent;
 }
 
 .blob {

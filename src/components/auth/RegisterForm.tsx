@@ -33,7 +33,7 @@ export default function RegisterForm() {
 
     try {
       await register(parsed.data.email, parsed.data.password);
-      router.push("/learn");
+      router.push("/home");
     } catch (error) {
       setFormError(
         error instanceof ApiError
@@ -55,7 +55,7 @@ export default function RegisterForm() {
           <h1 className="font-display font-extrabold text-3xl mt-2">Đăng ký PawLingo</h1>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-card border border-ink/5 p-6">
+        <div className="bg-surface rounded-3xl shadow-card border border-ink/5 p-6">
           {formError && (
             <p className="mb-4 text-sm font-semibold text-red-600 bg-red-50 rounded-xl px-3 py-2">
               {formError}

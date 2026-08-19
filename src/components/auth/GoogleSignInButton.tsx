@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getAuthErrorMessage } from "@/lib/auth/errors";
+import { useTheme } from "@/lib/ThemeContext";
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -32,6 +33,7 @@ declare global {
 export default function GoogleSignInButton() {
   const router = useRouter();
   const { loginWithGoogleIdToken } = useAuth();
+  const { theme } = useTheme();
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isScriptReady, setIsScriptReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +43,7 @@ export default function GoogleSignInButton() {
       setError(null);
       try {
         await loginWithGoogleIdToken(response.credential);
-        router.push("/learn");
+        router.push("/home");
       } catch (err) {
         setError(
           err instanceof ApiError
@@ -62,11 +64,11 @@ export default function GoogleSignInButton() {
     });
     window.google.accounts.id.renderButton(buttonRef.current, {
       type: "standard",
-      theme: "outline",
+      theme: theme === "dark" ? "filled_black" : "outline",
       size: "large",
       width: 320,
     });
-  }, [isScriptReady, handleCredential]);
+  }, [isScriptReady, handleCredential, theme]);
 
   // No client ID configured (e.g. local dev before the backend team hands
   // one over) — hide the button rather than rendering a broken one.

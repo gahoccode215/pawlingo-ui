@@ -20,20 +20,20 @@ export default function SessionSummary({ words, attempts, onRestart }: SessionSu
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-5">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8 text-center">
+      <div className="w-full max-w-md bg-surface rounded-3xl shadow-card border border-ink/5 p-8 text-center">
         <div className="text-6xl mb-4">🎉</div>
         <h2 className="font-display font-extrabold text-3xl">Hoàn thành buổi học!</h2>
 
         <div className="mt-6 grid grid-cols-2 gap-4">
           <div className="rounded-2xl bg-teal-50 py-4">
             <p className="text-2xl font-display font-bold text-teal-600">{totals.correct}</p>
-            <p className="text-xs font-semibold text-ink/50 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-charcoal/50 uppercase tracking-wide">
               Đúng
             </p>
           </div>
           <div className="rounded-2xl bg-coral-50 py-4">
             <p className="text-2xl font-display font-bold text-coral-600">{totals.wrong}</p>
-            <p className="text-xs font-semibold text-ink/50 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-charcoal/50 uppercase tracking-wide">
               Sai
             </p>
           </div>

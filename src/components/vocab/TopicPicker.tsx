@@ -21,7 +21,7 @@ export default function TopicPicker({ topics }: TopicPickerProps) {
             <Link
               key={topic.id}
               href={`/learn/${topic.id}`}
-              className="flex items-center gap-4 bg-white rounded-3xl shadow-card border border-ink/5 p-6 hover:border-coral-300 transition-colors"
+              className="flex items-center gap-4 bg-surface rounded-3xl shadow-card border border-ink/5 p-6 hover:border-coral-300 transition-colors"
             >
               <div className="text-4xl">{topic.icon}</div>
               <div>

@@ -25,7 +25,7 @@ export default function QuizCard({
 
   function optionClasses(optionId: string) {
     if (!hasAnswered) {
-      return "border-ink/10 hover:border-coral-300 hover:bg-coral-50";
+      return "border-ink/10 hover:border-coral-300 hover:bg-coral-50 hover:text-charcoal";
     }
     if (optionId === word.id) {
       return "border-teal-500 bg-teal-50 text-teal-700";
@@ -38,7 +38,7 @@ export default function QuizCard({
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-5">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8">
+      <div className="w-full max-w-md bg-surface rounded-3xl shadow-card border border-ink/5 p-8">
         <p className="text-xs font-semibold text-ink/40 text-center">
           Đã thuộc {masteredCount} / {totalWords} từ
         </p>
@@ -67,7 +67,7 @@ export default function QuizCard({
           <button
             type="button"
             onClick={() => onAnswer(isCorrect)}
-            className="mt-6 w-full bg-ink hover:bg-ink/90 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
+            className="mt-6 w-full bg-charcoal hover:bg-charcoal/90 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
           >
             {isCorrect ? "Tốt lắm! Tiếp tục →" : "Tiếp tục →"}
           </button>

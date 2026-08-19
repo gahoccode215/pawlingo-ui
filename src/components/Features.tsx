@@ -23,7 +23,7 @@ const FEATURES = [
   },
   {
     icon: "📈",
-    iconBg: "bg-ink/5",
+    iconBg: "bg-sand-100",
     title: "Bảng tiến độ",
     description:
       "Góc nhìn riêng tư về những gì bạn đã học — kèm chế độ xem cho phụ huynh với tài khoản trẻ em. Không có bảng xếp hạng công khai.",
@@ -46,10 +46,10 @@ export default function Features() {
         {FEATURES.map((feature) => (
           <div
             key={feature.title}
-            className="rounded-3xl bg-white shadow-card border border-ink/5 p-6 hover:-translate-y-1.5 transition-transform relative"
+            className="rounded-3xl bg-surface shadow-card border border-ink/5 p-6 hover:-translate-y-1.5 transition-transform relative"
           >
             {feature.badge && (
-              <span className="absolute top-4 right-4 text-[10px] font-bold bg-honey-300 text-ink px-2 py-1 rounded-full">
+              <span className="absolute top-4 right-4 text-[10px] font-bold bg-honey-300 text-charcoal px-2 py-1 rounded-full">
                 {feature.badge}
               </span>
             )}

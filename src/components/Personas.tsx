@@ -27,7 +27,7 @@ const PERSONAS = [
 
 export default function Personas() {
   return (
-    <section id="for-you" className="bg-white border-y border-ink/5">
+    <section id="for-you" className="bg-surface border-y border-ink/10">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <span className="text-sm font-bold text-coral-600 uppercase tracking-wide">

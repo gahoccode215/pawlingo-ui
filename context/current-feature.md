@@ -1,16 +1,37 @@
-# Current Feature
+# Current Feature: Dark / Light Mode
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Theme toggle control in `Header.tsx` (desktop + mobile menu), accessible, switches between light and dark instantly with no page reload
+- Default theme on first visit is **light** (current cream/ink palette) — dark is the opt-in choice, not the other way around (confirmed with user 2026-08-19, overriding `coding-standards.md`'s "dark mode first" note — see below)
+- User's choice persists across reloads (localStorage) and applies before first paint (no flash of the wrong theme)
+- A full dark palette defined as CSS custom properties in `globals.css` (Tailwind v4 `@theme` + a `dark`/`data-theme` selector layer) so existing components keep using the same semantic utility classes (`bg-cream`, `text-ink`, etc.) rather than needing `dark:`-prefixed classes sprinkled through every file
+- Every existing screen renders correctly in dark mode: landing page (Header, Hero, WhySection, Features, Personas, WaitlistCta, Footer), vocab learning flow (TopicPicker, TopicIntro, Flashcard, QuizCard, SessionSummary), and auth screens (RegisterForm, LoginForm, GoogleSignInButton) — no unreadable text or broken contrast
+- Build (`next build`) and lint (`eslint`) pass
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- `context/coding-standards.md` (## Styling) says "Dark mode first, light mode as option" — this conflicts with the current shipped UI, which is entirely light-themed (cream background, no dark palette exists yet). User explicitly chose **light-default, dark-as-opt-in** for this feature (2026-08-19) rather than redesigning the whole visual identity around a dark-first palette. `coding-standards.md` itself was not edited — flagging this as a known deviation in case someone re-reads that doc later.
+- Implemented (2026-08-19), approach: CSS-variable re-theming, not per-component `dark:` classes:
+  - `src/app/globals.css` — added `--color-surface` (adaptive card bg, light `#ffffff`) and `--color-charcoal` (fixed, never flips, `#3a2e2c`) to `@theme`; added `:root[data-theme="dark"]` override block flipping `--color-cream` (page bg → `#1b1512`), `--color-ink` (text/borders → `#f5ebe4`), `--color-surface` (→ `#282019`), plus `color-scheme` light/dark so native form-control chrome matches; added a global `input, select, textarea { color: var(--color-ink); background-color: transparent; }` default so unstyled form fields (register/login) adapt automatically
+  - `src/lib/theme.ts` — `Theme` type, localStorage get/apply (`pawlingo:theme`), and `THEME_INIT_SCRIPT` (plain-JS string, kept in sync with `getStoredTheme()` by hand — no shared runtime since one runs pre-hydration as a raw script)
+  - `src/lib/ThemeContext.tsx` — `ThemeProvider`/`useTheme()`; React state starts at `"light"` (matches SSR) and self-corrects one microtask after mount by reading the `data-theme` attribute the blocking script already set — avoids both a hydration mismatch and the `react-hooks/set-state-in-effect` lint error (same class of fix used in `AuthContext`)
+  - `src/app/layout.tsx` — `next/script` with `strategy="beforeInteractive"` running `THEME_INIT_SCRIPT` (sets `data-theme` on `<html>` before first paint, default light, no system-preference lookup per the chosen light-default), `ThemeProvider` wraps `AuthProvider`
+  - `src/components/ThemeToggle.tsx` — sun/moon icon button, mounted in `Header.tsx`'s always-visible top-right cluster (no `hidden` classes, so it works on mobile too without a second copy in the mobile menu panel)
+  - Converted every "card surface" `bg-white` to `bg-surface` (adaptive) across `Personas`, `Features`, `WhySection`, `Header` (dropdown + all `hover:bg-white`), `Hero` (pet card + badge pill), `SessionSummary`, `QuizCard`, `Flashcard`, `TopicIntro`, `TopicPicker`, `RegisterForm`, `LoginForm` — these all "just work" in dark mode via the CSS variable, no `dark:` classes needed
+  - Left two categories of `bg-white`/`bg-ink`/`text-white` **intentionally untouched** because they're fixed-color sections independent of the page theme, not tied to the `ink`/`cream`/`surface` tokens: `Footer.tsx` (permanently `bg-ink text-white`, a fixed dark band in both themes) and `WaitlistCta.tsx` (permanently a coral/honey gradient band with white text)
+  - Caught and fixed a real bug during implementation: `QuizCard`'s "Continue" button and `WaitlistCta`'s submit button used `bg-ink` (solid) as a *button background*, which would have inverted to a light button with unreadable white text once `--color-ink` flipped for dark mode — switched both to the new fixed `bg-charcoal` token instead. Also gave `WaitlistCta`'s email input an explicit `bg-white text-charcoal` (was relying on default `text-ink`, which would've become light-on-white/unreadable once `ink` flips)
+  - `GoogleSignInButton.tsx` now reads `useTheme()` and passes `filled_black`/`outline` to GSI's `renderButton` so Google's own button matches the app theme, re-rendering on toggle
+  - Build (`next build`) and lint (`eslint`) both pass; UI not visually verified in-browser by Claude (user tests UI themselves) — worth a manual check of every screen in both themes, especially `WhySection`'s `bg-coral-50` card and `Features`' `bg-ink/5` icon tiles, which weren't remapped and may look a little flat/bright on the dark surface (not unreadable, just not fully tuned)
+- 2026-08-19, out-of-scope side work done on this branch at user request (not part of the Dark/Light Mode goals above):
+  - **Header active-page auth links**: `Header.tsx`'s "Đăng nhập"/"Đăng ký miễn phí" now swap which one is styled as the solid coral CTA based on `usePathname()` — Register is the default/prominent one everywhere except on `/login` itself, where they swap (desktop + mobile menu both updated)
+  - **`/home` post-login landing page**: per `project-overview.md`'s existing "Pet screen as home/landing screen after login" plan, and researched against Duolingo/Habitica/ELSA-style patterns. Added `src/app/home/page.tsx` + `src/components/home/HomeDashboard.tsx` (client-guarded: redirects to `/login` if `status === "unauthenticated"`, shows a loading state until `user` resolves — keyed off `user` not `status` specifically so the very first client render always matches SSR's `user === null` and never hydration-mismatches). Content: welcome banner with the user's email, a static "thú cưng" placeholder card explicitly marked "SẮP RA MẮT" (no Pet API exists yet — backend only has auth endpoints), and **real** per-topic progress bars computed from the existing localStorage Leitner session data via new `src/lib/vocab/progress.ts` (`getTopicProgress`, reuses `loadStoredSession` — no backend Progress API needed for this). `RegisterForm`/`LoginForm`/`GoogleSignInButton` now redirect to `/home` instead of `/learn` on success.
+  - **Header logged-in state**: `Header.tsx` now reads `useAuth()`; when `user` is set, the Login/Register links are replaced with a link to `/home` showing the user's email plus an "Đăng xuất" button (`logout()` + redirect to `/`) — both desktop and mobile menu. This was a necessary companion to `/home` (no prior way to log out or see you're logged in).
+  - Build and lint verified; not visually tested in-browser by Claude.
 
 ## History
 

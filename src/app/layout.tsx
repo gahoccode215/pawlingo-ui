@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
+import Script from "next/script";
 import { AuthProvider } from "@/lib/auth/AuthContext";
+import { ThemeProvider } from "@/lib/ThemeContext";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const baloo = Baloo_2({
@@ -27,9 +30,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="vi"
       className={`${baloo.variable} ${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        <AuthProvider>{children}</AuthProvider>
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

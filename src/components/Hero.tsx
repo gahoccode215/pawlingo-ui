@@ -13,7 +13,7 @@ export default function Hero() {
 
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 pt-14 pb-20 md:pt-20 md:pb-28 grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <span className="inline-flex items-center gap-2 bg-white/70 border border-ink/10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-ink/70 shadow-sm">
+          <span className="inline-flex items-center gap-2 bg-surface/70 border border-ink/10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-ink/70 shadow-sm">
             🐣 Bản dựng Tuần 1 · MVP thử nghiệm
           </span>
           <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-[1.08] mt-5">
@@ -27,10 +27,10 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <a
-              href="#waitlist"
+              href="/register"
               className="bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold px-7 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
             >
-              Tham gia danh sách chờ 🐾
+              Bắt đầu miễn phí 🐾
             </a>
             <a
               href="#why"
@@ -39,14 +39,11 @@ export default function Hero() {
               Sao không chỉ cần streak? →
             </a>
           </div>
-          <p className="mt-6 text-sm text-ink/50">
-            Không spam. Chỉ có tin vui đáng yêu khi ra mắt.
-          </p>
         </div>
 
         {/* Pet stat card mockup */}
         <div className="relative flex justify-center md:justify-end">
-          <div className="w-full max-w-sm bg-white rounded-3xl shadow-card p-6 border border-ink/5 relative">
+          <div className="w-full max-w-sm bg-surface rounded-3xl shadow-card p-6 border border-ink/5 relative">
             <div className="flex items-center justify-between mb-1">
               <div>
                 <p className="font-display font-bold text-lg">Mochi</p>

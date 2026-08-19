@@ -15,7 +15,7 @@ export default function Flashcard({
 }: FlashcardProps) {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-5">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8 text-center">
+      <div className="w-full max-w-md bg-surface rounded-3xl shadow-card border border-ink/5 p-8 text-center">
         <p className="text-xs font-semibold text-ink/40">
           Đã thuộc {masteredCount} / {totalWords} từ
         </p>

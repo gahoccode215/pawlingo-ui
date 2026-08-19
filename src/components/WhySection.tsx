@@ -17,7 +17,7 @@ const PAWLINGO = [
 
 export default function WhySection() {
   return (
-    <section id="why" className="bg-white border-y border-ink/5">
+    <section id="why" className="bg-surface border-y border-ink/10">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <span className="text-sm font-bold text-coral-600 uppercase tracking-wide">
@@ -46,7 +46,7 @@ export default function WhySection() {
               ))}
             </ul>
           </div>
-          <div className="rounded-3xl border-2 border-coral-300 p-7 bg-coral-50 relative">
+          <div className="rounded-3xl border-2 border-coral-300 p-7 bg-surface relative">
             <p className="font-display font-bold text-coral-600 text-sm uppercase tracking-wide mb-4">
               🐾 PawLingo
             </p>

@@ -2,7 +2,6 @@ const PRODUCT_LINKS = [
   { href: "#why", label: "Vì sao PawLingo" },
   { href: "#features", label: "Tính năng" },
   { href: "#for-you", label: "Dành cho bạn" },
-  { href: "#waitlist", label: "Tham gia danh sách chờ" },
 ];
 
 const SUPPORT_LINKS = [
@@ -15,14 +14,14 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-ink text-white/60">
+    <footer className="bg-cream text-ink/60 border-t border-ink/10">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
           {/* Brand */}
           <div className="col-span-2">
             <a
               href="#top"
-              className="flex items-center gap-2 font-display font-bold text-lg text-white"
+              className="flex items-center gap-2 font-display font-bold text-lg text-ink"
             >
               <span className="text-2xl">🐾</span> PawLingo
             </a>
@@ -34,7 +33,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="PawLingo trên X"
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-ink/5 hover:bg-ink/10 hover:text-ink transition-colors"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -43,7 +42,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="PawLingo trên Instagram"
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-ink/5 hover:bg-ink/10 hover:text-ink transition-colors"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -61,7 +60,7 @@ export default function Footer() {
               <a
                 href="mailto:hello@pawlingo.app"
                 aria-label="Gửi email cho PawLingo"
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-ink/5 hover:bg-ink/10 hover:text-ink transition-colors"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -83,11 +82,11 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <p className="font-display font-semibold text-white text-sm mb-4">Sản phẩm</p>
+            <p className="font-display font-semibold text-ink text-sm mb-4">Sản phẩm</p>
             <ul className="space-y-2.5 text-sm">
               {PRODUCT_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="hover:text-white transition-colors">
+                  <a href={link.href} className="hover:text-ink transition-colors">
                     {link.label}
                   </a>
                 </li>
@@ -97,11 +96,11 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <p className="font-display font-semibold text-white text-sm mb-4">Hỗ trợ</p>
+            <p className="font-display font-semibold text-ink text-sm mb-4">Hỗ trợ</p>
             <ul className="space-y-2.5 text-sm">
               {SUPPORT_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="hover:text-white transition-colors">
+                  <a href={link.href} className="hover:text-ink transition-colors">
                     {link.label}
                   </a>
                 </li>
@@ -110,7 +109,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <div className="mt-14 pt-6 border-t border-ink/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink/40">
           <p>&copy; {year} PawLingo. Giữ toàn quyền.</p>
           <p>Bản dựng thử nghiệm · Chỉ là concept giao diện, chưa phải sản phẩm chính thức</p>
         </div>

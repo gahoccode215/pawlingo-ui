@@ -7,7 +7,7 @@ interface TopicIntroProps {
 export default function TopicIntro({ topicLabel, wordCount, onStart }: TopicIntroProps) {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-5">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8 text-center">
+      <div className="w-full max-w-md bg-surface rounded-3xl shadow-card border border-ink/5 p-8 text-center">
         <div className="text-6xl mb-4">📚</div>
         <p className="text-sm font-bold text-coral-600 uppercase tracking-wide">
           Bài học từ vựng

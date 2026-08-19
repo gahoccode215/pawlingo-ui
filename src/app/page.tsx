@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import WhySection from "@/components/WhySection";
 import Features from "@/components/Features";
 import Personas from "@/components/Personas";
-import WaitlistCta from "@/components/WaitlistCta";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -14,7 +13,6 @@ export default function Home() {
       <WhySection />
       <Features />
       <Personas />
-      <WaitlistCta />
       <Footer />
     </>
   );

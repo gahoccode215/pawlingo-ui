@@ -2,26 +2,47 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthContext";
+import ThemeToggle from "./ThemeToggle";
+
+const AUTH_LINK_ACTIVE =
+  "bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap";
+const AUTH_LINK_INACTIVE =
+  "hidden sm:inline-block text-sm font-semibold text-ink/70 hover:text-ink px-3 py-2 transition-colors";
+
+const AUTH_LINK_ACTIVE_MOBILE =
+  "text-center bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 py-2.5 rounded-full shadow-pop transition-all";
+const AUTH_LINK_INACTIVE_MOBILE =
+  "text-center px-4 py-2.5 rounded-full text-sm font-semibold text-ink/70 hover:bg-surface transition-colors";
 
 const NAV_LINKS = [{ href: "#why", label: "Vì sao PawLingo" }];
 
 const FEATURE_LINKS = [{ href: "/learn", label: "Học từ vựng" }];
 
-const NAV_LINKS_AFTER_FEATURES = [
-  { href: "#for-you", label: "Dành cho bạn" },
-  { href: "#waitlist", label: "Danh sách chờ" },
-];
+const NAV_LINKS_AFTER_FEATURES = [{ href: "#for-you", label: "Dành cho bạn" }];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [isMobileFeaturesOpen, setIsMobileFeaturesOpen] = useState(false);
   const featuresRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuth();
+  // Register is the prominent CTA everywhere except the login page itself,
+  // where the two swap so whichever page you're on is the highlighted one.
+  const isLoginActive = pathname === "/login";
 
   const closeMenu = () => {
     setIsMenuOpen(false);
     setIsMobileFeaturesOpen(false);
   };
+
+  function handleLogout() {
+    logout();
+    router.push("/");
+  }
 
   useEffect(() => {
     if (!isFeaturesOpen) return;
@@ -37,7 +58,7 @@ export default function Header() {
   }, [isFeaturesOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-cream/85 backdrop-blur border-b border-ink/5">
+    <header className="sticky top-0 z-50 bg-cream/85 backdrop-blur border-b border-ink/10">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         {/* Logo (left) */}
         <a
@@ -82,7 +103,7 @@ export default function Header() {
             </button>
 
             {isFeaturesOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white rounded-2xl shadow-card border border-ink/5 p-2">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-surface rounded-2xl shadow-card border border-ink/5 p-2">
                 {FEATURE_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -110,18 +131,35 @@ export default function Header() {
 
         {/* Login / Register (right) */}
         <div className="flex items-center justify-end gap-1 sm:gap-3">
-          <Link
-            href="/login"
-            className="hidden sm:inline-block text-sm font-semibold text-ink/70 hover:text-ink px-3 py-2 transition-colors"
-          >
-            Đăng nhập
-          </Link>
-          <Link
-            href="/register"
-            className="bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap"
-          >
-            Đăng ký miễn phí
-          </Link>
+          <ThemeToggle />
+          {user ? (
+            <>
+              <Link
+                href="/home"
+                className="hidden sm:inline-block truncate max-w-[180px] text-sm font-semibold text-ink/70 hover:text-ink px-3 py-2 transition-colors"
+              >
+                {user.email}
+              </Link>
+              <button type="button" onClick={handleLogout} className={AUTH_LINK_ACTIVE}>
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className={isLoginActive ? AUTH_LINK_ACTIVE : AUTH_LINK_INACTIVE}
+              >
+                Đăng nhập
+              </Link>
+              <Link
+                href="/register"
+                className={isLoginActive ? AUTH_LINK_INACTIVE : AUTH_LINK_ACTIVE}
+              >
+                Đăng ký miễn phí
+              </Link>
+            </>
+          )}
           <button
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
@@ -171,14 +209,14 @@ export default function Header() {
       {isMenuOpen && (
         <div
           id="mobile-menu"
-          className="lg:hidden border-t border-ink/5 bg-cream px-5 sm:px-8 py-4 space-y-1"
+          className="lg:hidden border-t border-ink/10 bg-cream px-5 sm:px-8 py-4 space-y-1"
         >
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-white hover:text-coral-600 transition-colors"
+              className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-surface hover:text-coral-600 transition-colors"
             >
               {link.label}
             </a>
@@ -188,7 +226,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setIsMobileFeaturesOpen((open) => !open)}
-              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-white hover:text-coral-600 transition-colors"
+              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-surface hover:text-coral-600 transition-colors"
               aria-expanded={isMobileFeaturesOpen}
               aria-controls="mobile-features-menu"
             >
@@ -212,7 +250,7 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     onClick={closeMenu}
-                    className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/60 hover:bg-white hover:text-coral-600 transition-colors"
+                    className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/60 hover:bg-surface hover:text-coral-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -226,27 +264,51 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-white hover:text-coral-600 transition-colors"
+              className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-ink/70 hover:bg-surface hover:text-coral-600 transition-colors"
             >
               {link.label}
             </a>
           ))}
 
           <div className="pt-2 mt-2 border-t border-ink/10 flex flex-col gap-2">
-            <Link
-              href="/login"
-              onClick={closeMenu}
-              className="text-center px-4 py-2.5 rounded-full text-sm font-semibold text-ink/70 hover:bg-white transition-colors"
-            >
-              Đăng nhập
-            </Link>
-            <Link
-              href="/register"
-              onClick={closeMenu}
-              className="text-center bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 py-2.5 rounded-full shadow-pop transition-all"
-            >
-              Đăng ký miễn phí
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/home"
+                  onClick={closeMenu}
+                  className={`truncate ${AUTH_LINK_INACTIVE_MOBILE}`}
+                >
+                  {user.email}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeMenu();
+                    handleLogout();
+                  }}
+                  className={AUTH_LINK_ACTIVE_MOBILE}
+                >
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={closeMenu}
+                  className={isLoginActive ? AUTH_LINK_ACTIVE_MOBILE : AUTH_LINK_INACTIVE_MOBILE}
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={closeMenu}
+                  className={isLoginActive ? AUTH_LINK_INACTIVE_MOBILE : AUTH_LINK_ACTIVE_MOBILE}
+                >
+                  Đăng ký miễn phí
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
