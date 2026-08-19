@@ -2,31 +2,31 @@ const FEATURES = [
   {
     icon: "🐾",
     iconBg: "bg-coral-100",
-    title: "Pet System",
+    title: "Hệ thống thú cưng",
     description:
-      "Stats for Listening, Speaking, Reading and Writing. Skip practice and energy quietly drops — no shame, just a nudge to come back.",
+      "Chỉ số cho Nghe, Nói, Đọc và Viết. Bỏ luyện tập thì năng lượng âm thầm giảm — không xấu hổ, chỉ là một lời nhắc quay lại.",
   },
   {
     icon: "🗂️",
     iconBg: "bg-teal-100",
-    title: "Vocabulary Learning",
+    title: "Học từ vựng",
     description:
-      "Bite-sized flashcard lessons (10–20 words) with lightweight spaced repetition — words you get wrong simply show up more.",
+      "Bài học flashcard nhỏ gọn (10–20 từ) với lặp lại ngắt quãng nhẹ nhàng — từ nào sai sẽ xuất hiện lại nhiều hơn.",
   },
   {
     icon: "🎙️",
     iconBg: "bg-honey-100",
-    title: "Pronunciation Practice",
+    title: "Luyện phát âm",
     description:
-      "AI scoring compares your voice to a native speaker, phoneme by phoneme. Coming in a later phase.",
-    badge: "SOON",
+      "AI chấm điểm bằng cách so sánh giọng bạn với người bản xứ, từng âm vị một. Sẽ có ở giai đoạn sau.",
+    badge: "SẮP RA MẮT",
   },
   {
     icon: "📈",
     iconBg: "bg-ink/5",
-    title: "Progress Dashboard",
+    title: "Bảng tiến độ",
     description:
-      "A personal, private view of what you've learned — plus an optional parent view for child accounts. No public rankings.",
+      "Góc nhìn riêng tư về những gì bạn đã học — kèm chế độ xem cho phụ huynh với tài khoản trẻ em. Không có bảng xếp hạng công khai.",
   },
 ];
 
@@ -35,10 +35,10 @@ export default function Features() {
     <section id="features" className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
       <div className="max-w-2xl mx-auto text-center">
         <span className="text-sm font-bold text-teal-600 uppercase tracking-wide">
-          What you get
+          Bạn nhận được gì
         </span>
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2">
-          Built around one loop: learn, and watch them grow.
+          Xoay quanh một vòng lặp: học, và xem chúng lớn lên.
         </h2>
       </div>
 

@@ -1,27 +1,27 @@
 const PERSONAS = [
   {
     icon: "🌱",
-    title: "The Beginner",
+    title: "Người mới bắt đầu",
     quote:
-      "I just want a low-pressure daily habit — one that doesn't yell at me for missing a day.",
+      "Mình chỉ muốn một thói quen hằng ngày nhẹ nhàng — không quát mắng khi mình bỏ lỡ một ngày.",
   },
   {
     icon: "👨‍👧",
-    title: "The Parent",
+    title: "Phụ huynh",
     quote:
-      "I got it for my kid. Safe content, and I can actually see what she's learning — not just a streak count.",
+      "Tôi mua cho con. Nội dung an toàn, và tôi thực sự thấy con đang học gì — không chỉ là số streak.",
   },
   {
     icon: "💼",
-    title: "The Working Adult",
+    title: "Người đi làm",
     quote:
-      "Cute pet, sure — but I need real skill measurement. This doesn't feel like it's made for kids.",
+      "Thú cưng dễ thương thật, nhưng tôi cần đo lường kỹ năng thực sự. App này không hề trẻ con.",
   },
   {
     icon: "🎯",
-    title: "The Test-Prep Learner",
+    title: "Người luyện thi",
     quote:
-      "Structured vocab sets and clear goals — my pet's stats basically double as a study plan.",
+      "Bộ từ vựng có cấu trúc và mục tiêu rõ ràng — chỉ số thú cưng gần như là một kế hoạch học tập.",
   },
 ];
 
@@ -31,10 +31,10 @@ export default function Personas() {
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <span className="text-sm font-bold text-coral-600 uppercase tracking-wide">
-            Made for anyone learning
+            Dành cho mọi người học
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2">
-            Friendly enough for beginners. Serious enough for adults.
+            Thân thiện với người mới. Nghiêm túc với người lớn.
           </h2>
         </div>
 

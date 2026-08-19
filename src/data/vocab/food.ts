@@ -6,7 +6,7 @@ const foodWords: VocabWord[] = [
   {
     id: "apple",
     word: "Apple",
-    definition: "A round fruit with red or green skin and a crisp bite.",
+    definition: "Một loại quả tròn, vỏ đỏ hoặc xanh, cắn vào giòn tan.",
     imageUrl: "🍎",
     exampleSentence: "She packed an apple in her lunch bag.",
     topic: "food",
@@ -14,7 +14,7 @@ const foodWords: VocabWord[] = [
   {
     id: "bread",
     word: "Bread",
-    definition: "A baked food made from flour, usually eaten in slices.",
+    definition: "Một loại thực phẩm nướng từ bột mì, thường ăn theo lát.",
     imageUrl: "🍞",
     exampleSentence: "He toasted a slice of bread for breakfast.",
     topic: "food",
@@ -22,7 +22,7 @@ const foodWords: VocabWord[] = [
   {
     id: "egg",
     word: "Egg",
-    definition: "An oval food laid by hens, often fried or boiled.",
+    definition: "Một loại thực phẩm hình bầu dục do gà đẻ ra, thường chiên hoặc luộc.",
     imageUrl: "🥚",
     exampleSentence: "I like my egg fried with a runny yolk.",
     topic: "food",
@@ -30,7 +30,7 @@ const foodWords: VocabWord[] = [
   {
     id: "rice",
     word: "Rice",
-    definition: "Small white or brown grains that are boiled and eaten as a staple food.",
+    definition: "Những hạt nhỏ màu trắng hoặc nâu, được nấu chín và ăn như món chính.",
     imageUrl: "🍚",
     exampleSentence: "We had steamed rice with dinner.",
     topic: "food",
@@ -38,7 +38,7 @@ const foodWords: VocabWord[] = [
   {
     id: "milk",
     word: "Milk",
-    definition: "A white drink from cows, often had with cereal or coffee.",
+    definition: "Một loại đồ uống màu trắng từ bò, thường dùng với ngũ cốc hoặc cà phê.",
     imageUrl: "🥛",
     exampleSentence: "She poured milk over her cereal.",
     topic: "food",
@@ -46,7 +46,7 @@ const foodWords: VocabWord[] = [
   {
     id: "cheese",
     word: "Cheese",
-    definition: "A solid food made from milk, often yellow and used on sandwiches.",
+    definition: "Một loại thực phẩm rắn làm từ sữa, thường có màu vàng và dùng kẹp bánh mì.",
     imageUrl: "🧀",
     exampleSentence: "He melted cheese on top of the pasta.",
     topic: "food",
@@ -54,7 +54,7 @@ const foodWords: VocabWord[] = [
   {
     id: "banana",
     word: "Banana",
-    definition: "A long curved fruit with soft yellow flesh inside a peel.",
+    definition: "Một loại quả dài, cong, ruột vàng mềm bên trong lớp vỏ.",
     imageUrl: "🍌",
     exampleSentence: "She peeled a banana for a quick snack.",
     topic: "food",
@@ -62,7 +62,7 @@ const foodWords: VocabWord[] = [
   {
     id: "soup",
     word: "Soup",
-    definition: "A warm liquid dish, often made with vegetables or meat.",
+    definition: "Một món ăn dạng lỏng, nóng, thường nấu với rau củ hoặc thịt.",
     imageUrl: "🍲",
     exampleSentence: "We ate hot soup on the cold evening.",
     topic: "food",
@@ -70,7 +70,7 @@ const foodWords: VocabWord[] = [
   {
     id: "noodle",
     word: "Noodle",
-    definition: "A long thin strip of food made from dough, served in dishes or broth.",
+    definition: "Một loại thực phẩm dạng sợi dài mỏng làm từ bột, ăn trong các món hoặc nước dùng.",
     imageUrl: "🍜",
     exampleSentence: "He slurped the noodle soup happily.",
     topic: "food",
@@ -78,7 +78,7 @@ const foodWords: VocabWord[] = [
   {
     id: "cake",
     word: "Cake",
-    definition: "A sweet baked dessert, often eaten on birthdays.",
+    definition: "Một món tráng miệng ngọt được nướng, thường ăn vào dịp sinh nhật.",
     imageUrl: "🍰",
     exampleSentence: "They lit candles on the birthday cake.",
     topic: "food",
@@ -87,7 +87,7 @@ const foodWords: VocabWord[] = [
 
 export const foodTopic: Topic = {
   id: "food",
-  label: "Everyday Food",
+  label: "Món ăn hằng ngày",
   icon: "🍽️",
   words: foodWords,
 };

@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-const NAV_LINKS = [{ href: "#why", label: "Why PawLingo" }];
+const NAV_LINKS = [{ href: "#why", label: "Vì sao PawLingo" }];
 
 const FEATURE_LINKS = [{ href: "/learn", label: "Học từ vựng" }];
 
 const NAV_LINKS_AFTER_FEATURES = [
-  { href: "#for-you", label: "For You" },
-  { href: "#waitlist", label: "Waitlist" },
+  { href: "#for-you", label: "Dành cho bạn" },
+  { href: "#waitlist", label: "Danh sách chờ" },
 ];
 
 export default function Header() {
@@ -41,7 +41,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         {/* Logo (left) */}
         <a
-          href="#top"
+          href={'/'}
           className="flex items-center gap-2 font-display font-bold text-lg text-ink shrink-0"
         >
           <span className="text-2xl">🐾</span> PawLingo
@@ -67,7 +67,7 @@ export default function Header() {
               aria-haspopup="true"
               aria-expanded={isFeaturesOpen}
             >
-              Features
+              Tính năng
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`w-3.5 h-3.5 transition-transform ${isFeaturesOpen ? "rotate-180" : ""}`}
@@ -110,23 +110,23 @@ export default function Header() {
 
         {/* Login / Register (right) */}
         <div className="flex items-center justify-end gap-1 sm:gap-3">
-          <a
-            href="#waitlist"
+          <Link
+            href="/login"
             className="hidden sm:inline-block text-sm font-semibold text-ink/70 hover:text-ink px-3 py-2 transition-colors"
           >
-            Log in
-          </a>
-          <a
-            href="#waitlist"
+            Đăng nhập
+          </Link>
+          <Link
+            href="/register"
             className="bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap"
           >
-            Sign Up Free
-          </a>
+            Đăng ký miễn phí
+          </Link>
           <button
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
             className="lg:hidden ml-1 w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink/5 transition-colors"
-            aria-label="Toggle menu"
+            aria-label="Mở/đóng menu"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
           >
@@ -192,7 +192,7 @@ export default function Header() {
               aria-expanded={isMobileFeaturesOpen}
               aria-controls="mobile-features-menu"
             >
-              Features
+              Tính năng
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`w-3.5 h-3.5 transition-transform ${isMobileFeaturesOpen ? "rotate-180" : ""}`}
@@ -233,20 +233,20 @@ export default function Header() {
           ))}
 
           <div className="pt-2 mt-2 border-t border-ink/10 flex flex-col gap-2">
-            <a
-              href="#waitlist"
+            <Link
+              href="/login"
               onClick={closeMenu}
               className="text-center px-4 py-2.5 rounded-full text-sm font-semibold text-ink/70 hover:bg-white transition-colors"
             >
-              Log in
-            </a>
-            <a
-              href="#waitlist"
+              Đăng nhập
+            </Link>
+            <Link
+              href="/register"
               onClick={closeMenu}
               className="text-center bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-4 py-2.5 rounded-full shadow-pop transition-all"
             >
-              Sign Up Free
-            </a>
+              Đăng ký miễn phí
+            </Link>
           </div>
         </div>
       )}

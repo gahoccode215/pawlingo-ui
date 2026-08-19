@@ -1,15 +1,18 @@
 const OTHER_APPS = [
-  { icon: "🔥", text: `"Don't break your 47-day streak!" (pure guilt)` },
-  { icon: "🏆", text: "Leaderboards that make beginners feel behind" },
-  { icon: "🪙", text: "Pets/skins bought with coins — cosmetic only" },
-  { icon: "📉", text: "XP that means nothing once the app closes" },
+  { icon: "🔥", text: `"Đừng để mất streak 47 ngày!" (thuần tuý gây tội lỗi)` },
+  { icon: "🏆", text: "Bảng xếp hạng khiến người mới cảm thấy tụt lại" },
+  { icon: "🪙", text: "Thú cưng/skin mua bằng coin — chỉ để trang trí" },
+  { icon: "📉", text: "XP chẳng còn ý nghĩa gì khi tắt app" },
 ];
 
 const PAWLINGO = [
-  { icon: "❤️", text: "Your pet's energy dips when you're away — it misses you, not a number" },
-  { icon: "📊", text: "A private progress dashboard, not a public ranking" },
-  { icon: "🌱", text: "Evolution tied to real Listening/Speaking/Reading/Writing skill" },
-  { icon: "🎩", text: "Coins still exist — but only for hats and outfits, never growth" },
+  {
+    icon: "❤️",
+    text: "Năng lượng thú cưng giảm khi bạn vắng mặt — vì nó nhớ bạn, không phải vì một con số",
+  },
+  { icon: "📊", text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
+  { icon: "🌱", text: "Tiến hoá gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự" },
+  { icon: "🎩", text: "Coin vẫn tồn tại — nhưng chỉ để mua mũ, trang phục, không bao giờ ảnh hưởng đến tăng trưởng" },
 ];
 
 export default function WhySection() {
@@ -18,22 +21,22 @@ export default function WhySection() {
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <span className="text-sm font-bold text-coral-600 uppercase tracking-wide">
-            The Problem
+            Vấn đề
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2">
-            Streaks guilt you. Leaderboards stress you out.
+            Streak khiến bạn tội lỗi. Bảng xếp hạng khiến bạn căng thẳng.
           </h2>
           <p className="mt-4 text-ink/60 text-lg">
-            Most apps motivate with numbers that reset your anxiety every morning. We
-            think you&apos;ll show up for something you actually care about — like a pet
-            who&apos;s counting on you.
+            Hầu hết các app tạo động lực bằng những con số khiến bạn lo lắng lại từ đầu mỗi
+            sáng. Chúng tôi tin bạn sẽ quay lại vì thứ bạn thực sự quan tâm — như một chú
+            thú cưng đang trông chờ vào bạn.
           </p>
         </div>
 
         <div className="mt-14 grid md:grid-cols-2 gap-6">
           <div className="rounded-3xl border border-ink/10 p-7 bg-cream/60">
             <p className="font-display font-bold text-ink/50 text-sm uppercase tracking-wide mb-4">
-              😰 Other apps
+              😰 App khác
             </p>
             <ul className="space-y-3 text-ink/60">
               {OTHER_APPS.map((item) => (

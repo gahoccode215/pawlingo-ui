@@ -11,9 +11,9 @@ export default function TopicPicker({ topics }: TopicPickerProps) {
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <p className="text-sm font-bold text-coral-600 uppercase tracking-wide">
-            Vocabulary Lessons
+            Bài học từ vựng
           </p>
-          <h1 className="font-display font-extrabold text-3xl mt-2">Pick a topic</h1>
+          <h1 className="font-display font-extrabold text-3xl mt-2">Chọn một chủ đề</h1>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -26,7 +26,7 @@ export default function TopicPicker({ topics }: TopicPickerProps) {
               <div className="text-4xl">{topic.icon}</div>
               <div>
                 <p className="font-display font-bold text-lg">{topic.label}</p>
-                <p className="text-sm text-ink/50">{topic.words.length} words</p>
+                <p className="text-sm text-ink/50">{topic.words.length} từ</p>
               </div>
             </Link>
           ))}

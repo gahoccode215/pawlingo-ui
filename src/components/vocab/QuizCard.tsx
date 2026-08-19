@@ -40,10 +40,10 @@ export default function QuizCard({
     <div className="min-h-[70vh] flex items-center justify-center px-5">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8">
         <p className="text-xs font-semibold text-ink/40 text-center">
-          {masteredCount} / {totalWords} words mastered
+          Đã thuộc {masteredCount} / {totalWords} từ
         </p>
         <h2 className="font-display font-bold text-xl text-center mt-3">
-          Which word means:
+          Từ nào có nghĩa là:
         </h2>
         <p className="mt-2 text-center text-ink/70 italic">
           &ldquo;{word.definition}&rdquo;
@@ -69,7 +69,7 @@ export default function QuizCard({
             onClick={() => onAnswer(isCorrect)}
             className="mt-6 w-full bg-ink hover:bg-ink/90 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
           >
-            {isCorrect ? "Nice! Continue →" : "Continue →"}
+            {isCorrect ? "Tốt lắm! Tiếp tục →" : "Tiếp tục →"}
           </button>
         )}
       </div>

@@ -22,26 +22,26 @@ export default function SessionSummary({ words, attempts, onRestart }: SessionSu
     <div className="min-h-[70vh] flex items-center justify-center px-5">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8 text-center">
         <div className="text-6xl mb-4">🎉</div>
-        <h2 className="font-display font-extrabold text-3xl">Session complete!</h2>
+        <h2 className="font-display font-extrabold text-3xl">Hoàn thành buổi học!</h2>
 
         <div className="mt-6 grid grid-cols-2 gap-4">
           <div className="rounded-2xl bg-teal-50 py-4">
             <p className="text-2xl font-display font-bold text-teal-600">{totals.correct}</p>
             <p className="text-xs font-semibold text-ink/50 uppercase tracking-wide">
-              Correct
+              Đúng
             </p>
           </div>
           <div className="rounded-2xl bg-coral-50 py-4">
             <p className="text-2xl font-display font-bold text-coral-600">{totals.wrong}</p>
             <p className="text-xs font-semibold text-ink/50 uppercase tracking-wide">
-              Wrong
+              Sai
             </p>
           </div>
         </div>
 
         {reviewWords.length > 0 ? (
           <div className="mt-6 text-left">
-            <p className="text-sm font-semibold text-ink/70 mb-2">Words to review again:</p>
+            <p className="text-sm font-semibold text-ink/70 mb-2">Từ cần ôn lại:</p>
             <ul className="flex flex-wrap gap-2">
               {reviewWords.map((word) => (
                 <li
@@ -55,7 +55,7 @@ export default function SessionSummary({ words, attempts, onRestart }: SessionSu
           </div>
         ) : (
           <p className="mt-6 text-sm text-ink/60">
-            You mastered every word in this session. 🐾
+            Bạn đã thuộc hết mọi từ trong buổi học này. 🐾
           </p>
         )}
 
@@ -64,7 +64,7 @@ export default function SessionSummary({ words, attempts, onRestart }: SessionSu
           onClick={onRestart}
           className="mt-8 w-full bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
         >
-          Practice again
+          Luyện tập lại
         </button>
       </div>
     </div>

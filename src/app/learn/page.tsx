@@ -3,8 +3,8 @@ import TopicPicker from "@/components/vocab/TopicPicker";
 import { getTopics } from "@/lib/vocab/topics";
 
 export const metadata: Metadata = {
-  title: "Learn — PawLingo",
-  description: "Pick a vocabulary topic to practice with flashcards and a quick quiz.",
+  title: "Học — PawLingo",
+  description: "Chọn một chủ đề từ vựng để luyện tập với flashcard và câu hỏi nhanh.",
 };
 
 export default function LearnPage() {

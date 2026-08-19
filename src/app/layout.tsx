@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import "./globals.css";
 
 const baloo = Baloo_2({
@@ -16,19 +17,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PawLingo — Learn English, Raise a Pet",
+  title: "PawLingo — Học tiếng Anh, nuôi lớn thú cưng",
   description:
-    "PawLingo is the English learning app where your pet grows from real listening, speaking, reading and writing progress — not coins.",
+    "PawLingo là ứng dụng học tiếng Anh nơi thú cưng của bạn lớn lên nhờ tiến bộ Nghe, Nói, Đọc, Viết thực sự — không phải nhờ mua coin.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="vi"
       className={`${baloo.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -17,7 +17,7 @@ export default function Flashcard({
     <div className="min-h-[70vh] flex items-center justify-center px-5">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-card border border-ink/5 p-8 text-center">
         <p className="text-xs font-semibold text-ink/40">
-          {masteredCount} / {totalWords} words mastered
+          Đã thuộc {masteredCount} / {totalWords} từ
         </p>
         <div className="text-7xl my-5">{word.imageUrl}</div>
         <h2 className="font-display font-extrabold text-3xl">{word.word}</h2>
@@ -30,7 +30,7 @@ export default function Flashcard({
           onClick={onContinue}
           className="mt-8 w-full bg-teal-500 hover:bg-teal-600 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
         >
-          Quiz me →
+          Kiểm tra tôi →
         </button>
       </div>
     </div>

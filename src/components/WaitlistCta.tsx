@@ -14,10 +14,10 @@ export default function WaitlistCta() {
       <div className="relative max-w-2xl mx-auto px-5 sm:px-8 py-20 text-center text-white">
         <div className="text-6xl animate-wiggle inline-block mb-4">🐶</div>
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl">
-          Your future pet is waiting to meet you.
+          Thú cưng tương lai của bạn đang chờ gặp bạn.
         </h2>
         <p className="mt-4 text-white/90 text-lg">
-          Join the waitlist and be first to raise it — one real lesson at a time.
+          Tham gia danh sách chờ và là người đầu tiên nuôi lớn nó — từng bài học thật một.
         </p>
 
         <form
@@ -27,18 +27,18 @@ export default function WaitlistCta() {
           <input
             type="email"
             required
-            placeholder="you@example.com"
+            placeholder="ban@vidu.com"
             className="flex-1 rounded-full px-5 py-3.5 text-ink placeholder:text-ink/40 font-medium focus:outline-none focus:ring-4 focus:ring-white/40"
           />
           <button
             type="submit"
             className="bg-ink hover:bg-ink/90 text-white font-display font-semibold px-6 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap"
           >
-            Join Waitlist 🐾
+            Tham gia 🐾
           </button>
         </form>
         <p className="mt-4 text-xs text-white/75">
-          Prototype only — this form doesn&apos;t submit anywhere yet. No spam, ever.
+          Chỉ là bản thử nghiệm — form này chưa gửi đi đâu cả. Không bao giờ spam.
         </p>
       </div>
     </section>

@@ -10,8 +10,8 @@ export async function generateMetadata(
   const topic = getTopicById(topicId);
 
   return {
-    title: topic ? `${topic.label} — PawLingo` : "Learn — PawLingo",
-    description: "Practice vocabulary with flashcards and a quick quiz after each word.",
+    title: topic ? `${topic.label} — PawLingo` : "Học — PawLingo",
+    description: "Luyện từ vựng với flashcard và một câu hỏi nhanh sau mỗi từ.",
   };
 }
 

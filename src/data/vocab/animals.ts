@@ -6,7 +6,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "dog",
     word: "Dog",
-    definition: "A common pet animal that barks and loves to play.",
+    definition: "Một loài vật nuôi phổ biến, hay sủa và thích chơi đùa.",
     imageUrl: "🐶",
     exampleSentence: "My dog wags its tail when I come home.",
     topic: "animals",
@@ -14,7 +14,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "cat",
     word: "Cat",
-    definition: "A small pet animal that meows and likes to sleep a lot.",
+    definition: "Một loài vật nuôi nhỏ, hay kêu meo meo và thích ngủ.",
     imageUrl: "🐱",
     exampleSentence: "The cat curled up on the warm windowsill.",
     topic: "animals",
@@ -22,7 +22,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "bird",
     word: "Bird",
-    definition: "An animal with feathers and wings that can usually fly.",
+    definition: "Một loài động vật có lông vũ và cánh, thường biết bay.",
     imageUrl: "🐦",
     exampleSentence: "A bird sang loudly outside my window this morning.",
     topic: "animals",
@@ -30,7 +30,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "fish",
     word: "Fish",
-    definition: "An animal that lives in water and breathes through gills.",
+    definition: "Một loài động vật sống dưới nước và thở bằng mang.",
     imageUrl: "🐟",
     exampleSentence: "We watched the fish swim around the tank.",
     topic: "animals",
@@ -38,7 +38,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "rabbit",
     word: "Rabbit",
-    definition: "A small animal with long ears that hops and eats carrots.",
+    definition: "Một loài động vật nhỏ, tai dài, hay nhảy và ăn cà rốt.",
     imageUrl: "🐰",
     exampleSentence: "The rabbit hid behind the bushes in the garden.",
     topic: "animals",
@@ -46,7 +46,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "turtle",
     word: "Turtle",
-    definition: "A slow-moving animal with a hard shell on its back.",
+    definition: "Một loài động vật di chuyển chậm, có mai cứng trên lưng.",
     imageUrl: "🐢",
     exampleSentence: "The turtle slowly crossed the sandy beach.",
     topic: "animals",
@@ -54,7 +54,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "horse",
     word: "Horse",
-    definition: "A large animal that people ride and that can run very fast.",
+    definition: "Một loài động vật to lớn mà con người cưỡi, chạy rất nhanh.",
     imageUrl: "🐴",
     exampleSentence: "She rode her horse across the open field.",
     topic: "animals",
@@ -62,7 +62,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "elephant",
     word: "Elephant",
-    definition: "A very large animal with a long trunk and big ears.",
+    definition: "Một loài động vật rất lớn có vòi dài và đôi tai to.",
     imageUrl: "🐘",
     exampleSentence: "The elephant used its trunk to grab a bunch of leaves.",
     topic: "animals",
@@ -70,7 +70,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "lion",
     word: "Lion",
-    definition: "A large wild cat known as the king of the jungle.",
+    definition: "Một loài mèo hoang dã to lớn, được mệnh danh là vua của rừng xanh.",
     imageUrl: "🦁",
     exampleSentence: "The lion roared loudly at sunrise.",
     topic: "animals",
@@ -78,7 +78,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "monkey",
     word: "Monkey",
-    definition: "A playful animal that climbs trees and often lives in groups.",
+    definition: "Một loài động vật tinh nghịch, leo trèo giỏi và thường sống theo bầy.",
     imageUrl: "🐵",
     exampleSentence: "The monkey swung from branch to branch.",
     topic: "animals",
@@ -86,7 +86,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "fox",
     word: "Fox",
-    definition: "A clever wild animal with a bushy tail and pointed ears.",
+    definition: "Một loài động vật hoang dã tinh khôn, có đuôi rậm và tai nhọn.",
     imageUrl: "🦊",
     exampleSentence: "A fox darted across the road at night.",
     topic: "animals",
@@ -94,7 +94,7 @@ const animalsWords: VocabWord[] = [
   {
     id: "owl",
     word: "Owl",
-    definition: "A bird that is awake at night and known for being wise.",
+    definition: "Một loài chim hoạt động về đêm, nổi tiếng là loài chim khôn ngoan.",
     imageUrl: "🦉",
     exampleSentence: "An owl hooted from the old oak tree.",
     topic: "animals",
@@ -103,7 +103,7 @@ const animalsWords: VocabWord[] = [
 
 export const animalsTopic: Topic = {
   id: "animals",
-  label: "Everyday Animals",
+  label: "Động vật quen thuộc",
   icon: "🐾",
   words: animalsWords,
 };

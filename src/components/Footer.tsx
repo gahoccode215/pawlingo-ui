@@ -1,14 +1,14 @@
 const PRODUCT_LINKS = [
-  { href: "#why", label: "Why PawLingo" },
-  { href: "#features", label: "Features" },
-  { href: "#for-you", label: "For You" },
-  { href: "#waitlist", label: "Join Waitlist" },
+  { href: "#why", label: "Vì sao PawLingo" },
+  { href: "#features", label: "Tính năng" },
+  { href: "#for-you", label: "Dành cho bạn" },
+  { href: "#waitlist", label: "Tham gia danh sách chờ" },
 ];
 
 const SUPPORT_LINKS = [
-  { href: "mailto:hello@pawlingo.app", label: "Contact" },
-  { href: "#", label: "Privacy Policy" },
-  { href: "#", label: "Terms of Service" },
+  { href: "mailto:hello@pawlingo.app", label: "Liên hệ" },
+  { href: "#", label: "Chính sách bảo mật" },
+  { href: "#", label: "Điều khoản dịch vụ" },
 ];
 
 export default function Footer() {
@@ -27,13 +27,13 @@ export default function Footer() {
               <span className="text-2xl">🐾</span> PawLingo
             </a>
             <p className="mt-3 text-sm leading-relaxed max-w-xs">
-              Learn English, raise a pet whose growth reflects your real progress — not
-              your wallet.
+              Học tiếng Anh, nuôi lớn một thú cưng mà sự trưởng thành phản ánh đúng tiến
+              bộ thật của bạn — không phải ví tiền.
             </p>
             <div className="flex items-center gap-2 mt-5">
               <a
                 href="#"
-                aria-label="PawLingo on X"
+                aria-label="PawLingo trên X"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden="true">
@@ -42,7 +42,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                aria-label="PawLingo on Instagram"
+                aria-label="PawLingo trên Instagram"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
               >
                 <svg
@@ -60,7 +60,7 @@ export default function Footer() {
               </a>
               <a
                 href="mailto:hello@pawlingo.app"
-                aria-label="Email PawLingo"
+                aria-label="Gửi email cho PawLingo"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 hover:text-white transition-colors"
               >
                 <svg
@@ -83,7 +83,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <p className="font-display font-semibold text-white text-sm mb-4">Product</p>
+            <p className="font-display font-semibold text-white text-sm mb-4">Sản phẩm</p>
             <ul className="space-y-2.5 text-sm">
               {PRODUCT_LINKS.map((link) => (
                 <li key={link.label}>
@@ -97,7 +97,7 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <p className="font-display font-semibold text-white text-sm mb-4">Support</p>
+            <p className="font-display font-semibold text-white text-sm mb-4">Hỗ trợ</p>
             <ul className="space-y-2.5 text-sm">
               {SUPPORT_LINKS.map((link) => (
                 <li key={link.label}>
@@ -111,8 +111,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
-          <p>&copy; {year} PawLingo. All rights reserved.</p>
-          <p>Prototype build · UI concept only, not a live product</p>
+          <p>&copy; {year} PawLingo. Giữ toàn quyền.</p>
+          <p>Bản dựng thử nghiệm · Chỉ là concept giao diện, chưa phải sản phẩm chính thức</p>
         </div>
       </div>
     </footer>
