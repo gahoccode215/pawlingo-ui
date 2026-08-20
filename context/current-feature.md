@@ -1,16 +1,32 @@
-# Current Feature
+# Current Feature: FE Vocabulary Content Integration (Vocab MVP, Phase 1)
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Integrate `GET /api/v1/vocabularies` (list, paginated, filterable by `topic`/`difficulty`/`search`) and `GET /api/v1/vocabularies/{id}` (detail) against the new backend content model.
+- Build `/vocabulary` browse page: header, search bar, topic pill/chip tabs + difficulty dropdown, responsive card grid (1/2/3 cols).
+- Build `/vocabulary/[id]` detail page with back-to-list (preserving prior filter/search/page), word/IPA/POS/difficulty/meaning/definition/example/topic sections.
+- Vocabulary card shows word, POS+difficulty badges (color-coded by CEFR level), meaning, truncated example, IPA, and audio icon only when `pronunciationAudioUrl` is non-null.
+- Implement loading (skeleton), empty, and error (with Retry) states — mutually exclusive, no blank/ambiguous screen.
+- Sync `search` (debounced ~300-400ms), `topic`, `difficulty`, `page` to the URL query string; reset `page` to 0 on filter/search change.
+- Simple Previous/Next pagination using `totalPages`, disabling at bounds.
+- Mobile-first responsive (test ~375px), AA contrast on difficulty badges, full keyboard focus support, `aria-label` on audio icon.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Backend: `pawlingo-api`, endpoints on branch `feature/vocabulary-content-refactor` — **not yet merged to `main`**. Confirm with backend team that it's deployed before wiring real integration.
+- This is a **full replacement** of the old Vocab model (`Topic` + `VocabWord`, `/api/v1/vocab/topics...`). Old endpoints are gone; remove any FE code still calling them. This is separate from the existing local/in-memory Leitner learning flow at `/learn` (`src/data/vocab/*`, `src/lib/vocab/{leitner,quiz}.ts`) — that flow's data model is unrelated and out of scope here unless explicitly merged later.
+- Auth required (JWT `Authorization: Bearer <accessToken>`) — reuse session/token handling from `src/lib/api.ts` / `src/lib/auth/*` (see FE auth integration, completed 2026-08-19). 401 → `UNAUTHORIZED`.
+- Response envelope: `{ success, data, error }` on every call; list response `data` = `{ content, page, size, totalElements, totalPages }`.
+- Enums: `topic` (`work`, `education`, `travel`, `food`, `daily-life`), `difficulty` (CEFR `A1`-`C2`, use as-is for labels), `partOfSpeech` (`noun`, `verb`, `adjective`, `adverb`, `pronoun`, `preposition`, `conjunction`, `interjection`).
+- `definition` and `pronunciationAudioUrl` can be `null` — no seed data currently has real audio; hide the audio icon entirely (not disabled/greyed) when null, and hide the whole Definition section (not just blank it) when null.
+- Filtering/search/pagination is **server-side only** — always re-call the API on param change, never fetch-all-then-filter client-side.
+- Phase 1 is browse-only: explicitly **no** flashcard/quiz/progress/mastery/XP/streak/spaced-repetition/AI-generated content/audio playback UI beyond the hide-if-null icon. Don't build ahead for those — separate spec later.
+- Error codes: 404 `VOCABULARY_NOT_FOUND` (detail), 401 `UNAUTHORIZED`, 400 `VALIDATION_ERROR`, 500 `INTERNAL_ERROR`.
+- Full spec retained at `context/features/fe-vocab-integration.md` for detailed UI/UX guidance (card layout priority, color-by-CEFR-level badge scheme, etc.) — refer back to it during implementation.
 
 ## History
 
