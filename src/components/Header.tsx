@@ -18,7 +18,10 @@ const AUTH_LINK_INACTIVE_MOBILE =
 
 const NAV_LINKS = [{ href: "#why", label: "Vì sao PawLingo" }];
 
-const FEATURE_LINKS = [{ href: "/learn", label: "Học từ vựng" }];
+const FEATURE_LINKS = [
+  { href: "/learn", label: "Học từ vựng" },
+  { href: "/vocabulary", label: "Từ điển từ vựng" },
+];
 
 const NAV_LINKS_AFTER_FEATURES = [{ href: "#for-you", label: "Dành cho bạn" }];
 
