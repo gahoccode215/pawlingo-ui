@@ -5,6 +5,7 @@ import type {
   GoogleLoginResponse,
   LoginRequest,
   LoginResponse,
+  RefreshResponse,
   RegisterRequest,
   RegisterResponse,
 } from "@/types/auth";
@@ -21,6 +22,19 @@ export function loginWithGoogle(input: GoogleLoginRequest): Promise<GoogleLoginR
   return apiRequest<GoogleLoginResponse>("/auth/google", { method: "POST", body: input });
 }
 
-export function getCurrentUser(): Promise<AuthUser> {
-  return apiRequest<AuthUser>("/auth/me", { auth: true });
+export function getCurrentUser(accessToken: string): Promise<AuthUser> {
+  return apiRequest<AuthUser>("/auth/me", { token: accessToken });
+}
+
+export function refreshTokens(refreshToken: string): Promise<RefreshResponse> {
+  return apiRequest<RefreshResponse>("/auth/refresh", {
+    method: "POST",
+    body: { refreshToken },
+  });
+}
+
+// Public endpoint — safe to call even if the access token has already
+// expired; unknown/already-revoked refresh tokens silently no-op server-side.
+export function logoutUser(refreshToken: string): Promise<null> {
+  return apiRequest<null>("/auth/logout", { method: "POST", body: { refreshToken } });
 }

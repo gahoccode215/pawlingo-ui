@@ -13,6 +13,8 @@ export interface RegisterRequest {
 
 export interface RegisterResponse extends AuthUser {
   accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
 }
 
 export interface LoginRequest {
@@ -22,6 +24,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
+  refreshToken: string;
   expiresIn: number;
 }
 
@@ -31,8 +34,23 @@ export interface GoogleLoginRequest {
 
 export interface GoogleLoginResponse extends AuthUser {
   accessToken: string;
+  refreshToken: string;
   expiresIn: number;
   isNewUser: boolean;
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
+export interface RefreshResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface LogoutRequest {
+  refreshToken: string;
 }
 
 export type ApiErrorCode =
@@ -44,6 +62,7 @@ export type ApiErrorCode =
   | "GOOGLE_TOKEN_INVALID"
   | "GOOGLE_EMAIL_NOT_VERIFIED"
   | "ACCOUNT_EXISTS_WITH_PASSWORD"
+  | "INVALID_REFRESH_TOKEN"
   | "NETWORK_ERROR";
 
 export interface ApiErrorBody {

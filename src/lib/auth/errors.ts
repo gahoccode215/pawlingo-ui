@@ -10,6 +10,7 @@ const AUTH_ERROR_MESSAGES: Record<ApiErrorCode, string> = {
   GOOGLE_EMAIL_NOT_VERIFIED: "Email Google của bạn chưa được xác thực.",
   ACCOUNT_EXISTS_WITH_PASSWORD:
     "Email này đã đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email/mật khẩu.",
+  INVALID_REFRESH_TOKEN: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
   NETWORK_ERROR: "Không thể kết nối máy chủ. Vui lòng kiểm tra mạng và thử lại.",
 };
 
