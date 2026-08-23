@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
 import Script from "next/script";
+import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ThemeProvider } from "@/lib/ThemeContext";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
@@ -39,7 +40,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
         />
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <SessionProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

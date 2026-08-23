@@ -1,16 +1,39 @@
-# Current Feature
+# Current Feature: FE Auth Refactor — Register/Login/Google via NextAuth + Refresh/Logout
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Install `next-auth` (Auth.js v5 / `next-auth@beta` — required for Next.js 16 App Router support) as an approved new dependency, with a JWT session strategy (no external session DB — token state lives inside NextAuth's encrypted session JWT, per backend's own recommendation in the changelog).
+- Add the NextAuth route handler (`src/app/api/auth/[...nextauth]/route.ts`) plus config (provider(s), `jwt`/`session` callbacks).
+- Email/password **login**: a NextAuth Credentials provider whose `authorize()` calls `POST /api/v1/auth/login` (`{email, password}` → `{accessToken, refreshToken, expiresIn}`, **no user fields**), then `GET /api/v1/auth/me` for the profile (`{id, email, goal}`), and returns the combined shape to be persisted into the JWT.
+- Email/password **register**: keep as a plain (non-NextAuth) call to `POST /api/v1/auth/register` (`{email, password}` → `{id, email, goal, accessToken, refreshToken, expiresIn}` — this one *does* include user fields), then establish the NextAuth session from those already-issued tokens without a redundant login call. Decide the exact mechanism during implementation (e.g. a second Credentials provider path, or a shared helper) — flag as an open design point, not user-facing.
+- **Google Sign-In**: keep the existing Google Identity Services button/script (`GoogleSignInButton.tsx`, `NEXT_PUBLIC_GOOGLE_CLIENT_ID`) unchanged — per user decision, do **not** switch to NextAuth's built-in `GoogleProvider` (that would need a new `GOOGLE_CLIENT_SECRET` + Google Cloud Console redirect URI setup). Instead, wrap the existing "send Google's `idToken` to our backend" logic in a custom NextAuth Credentials provider that calls `POST /api/v1/auth/google` (`{idToken}` → `{id, email, goal, accessToken, refreshToken, expiresIn, isNewUser}`).
+- **Silent refresh**: in the NextAuth `jwt` callback, track access-token expiry (`expiresIn` is seconds-from-issue — convert to an absolute timestamp) and when expired/near-expiry, call `POST /api/v1/auth/refresh` (`{refreshToken}` → `{accessToken, refreshToken, expiresIn}` — refresh token **rotates every call**, must overwrite the stored one). On `INVALID_REFRESH_TOKEN` (401 — generic for not-found/expired/revoked/reused), force-clear the session and redirect to `/login` (mirrors today's `UNAUTHORIZED`-triggers-logout pattern in `AuthContext.tsx`).
+- **Logout**: call `POST /api/v1/auth/logout` (`{refreshToken}`, public endpoint — no `Authorization` header needed, silently no-ops on an already-invalid token) before/alongside NextAuth's `signOut()`, so the refresh token is actually revoked server-side.
+- Refactor `src/lib/api.ts`'s `apiRequest` (and any server-side callers) to source the bearer token from the NextAuth session instead of `src/lib/auth/token.ts` (`localStorage`) — use `auth()`/`getServerSession` server-side and the client session hook client-side. Delete `src/lib/auth/token.ts` once nothing reads from it.
+- Decide whether `AuthContext.tsx` stays as a thin compatibility wrapper around NextAuth's session (so `LoginForm`/`RegisterForm`/`GoogleSignInButton`/`Header` keep calling `register`/`login`/`loginWithGoogleIdToken`/`logout` with minimal churn) or those call sites move to `useSession`/`signIn`/`signOut` directly — propose the thin-wrapper approach first since AGENTS.md says not to refactor unrelated code, but confirm before large call-site rewrites.
+- Never expose `refreshToken` to client-side JS/session payload sent to the browser — it must stay only inside the encrypted server-side JWT (NextAuth's default `session` callback strips fields not explicitly re-added; do not add `refreshToken` to it).
+- Update Zod schemas to match confirmed backend validation: register `password` requires `min(8)`; login `password` just required (no length rule); `idToken`/`refreshToken` required non-blank strings (these two are internal, not user-facing forms).
+- Extend `src/lib/auth/errors.ts`'s Vietnamese error map with `INVALID_REFRESH_TOKEN`.
+- New required env var: `AUTH_SECRET` (NextAuth session JWT encryption key) — flag to the user to generate one (`openssl rand -base64 32`) before `start`.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Source of truth for all shapes below: `pawlingo-api` source (`AuthController.java`, DTOs under `auth/dto/`, `ErrorCode.java`, `ApiResponseDTO`/`ErrorDetail`) — `docs/backend-contract.md` in this repo is currently a stub (all "...") and `pawlingo-api/docs/api-changelog.md` only documents the *delta*, not full shapes, so the backend source was inspected directly per AGENTS.md's fallback instruction. Consider back-filling `docs/backend-contract.md` with these confirmed shapes during implementation.
+- Envelope on every call: `{ success: boolean, data: T | null, error: { code, message } | null }`.
+- **`POST /auth/register`** → 201. Req `{email, password}`. Res `{id, email, goal, accessToken, refreshToken, expiresIn}`. Errors: `DUPLICATE_EMAIL` (409), `VALIDATION_ERROR` (400).
+- **`POST /auth/login`** → 200. Req `{email, password}`. Res `{accessToken, refreshToken, expiresIn}` — **no user fields**, must follow with `/auth/me`. Errors: `INVALID_CREDENTIALS` (401, same code for wrong email or wrong password — don't leak which), `VALIDATION_ERROR` (400).
+- **`POST /auth/google`** → 201 if `isNewUser` else 200. Req `{idToken}`. Res `{id, email, goal, accessToken, refreshToken, expiresIn, isNewUser}`. Errors: `GOOGLE_TOKEN_INVALID` (401), `GOOGLE_EMAIL_NOT_VERIFIED` (403), `ACCOUNT_EXISTS_WITH_PASSWORD` (409, existing password-provider account with same email), `VALIDATION_ERROR` (400).
+- **`POST /auth/refresh`** → 200. Req `{refreshToken}`. Res `{accessToken, refreshToken, expiresIn}` (refresh token rotates — old one is invalidated). Reuse of an already-rotated token revokes **all** refresh tokens for that user (theft/replay detection) → forces re-login on every device. Errors: `INVALID_REFRESH_TOKEN` (401, generic across not-found/expired/revoked/reused by design), `VALIDATION_ERROR` (400).
+- **`POST /auth/logout`** → 200, `data: null`. Req `{refreshToken}`. **Public** (no `Authorization` header required/checked) — safe to call even with an expired access token. Unknown/already-revoked token silently no-ops, still returns `success: true`. Errors: `VALIDATION_ERROR` (400) only.
+- **`GET /auth/me`** → 200. Requires `Authorization: Bearer <accessToken>`. Res `{id, email, goal}`. Errors: `UNAUTHORIZED` (401). Known backend quirk (not an FE concern to special-case): if the JWT is valid but the user row is gone, backend returns `500 INTERNAL_ERROR` instead of a clean 404/401 — just let generic error handling cover it.
+- `goal` enum: `beginner` | `test-prep` | `professional` | `for-child` (register always defaults to `beginner`).
+- Access token lifetime: 15 min. Refresh token: opaque (not a JWT), 30-day default, stored server-side only as a hash — treat it as an opaque string on the FE, never decode it.
+- User decisions locked in for this feature (do not revisit without asking): (1) install `next-auth` — approved; (2) Google flow stays on the existing GIS-button + custom Credentials-provider wrapper, **not** NextAuth's built-in `GoogleProvider` — approved, avoids new Google Cloud Console/`GOOGLE_CLIENT_SECRET` setup.
+- Out of scope: the vocabulary feature (both the old local `/learn` Leitner flow and the API-backed `/vocabulary` browse feature) was deleted entirely on 2026-08-23 ahead of this feature — it will be rewritten from scratch later, separately. Don't resurrect or reference that code.
 
 ## History
 
