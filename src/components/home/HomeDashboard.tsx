@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function HomeDashboard() {
@@ -28,10 +30,10 @@ export default function HomeDashboard() {
       <h1 className="font-display font-extrabold text-3xl mt-2 break-all">{user.email}</h1>
 
       <div className="mt-8 max-w-md">
-        <div className="bg-surface rounded-3xl shadow-card border border-ink/5 p-6 relative text-center">
-          <span className="absolute top-4 right-4 text-[10px] font-bold bg-honey-300 text-ink px-2 py-1 rounded-full">
+        <Card className="rounded-3xl shadow-card border-ink/5 p-6 gap-0 relative text-center">
+          <Badge className="absolute top-4 right-4 bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
             SẮP RA MẮT
-          </span>
+          </Badge>
           <div className="flex justify-center my-4">
             <div className="text-7xl animate-float select-none">🐶</div>
           </div>
@@ -39,7 +41,7 @@ export default function HomeDashboard() {
           <p className="mt-1 text-sm text-ink/50">
             Chỉ số Nghe/Nói/Đọc/Viết và quá trình tiến hoá sẽ sớm xuất hiện ở đây.
           </p>
-        </div>
+        </Card>
       </div>
     </div>
   );

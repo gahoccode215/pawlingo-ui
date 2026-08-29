@@ -119,7 +119,7 @@ This section should be updated as soon as the Spring Boot team/repo defines real
 |---|---|
 | Frontend framework | **Next.js (App Router)** — project name: `pawlingo-ui` |
 | Language | TypeScript |
-| Styling | Tailwind CSS v4 + shadcn/ui (planned, not yet adopted — see below) |
+| Styling | Tailwind CSS v4 + shadcn/ui (adopted 2026-08-24 — see below); dark mode via `next-themes` |
 | Animation | Framer Motion (pet reactions) |
 | Backend | **Spring Boot REST API** (separate repo) — owns all business logic and database access |
 | Database | Postgres (owned by Spring Boot, via JPA/Hibernate — not accessed from Next.js) |
@@ -129,27 +129,20 @@ This section should be updated as soon as the Spring Boot team/repo defines real
 
 ---
 
-## 🧩 Planned: shadcn/ui Migration
+## 🧩 shadcn/ui Migration
 
-**Status: not started** — planning note only, no code changed yet.
+**Status: done (2026-08-24)**, as part of a full-site light/dark restyle. `coding-standards.md`'s "Use shadcn/ui components where applicable" is now actually true — `components.json` + `src/components/ui/{button,input,label,card,badge,separator}.tsx` exist, and every hand-rolled Tailwind component that had an equivalent (`Header`, `Hero`, `Features`, `Personas`, `WhySection`, `Footer`, `LoginForm`, `RegisterForm`, `HomeDashboard`) was migrated onto them.
 
-`coding-standards.md` (## Styling) already says "Use shadcn/ui components where applicable," but the codebase currently has zero shadcn usage — every component (`Header`, `LoginForm`, `RegisterForm`, `Flashcard`, `QuizCard`, etc.) is hand-rolled Tailwind. This is closing a gap against an existing standard, not introducing a new one.
+**How it was done:**
+- `components.json` was hand-authored (Tailwind v4 CSS-first, `"style": "new-york"`, aliases → `@/components`, `@/lib/utils`, `@/components/ui`) instead of running `shadcn@latest init`'s interactive prompt, then `npx shadcn@latest add button input label card badge separator --yes` ran non-interactively against it.
+- shadcn's semantic tokens (`--background`, `--foreground`, `--card`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring`, `--radius`) were added to the existing `@theme` block in `src/app/globals.css`, **mapped onto** the pre-existing palette (`--color-cream`, `--color-ink`, `--color-coral-*`, etc.) rather than replacing it — `--primary: var(--color-coral-500)` and so on — so shadcn primitives inherit the PawLingo brand and the existing light/dark flip automatically.
+- `src/components/ui/button.tsx` got a custom `pop` variant (`rounded-full shadow-pop active:translate-y-0.5 active:shadow-none`) added to its `cva` alongside shadcn's stock variants, so every primary CTA keeps its bold Duolingo-style "3D button" feel through a proper reusable primitive instead of a hand-copied class string per file.
+- Same pass also retuned dark-mode harmony: the dark `--color-cream`/`--color-surface` values were made less brown/muddy with a clearer elevation gap, `--shadow-pop` got a dark-mode-specific higher-opacity override (the light-mode value was nearly invisible against a near-black background), and previously-fixed pastel chip backgrounds (`Features.tsx` icon tiles) were converted to opacity-based tints (`bg-coral-500/12` etc.) so they adapt per theme instead of staying a flat light swatch in dark mode.
+- `lucide-react` replaced hand-drawn inline SVG icons where a plain (non-brand) icon was involved: `ThemeToggle.tsx` (`Sun`/`Moon`), `Header.tsx`'s mobile menu toggle (`Menu`/`X`), `Footer.tsx`'s mail icon (`Mail`). The X/Instagram social icons in `Footer.tsx` stayed as hand-drawn brand-logo SVGs — lucide-react (v1.x, confirmed via its actual exports) doesn't ship brand/logo icons, only generic ones.
 
-**Compatibility notes:**
-- Next.js 16 (App Router) + Tailwind v4 + React 19 — use the current shadcn CLI (`npx shadcn@latest init`), which supports Tailwind v4's CSS-first config. No `tailwind.config.ts`/`.js` should be created (already forbidden by `coding-standards.md`).
-- The project already defines its own semantic color tokens via Tailwind v4 `@theme` in `src/app/globals.css` (`--color-cream`, `--color-ink`, `--color-surface`, `--color-coral-*`, `--color-teal-*`, `--color-honey-*`), plus a `:root[data-theme="dark"]` override block driven by `src/lib/ThemeContext.tsx`. shadcn's default init wants its own `--background`/`--foreground`/`--primary`/etc. tokens — these need to be **mapped onto the existing palette**, not overwritten, so the current light/dark theming keeps working.
-- `coding-standards.md` also mandates "Display user-friendly error messages via toast on the client," but no toast library exists yet — `LoginForm.tsx`/`RegisterForm.tsx` currently show inline error banners (`formError` state) instead. shadcn's `sonner`-based Toast is the natural fix for this existing gap.
-
-**Dependencies to install when the migration starts:**
-- `shadcn` — CLI (`npx shadcn@latest init`), generates `components.json` and `src/components/ui/`
-- `class-variance-authority` — variant styling (button/badge/etc. size & intent variants)
-- `clsx` + `tailwind-merge` — className merging, powers shadcn's `cn()` helper (`src/lib/utils.ts`)
-- `lucide-react` — icon set shadcn components default to; could also replace the hand-drawn inline SVG icons currently in `ThemeToggle.tsx` and elsewhere
-- `tw-animate-css` — Tailwind v4 replacement for `tailwindcss-animate` (accordion/dialog/dropdown animations)
-- `@radix-ui/react-*` — not preinstalled manually; the shadcn CLI adds only the specific Radix primitive(s) each component you pull in needs
-- Optional, worth pairing given the project already uses `zod` for validation: `react-hook-form` + `@hookform/resolvers` (shadcn's `Form` pattern), and `sonner` (toast — closes the gap noted above)
-
-**Suggested approach when picked up:** run `init`, map generated tokens onto the existing `@theme` palette instead of replacing it, migrate incrementally starting with the highest-leverage shared primitives (Button, Input, Toast) rather than a big-bang rewrite, and wire `sonner` into the existing API error-handling path (`src/lib/api.ts` / `getAuthErrorMessage`) to satisfy the toast requirement.
+**Deliberately not done in this pass** (still a real gap, tracked separately):
+- `coding-standards.md` also mandates toast-based error display, but no toast library was added — `LoginForm.tsx`/`RegisterForm.tsx` still show inline error banners (`formError` state), just restyled onto the new `--destructive` token. shadcn's `sonner`-based Toast remains the natural fix whenever that's picked up.
+- `react-hook-form` + `@hookform/resolvers` (shadcn's `Form` pattern) — forms still use plain `useState` + manual Zod `safeParse`, unchanged.
 
 ---
 
@@ -204,6 +197,14 @@ This section should be updated as soon as the Spring Boot team/repo defines real
 - Seasonal events / limited cosmetics
 - Leaderboards
 - Multi-language support (beyond English)
+
+---
+
+## 🚀 Production Readiness Notes
+
+From a 2026-08-24 audit pass (security headers, error boundaries, `/home` route protection, dead asset cleanup, dependency patch bump were fixed directly). Still open, blocked on real product/business input rather than a technical decision:
+
+- **No `metadataBase`, Open Graph/Twitter Card tags, `robots.txt`, or `sitemap.xml`** — all need a real production domain to configure correctly (OG image absolute URLs, canonical host, etc.), which doesn't exist yet since the app isn't deployed. Revisit once a domain is confirmed.
 
 ---
 

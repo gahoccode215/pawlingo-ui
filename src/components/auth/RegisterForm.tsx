@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getAuthErrorMessage } from "@/lib/auth/errors";
@@ -55,55 +59,56 @@ export default function RegisterForm() {
           <h1 className="font-display font-extrabold text-3xl mt-2">Đăng ký PawLingo</h1>
         </div>
 
-        <div className="bg-surface rounded-3xl shadow-card border border-ink/5 p-6">
+        <Card className="rounded-3xl shadow-card border-ink/5 p-6 gap-0">
           {formError && (
-            <p className="mb-4 text-sm font-semibold text-red-600 bg-red-50 rounded-xl px-3 py-2">
+            <p className="mb-4 text-sm font-semibold text-destructive bg-destructive/10 rounded-xl px-3 py-2">
               {formError}
             </p>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-ink/70 mb-1">
+              <Label htmlFor="email" className="text-sm font-semibold text-ink/70 mb-1">
                 Email
-              </label>
-              <input
+              </Label>
+              <Input
                 id="email"
                 type="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-ink/10 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral-300"
+                className="rounded-xl focus-visible:ring-coral-300"
               />
               {fieldErrors.email && (
-                <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+                <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-ink/70 mb-1">
+              <Label htmlFor="password" className="text-sm font-semibold text-ink/70 mb-1">
                 Mật khẩu
-              </label>
-              <input
+              </Label>
+              <Input
                 id="password"
                 type="password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-ink/10 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral-300"
+                className="rounded-xl focus-visible:ring-coral-300"
               />
               {fieldErrors.password && (
-                <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>
+                <p className="mt-1 text-xs text-destructive">{fieldErrors.password}</p>
               )}
             </div>
 
-            <button
+            <Button
               type="submit"
+              variant="pop"
               disabled={isSubmitting}
-              className="mt-2 bg-coral-500 hover:bg-coral-600 disabled:opacity-60 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
+              className="h-auto mt-2 text-sm px-5 py-2.5 disabled:opacity-60"
             >
               {isSubmitting ? "Đang tạo tài khoản..." : "Đăng ký"}
-            </button>
+            </Button>
           </form>
 
           <div className="flex items-center gap-3 my-5">
@@ -113,7 +118,7 @@ export default function RegisterForm() {
           </div>
 
           <GoogleSignInButton />
-        </div>
+        </Card>
 
         <p className="text-center text-sm text-ink/60 mt-5">
           Đã có tài khoản?{" "}

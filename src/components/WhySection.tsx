@@ -1,3 +1,5 @@
+import { Card } from "@/components/ui/card";
+
 const OTHER_APPS = [
   { icon: "🔥", text: `"Đừng để mất streak 47 ngày!" (thuần tuý gây tội lỗi)` },
   { icon: "🏆", text: "Bảng xếp hạng khiến người mới cảm thấy tụt lại" },
@@ -34,7 +36,7 @@ export default function WhySection() {
         </div>
 
         <div className="mt-14 grid md:grid-cols-2 gap-6">
-          <div className="rounded-3xl border border-ink/10 p-7 bg-cream/60">
+          <Card className="rounded-3xl border-ink/10 p-7 bg-cream/60 gap-0">
             <p className="font-display font-bold text-ink/50 text-sm uppercase tracking-wide mb-4">
               😰 App khác
             </p>
@@ -45,8 +47,8 @@ export default function WhySection() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="rounded-3xl border-2 border-coral-300 p-7 bg-surface relative">
+          </Card>
+          <Card className="rounded-3xl border-2 border-coral-300 p-7 bg-surface relative gap-0">
             <p className="font-display font-bold text-coral-600 text-sm uppercase tracking-wide mb-4">
               🐾 PawLingo
             </p>
@@ -57,7 +59,7 @@ export default function WhySection() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         </div>
       </div>
     </section>

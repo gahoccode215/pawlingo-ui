@@ -1,16 +1,21 @@
-# Current Feature
+# Current Feature: Remove Light/Dark Mode
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Remove the `next-themes` `ThemeProvider` wrapping in `src/app/layout.tsx` (revert to plain children, keep `color-scheme: light` as the only mode).
+- Delete `src/components/ThemeToggle.tsx` and remove its import/render from `src/components/Header.tsx`.
+- Remove `next-themes` from `package.json`/`package-lock.json`.
+- In `src/app/globals.css`: delete the `:root[data-theme="dark"]` override block, and drop the now-inapplicable "fixed, non-theme-flipping" comments in `@theme` (e.g. on `--color-charcoal`, `--color-sand-100`) since there's only one theme.
+- Sweep the rest of the diff already in the working tree (`src/components/Footer.tsx`, `Features.tsx`, `Hero.tsx`, `Personas.tsx`, `WhySection.tsx`, `HomeDashboard.tsx`, `home/page.tsx`, `login/page.tsx`, `register/page.tsx`, auth forms) for any other leftover theme-toggle-specific code/comments tied to the light/dark feature (not shadcn's standard generated `dark:` utility classes in `src/components/ui/*`, which are vendor boilerplate and out of scope unless they cause an actual bug).
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- The project previously had a fully custom theme implementation (`src/lib/ThemeContext.tsx` + `src/lib/theme.ts`, both already deleted in the working tree) that was mid-migration to `next-themes` + a shadcn/ui component set (`components.json`, `src/components/ui/*` are new/untracked). This feature request is to remove the light/dark toggle entirely, not to finish that migration — the app should end up single-theme (light/cream palette), matching the original default.
+- Note there is a large amount of unrelated uncommitted work already in the working tree (shadcn/ui migration, `src/proxy.ts`, `src/app/error.tsx`, `src/app/not-found.tsx`, docs screenshots). Do not touch or revert that unrelated work — only remove the light/dark mode feature and its directly-related dead code, per AGENTS.md "do not modify unrelated files."
 
 ## History
 

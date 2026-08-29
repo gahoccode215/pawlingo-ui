@@ -1,3 +1,5 @@
+import { Card } from "@/components/ui/card";
+
 const PERSONAS = [
   {
     icon: "🌱",
@@ -40,16 +42,13 @@ export default function Personas() {
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {PERSONAS.map((persona) => (
-            <div
-              key={persona.title}
-              className="rounded-3xl bg-cream p-6 border border-ink/5"
-            >
+            <Card key={persona.title} className="rounded-3xl bg-cream p-6 border-ink/5 gap-0">
               <div className="text-3xl mb-3">{persona.icon}</div>
               <p className="font-display font-bold">{persona.title}</p>
               <p className="mt-2 text-sm text-ink/60 leading-relaxed">
                 &ldquo;{persona.quote}&rdquo;
               </p>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

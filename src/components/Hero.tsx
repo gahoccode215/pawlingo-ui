@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
 const SKILLS = [
   { icon: "👂", label: "Nghe", level: "Lv.4", width: "70%", color: "bg-teal-400" },
   { icon: "🗣️", label: "Nói", level: "Lv.2", width: "35%", color: "bg-coral-400" },
@@ -26,12 +29,9 @@ export default function Hero() {
             Nói, Đọc, Viết. Tiến bộ thật, trưởng thành thật.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a
-              href="/register"
-              className="bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold px-7 py-3.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all"
-            >
-              Bắt đầu miễn phí 🐾
-            </a>
+            <Button asChild variant="pop" className="h-auto px-7 py-3.5">
+              <a href="/register">Bắt đầu miễn phí 🐾</a>
+            </Button>
             <a
               href="#why"
               className="font-semibold text-ink/70 hover:text-ink px-2 py-3.5 transition-colors"
@@ -43,7 +43,7 @@ export default function Hero() {
 
         {/* Pet stat card mockup */}
         <div className="relative flex justify-center md:justify-end">
-          <div className="w-full max-w-sm bg-surface rounded-3xl shadow-card p-6 border border-ink/5 relative">
+          <Card className="w-full max-w-sm rounded-3xl shadow-card p-6 border-ink/5 relative gap-0">
             <div className="flex items-center justify-between mb-1">
               <div>
                 <p className="font-display font-bold text-lg">Mochi</p>
@@ -81,7 +81,7 @@ export default function Hero() {
               💬 &ldquo;Học thêm 10 từ nữa là mình tiến hoá. Không áp lực đâu... thôi
               thì hơi áp lực một chút.&rdquo;
             </div>
-          </div>
+          </Card>
           <div className="hidden sm:block absolute -bottom-5 -left-5 bg-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-2xl shadow-pop rotate-[-6deg] animate-floatSlow">
             +12 XP hôm nay 🎉
           </div>

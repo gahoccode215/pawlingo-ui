@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
-import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { AuthProvider } from "@/lib/auth/AuthContext";
-import { ThemeProvider } from "@/lib/ThemeContext";
-import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { auth } from "@/lib/auth/next-auth";
 import "./globals.css";
 
 const baloo = Baloo_2({
@@ -26,24 +26,25 @@ export const metadata: Metadata = {
     "PawLingo là ứng dụng học tiếng Anh nơi thú cưng của bạn lớn lên nhờ tiến bộ Nghe, Nói, Đọc, Viết thực sự — không phải nhờ mua coin.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Resolved server-side (reads the session cookie) so SessionProvider never
+  // starts at "loading" — without this, Header briefly renders the logged-out
+  // Đăng nhập/Đăng ký buttons on every page load before flipping to the real
+  // user info once the client-side session fetch resolves. This opts every
+  // route out of static prerendering (all become server-rendered per
+  // request) — an accepted tradeoff to kill the auth-state flash sitewide.
+  const session = await auth();
+
   return (
-    <html
-      lang="vi"
-      className={`${baloo.variable} ${inter.variable} h-full antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="vi" className={`${baloo.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        <Script
-          id="theme-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
-        />
-        <ThemeProvider>
-          <SessionProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </SessionProvider>
-        </ThemeProvider>
+        <SessionProvider session={session}>
+          <AuthProvider>
+            <Header />
+            {children}
+            <Footer />
+          </AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );
