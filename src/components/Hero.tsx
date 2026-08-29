@@ -11,15 +11,12 @@ const SKILLS = [
 export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="absolute -top-16 -right-24 w-80 h-80 bg-honey-300/50 blob blur-2xl" />
-      <div className="absolute top-40 -left-24 w-72 h-72 bg-teal-300/40 blob blur-2xl" />
-
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 pt-14 pb-20 md:pt-20 md:pb-28 grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <span className="inline-flex items-center gap-2 bg-surface/70 border border-ink/10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-ink/70 shadow-sm">
+          <span className="inline-flex items-center gap-2 border border-ink/10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-ink/70">
             🐣 Bản dựng Tuần 1 · MVP thử nghiệm
           </span>
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-[1.08] mt-5">
+          <h1 className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.04] tracking-tight mt-5">
             Học tiếng Anh.
             <span className="block text-coral-600">Nuôi lớn thú cưng.</span>
           </h1>
@@ -43,7 +40,7 @@ export default function Hero() {
 
         {/* Pet stat card mockup */}
         <div className="relative flex justify-center md:justify-end">
-          <Card className="w-full max-w-sm rounded-3xl shadow-card p-6 border-ink/5 relative gap-0">
+          <Card className="w-full max-w-sm rounded-3xl shadow-card p-6 border-ink/10 relative gap-0">
             <div className="flex items-center justify-between mb-1">
               <div>
                 <p className="font-display font-bold text-lg">Mochi</p>

@@ -1,20 +1,21 @@
+import { Coins, Flame, Heart, PawPrint, Shirt, Sprout, TrendingDown, Trophy, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const OTHER_APPS = [
-  { icon: "🔥", text: `"Đừng để mất streak 47 ngày!" (thuần tuý gây tội lỗi)` },
-  { icon: "🏆", text: "Bảng xếp hạng khiến người mới cảm thấy tụt lại" },
-  { icon: "🪙", text: "Thú cưng/skin mua bằng coin — chỉ để trang trí" },
-  { icon: "📉", text: "XP chẳng còn ý nghĩa gì khi tắt app" },
+  { icon: Flame, text: `"Đừng để mất streak 47 ngày!" (thuần tuý gây tội lỗi)` },
+  { icon: Trophy, text: "Bảng xếp hạng khiến người mới cảm thấy tụt lại" },
+  { icon: Coins, text: "Thú cưng/skin mua bằng coin — chỉ để trang trí" },
+  { icon: TrendingDown, text: "XP chẳng còn ý nghĩa gì khi tắt app" },
 ];
 
 const PAWLINGO = [
   {
-    icon: "❤️",
+    icon: Heart,
     text: "Năng lượng thú cưng giảm khi bạn vắng mặt — vì nó nhớ bạn, không phải vì một con số",
   },
-  { icon: "📊", text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
-  { icon: "🌱", text: "Tiến hoá gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự" },
-  { icon: "🎩", text: "Coin vẫn tồn tại — nhưng chỉ để mua mũ, trang phục, không bao giờ ảnh hưởng đến tăng trưởng" },
+  { icon: PawPrint, text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
+  { icon: Sprout, text: "Tiến hoá gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự" },
+  { icon: Shirt, text: "Coin vẫn tồn tại — nhưng chỉ để mua mũ, trang phục, không bao giờ ảnh hưởng đến tăng trưởng" },
 ];
 
 export default function WhySection() {
@@ -25,7 +26,7 @@ export default function WhySection() {
           <span className="text-sm font-bold text-coral-600 uppercase tracking-wide">
             Vấn đề
           </span>
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2">
+          <h2 className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight mt-2">
             Streak khiến bạn tội lỗi. Bảng xếp hạng khiến bạn căng thẳng.
           </h2>
           <p className="mt-4 text-ink/60 text-lg">
@@ -36,26 +37,28 @@ export default function WhySection() {
         </div>
 
         <div className="mt-14 grid md:grid-cols-2 gap-6">
-          <Card className="rounded-3xl border-ink/10 p-7 bg-cream/60 gap-0">
-            <p className="font-display font-bold text-ink/50 text-sm uppercase tracking-wide mb-4">
-              😰 App khác
+          <Card className="rounded-3xl border-ink/10 p-7 bg-surface gap-0">
+            <p className="font-display font-bold text-ink/50 text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
+              <X className="size-4" /> App khác
             </p>
             <ul className="space-y-3 text-ink/60">
               {OTHER_APPS.map((item) => (
                 <li key={item.text} className="flex gap-3">
-                  <span>{item.icon}</span> {item.text}
+                  <item.icon className="size-4 shrink-0 mt-0.5 text-ink/40" />
+                  {item.text}
                 </li>
               ))}
             </ul>
           </Card>
-          <Card className="rounded-3xl border-2 border-coral-300 p-7 bg-surface relative gap-0">
-            <p className="font-display font-bold text-coral-600 text-sm uppercase tracking-wide mb-4">
-              🐾 PawLingo
+          <Card className="rounded-3xl border border-coral-300 p-7 bg-surface relative gap-0">
+            <p className="font-display font-bold text-coral-600 text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
+              <PawPrint className="size-4" /> PawLingo
             </p>
             <ul className="space-y-3 text-ink/80">
               {PAWLINGO.map((item) => (
                 <li key={item.text} className="flex gap-3">
-                  <span>{item.icon}</span> {item.text}
+                  <item.icon className="size-4 shrink-0 mt-0.5 text-coral-500" />
+                  {item.text}
                 </li>
               ))}
             </ul>

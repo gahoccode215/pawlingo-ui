@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #fff8ee;
-  --color-ink: #3a2e2c;
-  --color-surface: #ffffff;
-  --color-charcoal: #3a2e2c;
+  /* Minimal neutral base (Salix-inspired redesign, 2026-08-29) — near-white
+     page background, near-black neutral text, barely-off-white card surface.
+     Coral remains the one restrained brand accent; teal/honey stay defined
+     for the Hero pet-card's informative skill bars/XP badge only, not for
+     decorative chrome. */
+  --color-cream: #ffffff;
+  --color-ink: #171717;
+  --color-surface: #fafafa;
+  --color-charcoal: #171717;
 
   --color-coral-50: #fff1ec;
   --color-coral-100: #ffe1d6;
@@ -26,11 +31,10 @@
   --color-honey-400: #ffcf57;
   --color-honey-500: #f7b733;
 
-  /* Neutral pastel for tile/badge backgrounds that need to read as a soft
-     "chip" against the card. Named "sand" rather than "slate" to avoid
-     colliding with Tailwind's built-in slate scale, since only one step is
-     defined here. */
-  --color-sand-100: #e7e2da;
+  /* Neutral chip background for tile/badge fills. Named "sand" rather than
+     "slate" to avoid colliding with Tailwind's built-in slate scale, since
+     only one step is defined here. */
+  --color-sand-100: #f4f4f5;
 
   /* shadcn/ui semantic tokens, mapped onto the palette above rather than
      replacing it — shadcn primitives (Button, Card, Input, Badge, ...) pick
@@ -59,8 +63,14 @@
   --font-display: var(--font-baloo), ui-rounded, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 10px 30px -12px rgba(58, 46, 44, 0.18);
-  --shadow-pop: 0 6px 0 0 rgba(0, 0, 0, 0.12);
+  /* Flatter, neutral-tinted card shadow — thin-border-first look, shadow only
+     for a subtle lift rather than the old warm heavy drop shadow. */
+  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.1);
+  /* Soft coral-tinted glow (replaces the old hard Duolingo-style offset
+     shadow) — sits behind the solid-ink "pop" button on hover, echoing
+     Salix's glow-under-button CTA treatment while keeping coral as PawLingo's
+     one accent color. */
+  --shadow-pop: 0 10px 30px -8px color-mix(in srgb, var(--color-coral-500) 55%, transparent);
 
   --animate-float: float 5s ease-in-out infinite;
   --animate-floatSlow: floatSlow 4s ease-in-out infinite;
@@ -108,10 +118,6 @@ select,
 textarea {
   color: var(--color-ink);
   background-color: transparent;
-}
-
-.blob {
-  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
 }
 
 .bar-fill {

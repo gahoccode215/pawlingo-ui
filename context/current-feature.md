@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: Landing Page Redesign — Salix-Inspired Minimal UI
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Visual-only overhaul of the landing page components — `Header.tsx`, `Hero.tsx`, `WhySection.tsx`, `Features.tsx`, `Personas.tsx`, `Footer.tsx` — same sections, same Vietnamese copy/value proposition, no new sections and no content rewrite.
+- New neutral, minimal color system in `globals.css`: near-white background / near-black text / white card surface (replacing the current warm cream/coral/teal/honey look). Keep exactly one restrained accent color (coral-500, PawLingo's existing brand color) for links/CTAs/small highlights only. Drop teal/honey/pastel usage from decorative chrome (icon tiles, blob shapes, misc badges) — the one place multi-color stays is the Hero pet-card's Nghe/Nói/Đọc/Viết skill bars, since that color-coding is informative, not decorative.
+- Remove the blurred decorative "blob" background shapes from Hero; favor clean whitespace like the reference site.
+- Header: restyle the nav into a Salix-style floating rounded/pill container instead of the current full-width sticky bar.
+- Buttons: black/ink solid pill CTA with a soft glow shadow on hover (replacing the current bold hard-drop-shadow coral "pop" style). Update the shared `pop` variant in `src/components/ui/button.tsx` (or add a new variant) so it's consistent everywhere that variant is already used — note this is a shared primitive, so the visual change reaches beyond just the landing page (see Notes).
+- Reduce decorative/redundant emoji: replace list-item emoji bullets (WhySection's two comparison lists, Personas card icons, Features icon tiles) with `lucide-react` icons in minimal monochrome tiles. Keep the 🐶 pet mascot in the Hero stat-card mockup — it's core product identity, not decoration.
+- Typography: bolder/larger/tighter-tracked headlines matching the reference's scale. Keep the existing Baloo 2 (display) / Inter (body) font pairing — no new fonts.
+- Cards: flatten the current heavy `shadow-card` drop-shadow toward the reference's flatter, thin-border look — evaluate per component rather than a blanket swap.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Reference materials: `docs/landing_page_1._ref.png` (Salix header + hero), `docs/landing_page_2_ref.png` (Salix footer), `docs/landing_page_3_ref.png` (Salix feature section with dashboard-style mockup), plus a live crawl of `https://salix.framer.website/` (2026-08-29): nav = Product/Pricing/Login + black "Get This Template" pill CTA; hero = centered badge pill → big centered headline → centered subtext → centered black CTA pill → "No Credit Card Required" caption (single-column, not split like PawLingo's current 2-col hero); further down: logo/stats cloud, a 3-card feature intro, an "AI that moves sales forward" section pairing text with a dashboard screenshot, a 6-card core-features grid, testimonials, pricing, FAQ, a final CTA, and the footer.
+- **Explicit user decision (brand-identity-level change, confirmed after asking):** go for a *full* minimal black/white redesign — not just borrowing layout patterns while keeping the current bright coral/teal/honey palette. Also explicitly OK reducing (not eliminating) emoji/mascot use: the Hero pet mascot stays since it's the core product hook; decorative emoji elsewhere gets trimmed/replaced with icons.
+- **Explicit user decision:** do NOT add Salix's Logo cloud / Testimonials / Pricing / FAQ sections — PawLingo has no paid tiers, real customer logos, or testimonials yet, so adding them would misrepresent the product at this stage. Scope is restyle-only across the 5 existing landing components (+ the shared UI primitives they depend on).
+- Out of scope: any non-landing-page UI (`/vocabularies`, `/me/vocabularies`, `/home` dashboard, login/register forms) keeps its current styling this pass — the request was specifically about the public landing page. Flagging that `Button`'s shared `pop` variant is also used on those other pages/forms, so restyling it will visibly affect them too as a side effect of reusing the shared primitive, even though this feature isn't targeting them.
+- Salix's hero is single-column/centered; PawLingo's current hero is 2-column (copy left, pet-stat-card mockup right). This feature restyles within the existing 2-column structure rather than restructuring to single-column, per "restyle only, no new sections/structure" scope — flag if the user actually wants the layout restructured too, not just reskinned.
 
 ## History
 

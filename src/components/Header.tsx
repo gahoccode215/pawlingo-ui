@@ -48,8 +48,8 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-background/85 backdrop-blur border-b border-border">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+    <header className="sticky top-4 z-50 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto bg-surface/90 backdrop-blur border border-ink/10 rounded-full shadow-sm h-14 grid grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:px-6">
         {/* Logo (left) */}
         <a
           href={'/'}
@@ -120,7 +120,7 @@ export default function Header() {
       {isMenuOpen && (
         <div
           id="mobile-menu"
-          className="lg:hidden border-t border-border bg-background px-5 sm:px-8 py-4 space-y-1"
+          className="lg:hidden max-w-5xl mx-auto mt-2 bg-surface border border-ink/10 rounded-3xl shadow-sm px-5 sm:px-6 py-4 space-y-1"
         >
           {NAV_LINKS.map((link) => (
             <Link

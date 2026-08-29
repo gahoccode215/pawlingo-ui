@@ -19,10 +19,11 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        // PawLingo's signature CTA look — solid pill, bold offset shadow,
-        // and a bounce-down on click. Used for every primary call-to-action
+        // PawLingo's signature CTA look — solid ink pill with a soft coral
+        // glow that appears on hover, echoing the reference site's
+        // glow-under-button treatment. Used for every primary call-to-action
         // instead of the flat `default` variant.
-        pop: "rounded-full bg-primary text-primary-foreground font-display font-semibold shadow-pop hover:bg-primary/90 active:translate-y-0.5 active:shadow-none",
+        pop: "rounded-full bg-ink text-cream font-display font-semibold hover:bg-ink/90 hover:shadow-pop hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
