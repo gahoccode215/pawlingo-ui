@@ -1,16 +1,40 @@
-# Current Feature
+# Current Feature: Login/Register Redesign + Page-Transition & Button-Radius Fixes
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+### 1. Redesign `LoginForm.tsx` / `RegisterForm.tsx` UI (reference: `docs/login_page_ref.png`, `docs/sign_up_ref.png`)
+- Move `GoogleSignInButton` above the email/password fields (before the "hoặc" divider), matching the reference's Google-first layout — currently it's below the form.
+- Add a show/hide toggle (eye icon, `lucide-react`) on the password `Input` in both forms.
+- Register form: add `First name`/`Last name` text inputs (side-by-side, matching the reference) — **per explicit user decision, these are UI-only**: local component state, NOT part of `registerSchema`, NOT sent to the `register()` call — the backend only accepts `{email, password}`. Do not silently pretend this data is saved.
+- Register form: add an "Tôi đồng ý với Điều khoản dịch vụ" checkbox matching the reference — **per explicit user decision, static/non-blocking**: doesn't gate submission, "Điều khoản dịch vụ" renders as plain text (not a `Link`, since no such page exists yet — avoid a dead link).
+- Login form: add a "Quên mật khẩu?" affordance matching the reference — **per explicit user decision, static/non-functional with a visible note** (e.g. "sắp ra mắt") since there's no password-reset backend endpoint — render as a disabled-looking element, not a real link to nowhere (`href="#"`).
+- Consider upgrading the bottom "Chưa có tài khoản? Đăng ký" / "Đã có tài khoản? Đăng nhập" line into a full-width secondary pill button matching the reference's "Create Free Account" treatment (currently a plain inline text link).
+- Submit button and Card already match the reference's black-pill/minimal-card look from the prior landing-page redesign — confirm visually, no structural change expected there.
+
+### 2. Page-transition smoothness — safe techniques only (no `experimental.viewTransition`, per explicit user decision)
+- Add `src/app/login/loading.tsx` and `src/app/register/loading.tsx` (Next.js route-level Suspense fallback) so navigating to these routes shows immediate skeleton/feedback instead of a blank wait — likely the main lever here, since `src/app/layout.tsx` does `await auth()` on **every** route (a prior, deliberate tradeoff documented in that file's own comment) which forces full per-request server rendering, so every navigation pays a server round-trip before anything paints.
+- Confirm `next/link` prefetching isn't disabled anywhere relevant (default is on).
+- Do NOT change the root layout's `await auth()` session-fetch-on-every-route behavior — that was an intentional prior decision (kills an auth-state flash sitewide), out of scope to revisit here; `loading.tsx` is the mitigation instead.
+
+### 3. Investigate and fix the button-corner-radius flash (Header/Login/Register CTA buttons briefly show `rounded-md`-ish square corners before settling into `rounded-full`)
+- Root-cause finding so far: `src/lib/utils.ts`'s `cn()` already uses `twMerge(clsx(inputs))`, which *should* deterministically resolve the `rounded-md` (in `buttonVariants`'s shared base string) vs `rounded-full` (in the `pop` variant string) conflict on every render — so this isn't an obviously broken merge.
+- Leading hypothesis: `next dev`'s on-demand/Turbopack per-route compilation causing a real but **dev-only** flash on the first (cold) navigation to a not-yet-compiled route. Verify against a production build (`npm run build && npm run start`) before concluding it's a real production bug.
+- Regardless of root cause, apply a defensive fix: stop relying on merge-time override for radius — remove the shared `rounded-md` from `buttonVariants`'s base class string and have every variant (`default`/`destructive`/`outline`/`secondary`/`ghost`/`link`/`pop`) declare its own explicit radius, so there's never a conflicting base radius for `twMerge` (or a browser) to momentarily resolve.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Reference images: `docs/login_page_ref.png`, `docs/sign_up_ref.png` — a "Framebite" template screenshot (same general aesthetic family as the Salix landing-page redesign already completed: black pill buttons, minimal borders, Google-first auth).
+- **Explicit user decisions from clarifying questions:**
+  1. First/Last name fields: add to UI, but do not send to backend (data entered is not persisted — accepted tradeoff).
+  2. "Forgot password?" + Terms & Conditions checkbox: add as static/non-functional UI with a visible note, rather than omitting them or faking functionality.
+  3. Page-transition optimization: safe techniques only (`loading.tsx` + existing CSS transitions) — explicitly declined `experimental.viewTransition` (Next.js experimental/unstable feature).
+- Backend reality check (per `docs/backend-contract.md`): register/login only accept `{ email, password }`; no password-reset endpoint exists yet; no user-facing Terms & Conditions page exists yet.
+- This session already redesigned the landing page + shared `Button`/`Card`/color-token primitives to this same minimal black/white aesthetic (2026-08-29) — login/register should already inherit most of that (card shadow, coral accent, `pop` button) automatically; this feature layers the *additional* reference-specific UI elements (Google-first ordering, password toggle, name fields, forgot-password/terms affordances) on top.
+- **Post-implementation follow-up (user-driven, several iterations):** the radius-flash bug persisted after the original goal-3 fix, and the user also flagged real layout issues (nav text shifting during /login↔/register navigation, then visible crowding/overlap between the last nav link and the auth buttons — confirmed via an annotated screenshot). Root cause of the radius flash was actually `buttonVariants`'s `transition-all` animating `border-radius` when `Header`'s Đăng nhập/Đăng ký `<Link>`s swap className on a *persistent* DOM node (not the originally-suspected dev-only Turbopack compile flash) — fixed definitively with a `key` that changes with the active state, forcing React to remount a fresh node instead of patching classes in place. The layout issues led to restructuring `Header.tsx` three times based on direct feedback: grid `[1fr_auto_1fr]` → flex `justify-between` + absolutely-centered nav (fixed the text-shift) → finally splitting each of Logo/Nav/Auth into three fully independent floating elements with their own backgrounds (previously all three shared one big pill, which visually nested the auth area's coral frame inside another frame). Auth link markup/state was also extracted from `Header.tsx` into a new `src/components/HeaderAuthActions.tsx` per explicit user request to keep it structurally separate from the nav links, not just visually.
 
 ## History
 

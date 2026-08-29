@@ -3,24 +3,8 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth/AuthContext";
-import { cn } from "@/lib/utils";
-
-const AUTH_LINK_ACTIVE = cn(
-  buttonVariants({ variant: "pop" }),
-  "h-auto text-sm px-4 sm:px-5 py-2.5 whitespace-nowrap",
-);
-const AUTH_LINK_INACTIVE =
-  "hidden sm:inline-block text-sm font-semibold text-foreground/70 hover:text-foreground px-3 py-2 transition-colors";
-
-const AUTH_LINK_ACTIVE_MOBILE = cn(
-  buttonVariants({ variant: "pop" }),
-  "h-auto w-full text-center text-sm px-4 py-2.5",
-);
-const AUTH_LINK_INACTIVE_MOBILE =
-  "text-center px-4 py-2.5 rounded-full text-sm font-semibold text-foreground/70 hover:bg-surface transition-colors";
+import { Button } from "@/components/ui/button";
+import HeaderAuthActions from "./HeaderAuthActions";
 
 const NAV_LINKS = [
   { href: "#why", label: "Vì sao PawLingo" },
@@ -31,26 +15,16 @@ const NAV_LINKS = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout } = useAuth();
-  // Register is the prominent CTA everywhere except the login page itself,
-  // where the two swap so whichever page you're on is the highlighted one.
-  const isLoginActive = pathname === "/login";
 
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
-  async function handleLogout() {
-    await logout();
-    router.push("/");
-  }
-
   return (
     <header className="sticky top-4 z-50 px-4 sm:px-6">
-      <div className="max-w-5xl mx-auto bg-surface/90 backdrop-blur border border-ink/10 rounded-full shadow-sm h-14 grid grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:px-6">
-        {/* Logo (left) */}
+      <div className="relative max-w-6xl mx-auto flex items-center justify-between gap-4 h-14">
+        {/* Logo — its own standalone element, pinned left, no shared
+            background with nav/auth. */}
         <a
           href={'/'}
           className="flex items-center gap-2 font-display font-bold text-lg text-foreground shrink-0"
@@ -58,55 +32,37 @@ export default function Header() {
           <span className="text-2xl">🐾</span> PawLingo
         </a>
 
-        {/* Main menu (center) */}
-        <nav className="hidden lg:flex items-center justify-center gap-8 text-sm font-semibold text-foreground/70">
+        {/* Main menu — its own floating pill, absolutely centered on the
+            header independent of logo/auth width, so it never shifts when
+            they resize. Previously the whole header (logo+nav+auth) shared
+            one big pill background, which visually nested the auth "frame"
+            below inside another frame — each area now has its own distinct
+            background instead. */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-foreground/70 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-surface/90 backdrop-blur border border-ink/10 rounded-full shadow-sm px-6 py-3">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-coral-600 transition-colors"
+              className="hover:text-coral-600 transition-colors whitespace-nowrap"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        {/* Login / Register (right) */}
-        <div className="flex items-center justify-end gap-1 sm:gap-3">
-          {user ? (
-            <>
-              <Link
-                href="/home"
-                className="hidden sm:inline-block truncate max-w-[180px] text-sm font-semibold text-foreground/70 hover:text-foreground px-3 py-2 transition-colors"
-              >
-                {user.email}
-              </Link>
-              <button type="button" onClick={handleLogout} className={AUTH_LINK_ACTIVE}>
-                Đăng xuất
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className={isLoginActive ? AUTH_LINK_ACTIVE : AUTH_LINK_INACTIVE}
-              >
-                Đăng nhập
-              </Link>
-              <Link
-                href="/register"
-                className={isLoginActive ? AUTH_LINK_INACTIVE : AUTH_LINK_ACTIVE}
-              >
-                Đăng ký miễn phí
-              </Link>
-            </>
-          )}
+        {/* Login / Register — its own standalone element, pinned right, with
+            its own coral-tinted pill frame (not nested inside a shared
+            header background) so it reads as a clearly separate widget. */}
+        <div className="flex items-center justify-end gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-1 sm:bg-coral-500/[0.07] sm:border sm:border-coral-500/20 sm:rounded-full sm:p-1 sm:hover:bg-coral-500/[0.12] transition-colors">
+            <HeaderAuthActions />
+          </div>
           <Button
             type="button"
             variant="ghost"
             size="icon"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="lg:hidden ml-1 rounded-full"
+            className="lg:hidden ml-1 rounded-full bg-surface/90 backdrop-blur border border-ink/10 shadow-sm"
             aria-label="Mở/đóng menu"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
@@ -134,44 +90,7 @@ export default function Header() {
           ))}
 
           <div className="pt-2 mt-2 border-t border-border flex flex-col gap-2">
-            {user ? (
-              <>
-                <Link
-                  href="/home"
-                  onClick={closeMenu}
-                  className={`truncate ${AUTH_LINK_INACTIVE_MOBILE}`}
-                >
-                  {user.email}
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    closeMenu();
-                    handleLogout();
-                  }}
-                  className={AUTH_LINK_ACTIVE_MOBILE}
-                >
-                  Đăng xuất
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  onClick={closeMenu}
-                  className={isLoginActive ? AUTH_LINK_ACTIVE_MOBILE : AUTH_LINK_INACTIVE_MOBILE}
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={closeMenu}
-                  className={isLoginActive ? AUTH_LINK_INACTIVE_MOBILE : AUTH_LINK_ACTIVE_MOBILE}
-                >
-                  Đăng ký miễn phí
-                </Link>
-              </>
-            )}
+            <HeaderAuthActions variant="mobile" onNavigate={closeMenu} />
           </div>
         </div>
       )}
