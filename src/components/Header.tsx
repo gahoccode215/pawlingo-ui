@@ -25,6 +25,8 @@ const AUTH_LINK_INACTIVE_MOBILE =
 const NAV_LINKS = [
   { href: "#why", label: "Vì sao PawLingo" },
   { href: "#for-you", label: "Dành cho bạn" },
+  { href: "/vocabularies", label: "Từ vựng" },
+  { href: "/me/vocabularies", label: "Từ vựng của tôi" },
 ];
 
 export default function Header() {
@@ -59,13 +61,13 @@ export default function Header() {
         {/* Main menu (center) */}
         <nav className="hidden lg:flex items-center justify-center gap-8 text-sm font-semibold text-foreground/70">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="hover:text-coral-600 transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -121,14 +123,14 @@ export default function Header() {
           className="lg:hidden border-t border-border bg-background px-5 sm:px-8 py-4 space-y-1"
         >
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={closeMenu}
               className="block px-2 py-2.5 rounded-lg text-sm font-semibold text-foreground/70 hover:bg-surface hover:text-coral-600 transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
 
           <div className="pt-2 mt-2 border-t border-border flex flex-col gap-2">

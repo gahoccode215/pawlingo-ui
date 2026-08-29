@@ -1,16 +1,36 @@
-# Current Feature
+# Current Feature: Vocabulary FE Spec 01 — Mock-First UI
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+- Service layer (`vocabularyService.ts` or similar) is the **only** data-access point — components never touch mock data directly.
+- A single `config.ts`/env flag (`USE_MOCK`) controls mock vs real; flipping it to `false` must require no component changes, only swapping the service implementation to real `fetch`/axios calls against `/api/v1/...`.
+- Mock service implements all 6 functions matching the real API contract exactly (names, params, response shapes, error envelope `{ status, code, message }`):
+  - `listVocabularies(params)` → `GET /vocabularies` (q/difficultyLevel/partOfSpeech/page/size/sort, prefix-match case-insensitive, `q` < 2 chars → 400)
+  - `getVocabularyDetail(id)` → `GET /vocabularies/{id}` (404 if not found)
+  - `addToMyVocabulary(wordId)` → `POST /users/me/vocabularies` (idempotent: re-adding returns existing record, no duplicate)
+  - `removeFromMyVocabulary(wordId)` → `DELETE /users/me/vocabularies/{wordId}` (404 if not saved)
+  - `setFavorite(wordId, isFavorite)` → `PATCH .../favorite` (implicit-creates `UserVocabulary` as `NEW` if it doesn't exist yet)
+  - `listMyVocabularies(params)` → `GET /users/me/vocabularies` (isFavorite?/status?/page/size, nested `word`)
+- Mock data: 40–60 seeded words matching `WordSummaryResponse`/`WordDetailResponse` shape, including required edge cases: one `audioUrl: null` (hide play button), one with 0 examples (empty state), one with `difficultyLevel: null` (show "Chưa xác định", no crash), and "book" seeded twice (NOUN + VERB, two separate rows).
+- Mock user vocabulary: in-memory array, fixed `userId = "mock-user-1"`, resets on refresh (documented as acceptable for this phase).
+- Mock service simulates network latency (300–600ms delay) and controllable errors (e.g. `?__mockError=404` or a dev-tool toggle) so loading/error UI states are actually exercised, not just the happy path.
+- **Vocabulary List** (`/vocabularies`): debounced search (~400ms), disabled submit + hint at `q.length === 1`, difficulty/part-of-speech filters (combinable with search), card/row list (word, phonetic, difficulty badge, POS badge, truncated meaning), pagination from `meta`, loading/empty/error/data states, click-through to detail.
+- **Vocabulary Detail** (`/vocabularies/:id`): word/phonetic/POS/difficulty/meaning, examples sorted by `orderIndex`, conditional Play-audio button, Add/Remove toggle (optimistic UI, add→"Đã lưu", remove clears favorite too since the record is gone), Favorite toggle (works even before Add — implicitly creates the record and flips the Add button state too), loading/not-found(404)/error+rollback states.
+- **My Vocabulary** (`/me/vocabularies`): `isFavorite` toggle filter, `status` dropdown filter (UI only — always `NEW` this phase), nested word display + inline Remove action, pagination, dedicated empty state with CTA back to list.
+- Short mock README: how to toggle `USE_MOCK`, seed more data, simulate errors — plus a manual test checklist in the PR (idempotent add, implicit favorite-create, remove-clears-favorite, search < 2 chars, combined filters, pagination, null audio, empty examples).
+- **Added 2026-08-29 (post-review scope addition, user request):** `/home` dashboard gets a real "Học từ vựng" section (replacing the "SẮP RA MẮT" placeholder pet card) with quick links into `/vocabularies` and `/me/vocabularies`, plus a topic grid (education/travel/holiday/work/daily-life/food) linking into `/vocabularies?topic=...`. Requires adding a `topic` field to the Word model and a `topic` filter to `listVocabularies`/`VocabularyFilters`.
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Spec source: `context/features/vocab-fe-spec-01-mock.md` (written in Vietnamese; goals above are an English summary, UI copy itself should stay Vietnamese per the rest of the app).
+- **Backend reality check (important):** the real vocabulary API this spec was designed to eventually swap to is **already live**, not pending. `../pawlingo-api` shipped the exact matching spec (`context/features/01-vocabulary-foundation.md` = "BE Spec 01") on 2026-08-24, verified end-to-end with live HTTP smoke tests against the real dev DB — all 6 endpoints match this FE spec's service-layer table exactly (same params, same idempotent/implicit-create/hard-delete behavior rules, same error codes `WORD_NOT_FOUND`/`VOCABULARY_NOT_FOUND`). `pawlingo-ui/docs/backend-contract.md` doesn't reflect this yet (only documents auth) — needs a follow-up update once this feature or a real-API integration pass touches it.
+- User was asked mock-first vs. direct real-API integration given the above, and explicitly chose to proceed **mock-first as originally specced**. Do not shortcut to real API calls.
+- Out of scope (per spec §6, matches BE spec's out-of-scope list): SRS/quiz/gamification, admin Word CRUD UI, editing `status` via UI, content i18n.
+- Context: the previous `/vocabulary` browse/detail integration (built 2026-08-23) was deleted 2026-08-24 during the auth refactor, specifically ahead of this backend rebuild — this is a fresh build, not a restoration.
 
 ## History
 
