@@ -11,7 +11,7 @@ const OTHER_APPS = [
 const PAWLINGO = [
   {
     icon: Heart,
-    text: "Năng lượng thú cưng giảm khi bạn vắng mặt — vì nó nhớ bạn, không phải vì một con số",
+    text: "Streak, XP vẫn có — nhưng chỉ là điểm cộng vui vẻ. Năng lượng thú cưng mới là thứ thật sự quan trọng, vì nó nhớ bạn, không phải vì một con số",
   },
   { icon: PawPrint, text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
   { icon: Sprout, text: "Tiến hoá gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự" },

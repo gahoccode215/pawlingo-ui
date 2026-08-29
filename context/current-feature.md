@@ -1,16 +1,45 @@
-# Current Feature
+# Current Feature: Rebuild /home Dashboard
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What does success look like for this feature? -->
+Rebuild `HomeDashboard.tsx` (`/home`) into a richer, sidebar-based dashboard, inspired by `docs/home_dashboard_ref.png` (a real dashboard screenshot, "Hanbeego" — a Chinese-learning app), scoped down to what's honest for PawLingo's actual backend/product state. **A second reference image appeared mid-feature and materially changed scope from the original load** — see decisions below, all made explicitly by the user when asked.
+
+### Layout
+- `/home`'s own content becomes a two-column layout: a **left sidebar** (nav specific to the logged-in learning area) + main content column — built *inside* `HomeDashboard.tsx`, not a site-wide route-group restructure. The global floating `<Header>`/`<Footer>` (used by every other route) stay as-is; this is a scoped, page-local layout addition, not a site-wide nav paradigm change.
+- Sidebar items — mix of real working links and clearly-marked unavailable features (per user decision: add some as "SẮP RA MẮT" placeholders rather than omitting or faking them):
+  - Real: "Từ vựng" (→ `/vocabularies`), "Từ vựng của tôi" (→ `/me/vocabularies`)
+  - Placeholder/disabled with a "SẮP RA MẮT" badge (pick a relevant subset, not a 1:1 copy of the reference's full list): "Bảng xếp hạng", "Bạn bè", "Trò chơi", "Cài đặt"
+
+### Main content column
+1. **Top stats row** (small tiles, replacing the plain welcome line) — mix real + demo data, be honest about which is which internally (comments), don't need a user-facing "this is fake" label since the user explicitly approved this tradeoff:
+   - "Mục tiêu" — **real**, from `user.goal` (already returned by `/auth/me`, currently unused on this page)
+   - "Streak" — **demo/static** (e.g. "0 ngày", framed encouragingly, no loss-aversion/guilt copy — per explicit user decision to add despite no backend, keep tone consistent with the product's stated non-guilt philosophy)
+   - "Điểm kinh nghiệm (XP)" — **derived, not fabricated**: computed from the real saved-word count (e.g. `count * 10`), framed as XP
+   - "Từ đã lưu" / "Yêu thích" — **real**, from `vocabularyService.listMyVocabularies()`
+2. **"Tiếp tục học" card** — recently-saved words preview (3–5, sorted by `createdAt` desc, already how the mock returns them), each linking to its detail page; empty state for users with nothing saved yet. (Same as originally planned before the second reference appeared.)
+3. **Quick actions** — keep existing "Khám phá từ vựng" / "Từ vựng của tôi" link cards.
+4. **Explore by topic** — keep existing topic grid (mock-only `topic` field, already flagged elsewhere).
+5. **Pet/gamification placeholder** — keep the existing "SẮP RA MẮT" card.
+
+### WhySection.tsx copy — small, targeted edit
+- Adding a streak/XP indicator sits in tension with the existing "PawLingo" comparison bullet ("năng lượng thú cưng ... không phải vì một con số"). Per explicit user decision (chose to add streak/XP and acknowledged copy would need fixing): lightly qualify that one bullet to acknowledge streak/XP exist but aren't the pressure point — do NOT do a full rewrite, and do NOT touch the "other apps" bad-pattern bullets (those criticize *guilt-tripping*/*public-ranking* mechanics specifically, which this implementation avoids — no loss-aversion streak copy, no live public leaderboard, just a disabled nav placeholder).
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Two references now: `docs/login_page_ref.png` (style-only, login screen — see original load notes) and `docs/home_dashboard_ref.png` (a real, detailed dashboard screenshot that arrived *after* the original goals were written and changed scope significantly).
+- **Explicit user decisions, asked because the reference directly conflicts with PawLingo's stated brand positioning:**
+  1. Streak/XP: add as static/demo UI despite no backend, accepting the tension with existing marketing copy and asking Claude to lightly adjust `WhySection.tsx` rather than leave it self-contradictory.
+  2. Layout: yes, give `/home` its own left-sidebar structure (scoped to this page, not a site-wide nav change — confirmed via the "keep global Header, add page-local sidebar" framing above since a full site-wide route-group restructure wasn't what was asked).
+  3. Pro upgrade / partners-sponsors / friends / games / bilingual stories: do NOT build real functionality; add a relevant subset as "SẮP RA MẮT" placeholders rather than 1:1 copying every item from the reference.
+- Explicitly NOT building: a real/live public leaderboard (would directly contradict `WhySection.tsx`'s stated differentiator — only a disabled nav placeholder), Pro/paywall content (no paid tiers exist), partner/sponsor content (fabricated business relationships), friends/social features, games, bilingual stories (different content type, not this product's scope).
+- All real-data sections still read from the existing mock `vocabularyService` (`src/lib/vocabulary/service.ts`) — numbers are mock-store-scoped (reset on reload), same caveat as the rest of the mock-vocabulary phase.
+- Reuse existing patterns (card styles, loading/error/empty state conventions from `VocabularyBrowser.tsx`/`MyVocabularyBrowser.tsx`) rather than inventing new ones.
+- **Deviation from the "keep global Header/Footer" plan above, per direct follow-up feedback**: the user explicitly said `/home` still looked wrong with the site's floating Header/Footer showing around the new sidebar layout and asked for a real dedicated layout. Added `src/components/SiteChrome.tsx` (client wrapper using `usePathname()` to skip rendering `<Header>`/`<Footer>` for `/home*` routes, used from `layout.tsx` instead of rendering them inline) and `HomeTopBar.tsx` (a minimal `/home`-only top bar — logo + logout button — replacing the two things the site Header provided there). This was a smaller, more surgical fix than a full route-group restructure (no existing routes were moved).
+- **Explicitly left "In Progress" from the user's perspective** — completed/merged now per explicit request ("complete tạm, sau này chỉnh sửa thêm") so work isn't lost, but the user has more changes in mind for this dashboard; expect a follow-up feature load continuing on `/home`/sidebar/stats work rather than treating this as a finished, signed-off design.
 
 ## History
 

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import SiteChrome from "@/components/SiteChrome";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { auth } from "@/lib/auth/next-auth";
 import "./globals.css";
@@ -40,9 +39,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-cream text-ink">
         <SessionProvider session={session}>
           <AuthProvider>
-            <Header />
-            {children}
-            <Footer />
+            <SiteChrome>{children}</SiteChrome>
           </AuthProvider>
         </SessionProvider>
       </body>
