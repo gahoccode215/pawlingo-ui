@@ -1,13 +1,14 @@
-import { BookOpen, Mic, PawPrint, TrendingUp } from "lucide-react";
+import { BookOpen, GraduationCap, Mic, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 const FEATURES = [
   {
-    icon: PawPrint,
-    title: "Hệ thống thú cưng",
+    icon: GraduationCap,
+    title: "Luyện thi IELTS",
     description:
-      "Chỉ số cho Nghe, Nói, Đọc và Viết. Bỏ luyện tập thì năng lượng âm thầm giảm — không xấu hổ, chỉ là một lời nhắc quay lại.",
+      "4 kỹ năng Nghe, Nói, Đọc, Viết bám sát format đề thi thật — đúng dạng bài, đúng áp lực thời gian.",
+    badge: "SẮP RA MẮT",
   },
   {
     icon: BookOpen,
@@ -38,7 +39,7 @@ export default function Features() {
           Bạn nhận được gì
         </span>
         <h2 className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight mt-2">
-          Xoay quanh một vòng lặp: học, và xem chúng lớn lên.
+          Xoay quanh một vòng lặp duy nhất: luyện tập, và thấy kỹ năng tiến bộ thật.
         </h2>
       </div>
 

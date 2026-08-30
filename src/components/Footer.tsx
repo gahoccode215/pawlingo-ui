@@ -28,8 +28,8 @@ export default function Footer() {
               <span className="text-2xl">🐾</span> PawLingo
             </a>
             <p className="mt-3 text-sm leading-relaxed max-w-xs">
-              Học tiếng Anh, nuôi lớn một thú cưng mà sự trưởng thành phản ánh đúng tiến
-              bộ thật của bạn — không phải ví tiền.
+              Học tiếng Anh một cách thật sự — Từ vựng, IELTS, luyện nói cùng AI — với tiến
+              bộ được đo bằng kỹ năng thật, không phải ví tiền.
             </p>
             <div className="flex items-center gap-2 mt-5">
               <a

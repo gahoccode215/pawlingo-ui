@@ -18,12 +18,12 @@ export default function Hero() {
           </span>
           <h1 className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.04] tracking-tight mt-5">
             Học tiếng Anh.
-            <span className="block text-coral-600">Nuôi lớn thú cưng.</span>
+            <span className="block text-coral-600">Tiến bộ thật, đo được.</span>
           </h1>
           <p className="mt-5 text-lg text-ink/70 max-w-md leading-relaxed">
-            Thú cưng của bạn không lên cấp vì bạn mua coin cho nó. Nó lên cấp vì{" "}
-            <span className="font-semibold text-ink">bạn thực sự luyện tập</span> — Nghe,
-            Nói, Đọc, Viết. Tiến bộ thật, trưởng thành thật.
+            Không phải vì bạn mua coin, đổi skin, hay giữ streak. Bạn tiến bộ vì{" "}
+            <span className="font-semibold text-ink">bạn thực sự luyện tập</span> — Từ
+            vựng, 4 kỹ năng IELTS, và nói chuyện cùng AI. Tiến bộ thật, đo được thật.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild variant="pop" className="h-auto px-7 py-3.5">
@@ -43,8 +43,8 @@ export default function Hero() {
           <Card className="w-full max-w-sm rounded-3xl shadow-card p-6 border-ink/10 relative gap-0">
             <div className="flex items-center justify-between mb-1">
               <div>
-                <p className="font-display font-bold text-lg">Mochi</p>
-                <p className="text-xs text-ink/50 font-medium">Giai đoạn 2 · Cún tò mò</p>
+                <p className="font-display font-bold text-lg">Tiến độ của bạn</p>
+                <p className="text-xs text-ink/50 font-medium">Tuần này</p>
               </div>
               <span className="bg-honey-100 text-honey-500 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
                 ⚡ 82%
@@ -52,7 +52,7 @@ export default function Hero() {
             </div>
 
             <div className="flex justify-center my-5">
-              <div className="text-8xl animate-float select-none">🐶</div>
+              <div className="text-8xl animate-float select-none">🎯</div>
             </div>
 
             <div className="space-y-3">
@@ -75,8 +75,8 @@ export default function Hero() {
             </div>
 
             <div className="mt-5 bg-cream rounded-xl px-3.5 py-2.5 text-xs text-ink/60 font-medium flex items-center gap-2">
-              💬 &ldquo;Học thêm 10 từ nữa là mình tiến hoá. Không áp lực đâu... thôi
-              thì hơi áp lực một chút.&rdquo;
+              💬 &ldquo;Hoàn thành 3 bài luyện nói nữa để lên trình độ tiếp theo. Không
+              áp lực đâu... thôi thì hơi áp lực một chút.&rdquo;
             </div>
           </Card>
           <div className="hidden sm:block absolute -bottom-5 -left-5 bg-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-2xl shadow-pop rotate-[-6deg] animate-floatSlow">

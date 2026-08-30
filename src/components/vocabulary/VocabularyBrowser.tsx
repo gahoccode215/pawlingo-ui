@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { getVocabularyErrorMessage, isVocabularyServiceError } from "@/lib/vocabulary/errors";
+import { cn } from "@/lib/utils";
 import { vocabularyService } from "@/lib/vocabulary/service";
 import type {
   DifficultyLevel,
@@ -192,7 +194,7 @@ export default function VocabularyBrowser() {
             <button
               type="button"
               onClick={() => setRetryToken((token) => token + 1)}
-              className="mt-5 bg-coral-500 hover:bg-coral-600 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-full shadow-pop active:translate-y-0.5 active:shadow-none transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2"
+              className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-5 px-5 py-2.5")}
             >
               Thử lại
             </button>

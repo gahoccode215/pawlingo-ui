@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookMarked, Flame, Heart, Sparkles, Target } from "lucide-react";
+import { BookMarked, CheckCircle2, type LucideIcon, Sparkles } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import DifficultyBadge from "@/components/vocabulary/DifficultyBadge";
 import { getVocabularyErrorMessage, isVocabularyServiceError } from "@/lib/vocabulary/errors";
 import { PART_OF_SPEECH_LABELS } from "@/lib/vocabulary/labels";
 import { vocabularyService } from "@/lib/vocabulary/service";
+import { cn } from "@/lib/utils";
 import type { Goal } from "@/types/auth";
 import type { UserVocabularyResponse } from "@/types/vocabulary";
 
-const GOAL_LABELS: Record<Goal, string> = {
+export const GOAL_LABELS: Record<Goal, string> = {
   beginner: "Người mới bắt đầu",
   "test-prep": "Luyện thi",
   professional: "Đi làm",
@@ -20,10 +22,17 @@ const GOAL_LABELS: Record<Goal, string> = {
 const RECENT_PREVIEW_SIZE = 5;
 
 type Outcome =
-  | { status: "success"; totalSaved: number; totalFavorited: number; recent: UserVocabularyResponse[] }
+  | {
+      status: "success";
+      totalSaved: number;
+      totalLearning: number;
+      totalMastered: number;
+      continueTarget: UserVocabularyResponse | null;
+      recent: UserVocabularyResponse[];
+    }
   | { status: "error"; message: string };
 
-export default function HomeLearningOverview({ goal }: { goal: Goal }) {
+export default function HomeLearningOverview() {
   const [retryToken, setRetryToken] = useState(0);
   const [result, setResult] = useState<{ key: number; outcome: Outcome } | null>(null);
 
@@ -32,17 +41,20 @@ export default function HomeLearningOverview({ goal }: { goal: Goal }) {
     const key = retryToken;
 
     Promise.all([
+      vocabularyService.listMyVocabularies({ status: "LEARNING", size: 1 }),
       vocabularyService.listMyVocabularies({ size: RECENT_PREVIEW_SIZE }),
-      vocabularyService.listMyVocabularies({ isFavorite: true, size: 1 }),
+      vocabularyService.listMyVocabularies({ status: "MASTERED", size: 1 }),
     ])
-      .then(([recentPage, favoritedPage]) => {
+      .then(([learningPage, recentPage, masteredPage]) => {
         if (ignore) return;
         setResult({
           key,
           outcome: {
             status: "success",
             totalSaved: recentPage.meta.totalElements,
-            totalFavorited: favoritedPage.meta.totalElements,
+            totalLearning: learningPage.meta.totalElements,
+            totalMastered: masteredPage.meta.totalElements,
+            continueTarget: learningPage.data[0] ?? recentPage.data[0] ?? null,
             recent: recentPage.data,
           },
         });
@@ -60,66 +72,111 @@ export default function HomeLearningOverview({ goal }: { goal: Goal }) {
 
   const isLoading = result === null || result.key !== retryToken;
   const outcome = isLoading ? null : result.outcome;
-  const totalSaved = outcome?.status === "success" ? outcome.totalSaved : null;
-  const totalFavorited = outcome?.status === "success" ? outcome.totalFavorited : null;
-  // A playful but honest derivation from the real saved-word count (10 XP
-  // per word) — not a fabricated/random number, just a gamified framing of
-  // real data. Streak has no backend yet, so it's the one purely static tile.
-  const xp = totalSaved !== null ? totalSaved * 10 : null;
+
+  if (outcome?.status === "error") {
+    return (
+      <div className="rounded-3xl bg-surface border border-ink/10 p-6 text-center">
+        <p className="text-sm text-ink/60">{outcome.message}</p>
+        <button
+          type="button"
+          onClick={() => setRetryToken((token) => token + 1)}
+          className="mt-3 text-sm font-semibold text-coral-600 hover:underline"
+        >
+          Thử lại
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <StatTile icon={Target} label="Mục tiêu" value={GOAL_LABELS[goal]} />
-        <StatTile icon={Flame} label="Streak" value="0 ngày" />
-        <StatTile icon={Sparkles} label="Điểm KN" value={xp === null ? "…" : xp} />
-        <StatTile icon={BookMarked} label="Từ đã lưu" value={totalSaved === null ? "…" : totalSaved} />
-        <StatTile icon={Heart} label="Yêu thích" value={totalFavorited === null ? "…" : totalFavorited} />
-      </div>
-
-      <div className="mt-6 bg-surface rounded-3xl shadow-card border border-ink/10 p-6">
+    <div className="space-y-8">
+      <div>
         <h2 className="font-display font-bold text-lg">Tiếp tục học</h2>
 
-        {isLoading && (
-          <div className="mt-4 space-y-2">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="h-14 rounded-xl bg-ink/5 animate-pulse" />
-            ))}
-          </div>
-        )}
+        {isLoading && <div className="mt-3 h-24 rounded-3xl bg-ink/5 animate-pulse" />}
 
-        {outcome?.status === "error" && (
-          <div className="mt-4 text-center py-6">
-            <p className="text-sm text-ink/60">{outcome.message}</p>
-            <button
-              type="button"
-              onClick={() => setRetryToken((token) => token + 1)}
-              className="mt-3 text-sm font-semibold text-coral-600 hover:underline"
-            >
-              Thử lại
-            </button>
-          </div>
-        )}
-
-        {outcome?.status === "success" && outcome.recent.length === 0 && (
-          <div className="mt-4 text-center py-6">
-            <p className="text-sm text-ink/60">Bạn chưa lưu từ nào.</p>
+        {outcome?.status === "success" && outcome.continueTarget && (
+          <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-3xl bg-surface border border-ink/10 p-6">
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-2 min-w-0">
+                <p className="font-display font-bold text-xl truncate">
+                  {outcome.continueTarget.word?.word ?? outcome.continueTarget.wordId}
+                </p>
+                {outcome.continueTarget.word && (
+                  <DifficultyBadge difficultyLevel={outcome.continueTarget.word.difficultyLevel} />
+                )}
+              </div>
+              {outcome.continueTarget.word?.primaryMeaning && (
+                <p className="mt-1 text-sm text-ink/50 truncate">
+                  {outcome.continueTarget.word.primaryMeaning}
+                </p>
+              )}
+            </div>
             <Link
-              href="/vocabularies"
-              className="mt-3 inline-block text-sm font-semibold text-coral-600 hover:underline"
+              href={`/vocabularies/${outcome.continueTarget.wordId}?back=${encodeURIComponent("/home")}`}
+              className={cn(buttonVariants({ variant: "pop" }), "h-auto px-6 py-3 shrink-0")}
             >
-              Khám phá từ vựng →
+              {outcome.continueTarget.status === "LEARNING" ? "Tiếp tục" : "Bắt đầu"} →
             </Link>
           </div>
         )}
 
+        {outcome?.status === "success" && !outcome.continueTarget && (
+          <div className="mt-3 rounded-3xl bg-surface border border-ink/10 p-6 text-center">
+            <p className="text-sm text-ink/60">Bạn chưa lưu từ nào để học.</p>
+            <Link
+              href="/vocabularies"
+              className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-3 inline-flex px-6 py-3")}
+            >
+              Khám phá từ vựng
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="font-display font-bold text-lg">Tiến độ của bạn</h2>
+        <div className="mt-3 grid grid-cols-3 gap-3">
+          <StatTile
+            icon={BookMarked}
+            label="Đã lưu"
+            value={outcome?.status === "success" ? outcome.totalSaved : "…"}
+          />
+          <StatTile
+            icon={Sparkles}
+            label="Đang học"
+            value={outcome?.status === "success" ? outcome.totalLearning : "…"}
+          />
+          <StatTile
+            icon={CheckCircle2}
+            label="Đã thành thạo"
+            value={outcome?.status === "success" ? outcome.totalMastered : "…"}
+          />
+        </div>
+      </div>
+
+      <div>
+        <h2 className="font-display font-bold text-lg">Hoạt động gần đây</h2>
+
+        {isLoading && (
+          <div className="mt-3 space-y-2">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="h-12 rounded-xl bg-ink/5 animate-pulse" />
+            ))}
+          </div>
+        )}
+
+        {outcome?.status === "success" && outcome.recent.length === 0 && (
+          <p className="mt-3 text-sm text-ink/50">Chưa có hoạt động nào gần đây.</p>
+        )}
+
         {outcome?.status === "success" && outcome.recent.length > 0 && (
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-3 divide-y divide-ink/5">
             {outcome.recent.map((item) => (
               <li key={item.id}>
                 <Link
                   href={`/vocabularies/${item.wordId}?back=${encodeURIComponent("/home")}`}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-cream transition-colors"
+                  className="flex items-center gap-3 rounded-lg px-2 -mx-2 py-2.5 hover:bg-surface transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
@@ -152,7 +209,7 @@ function StatTile({
   label,
   value,
 }: {
-  icon: typeof Flame;
+  icon: LucideIcon;
   label: string;
   value: string | number;
 }) {

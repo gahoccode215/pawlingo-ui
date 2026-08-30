@@ -1,21 +1,27 @@
-import { Coins, Flame, Heart, PawPrint, Shirt, Sprout, TrendingDown, Trophy, X } from "lucide-react";
+import { Coins, Flame, Heart, Lock, Mic, PawPrint, Sprout, TrendingDown, Trophy, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const OTHER_APPS = [
   { icon: Flame, text: `"Đừng để mất streak 47 ngày!" (thuần tuý gây tội lỗi)` },
   { icon: Trophy, text: "Bảng xếp hạng khiến người mới cảm thấy tụt lại" },
-  { icon: Coins, text: "Thú cưng/skin mua bằng coin — chỉ để trang trí" },
+  { icon: Coins, text: "Vật phẩm/skin mua bằng coin — chỉ để trang trí" },
   { icon: TrendingDown, text: "XP chẳng còn ý nghĩa gì khi tắt app" },
 ];
 
 const PAWLINGO = [
   {
     icon: Heart,
-    text: "Streak, XP vẫn có — nhưng chỉ là điểm cộng vui vẻ. Năng lượng thú cưng mới là thứ thật sự quan trọng, vì nó nhớ bạn, không phải vì một con số",
+    text: "Streak, XP vẫn có — nhưng chỉ là điểm cộng vui vẻ. Tiến bộ kỹ năng thật của bạn — Nghe, Nói, Đọc, Viết — mới là thứ được đo, không phải một con số ngày liên tiếp",
   },
-  { icon: PawPrint, text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
-  { icon: Sprout, text: "Tiến hoá gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự" },
-  { icon: Shirt, text: "Coin vẫn tồn tại — nhưng chỉ để mua mũ, trang phục, không bao giờ ảnh hưởng đến tăng trưởng" },
+  { icon: Lock, text: "Bảng tiến độ riêng tư, không phải bảng xếp hạng công khai" },
+  {
+    icon: Sprout,
+    text: "Tiến bộ của bạn gắn liền với kỹ năng Nghe/Nói/Đọc/Viết thật sự, không phải với những con số ảo",
+  },
+  {
+    icon: Mic,
+    text: "AI chấm điểm phát âm cho bạn phản hồi cụ thể từng buổi luyện nói, không chỉ đúng/sai",
+  },
 ];
 
 export default function WhySection() {
@@ -31,8 +37,8 @@ export default function WhySection() {
           </h2>
           <p className="mt-4 text-ink/60 text-lg">
             Hầu hết các app tạo động lực bằng những con số khiến bạn lo lắng lại từ đầu mỗi
-            sáng. Chúng tôi tin bạn sẽ quay lại vì thứ bạn thực sự quan tâm — như một chú
-            thú cưng đang trông chờ vào bạn.
+            sáng. Chúng tôi tin bạn sẽ quay lại vì thấy được tiến bộ thật của chính mình —
+            từng kỹ năng, từng buổi luyện tập.
           </p>
         </div>
 

@@ -4,12 +4,19 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { TOPIC_ICONS, TOPIC_LABELS, TOPIC_LIST } from "@/lib/vocabulary/labels";
-import HomeLearningOverview from "./HomeLearningOverview";
+import HomeLearningOverview, { GOAL_LABELS } from "./HomeLearningOverview";
 import HomeSidebar from "./HomeSidebar";
 import HomeTopBar from "./HomeTopBar";
+
+const IELTS_SKILLS = ["Nghe", "Đọc", "Viết", "Nói"];
+
+const PRIMARY_VOCAB_PILL =
+  "inline-flex items-center gap-1.5 rounded-full border border-coral-300 bg-coral-50 px-3.5 py-2 text-sm font-semibold text-coral-600 hover:bg-coral-100 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2";
+
+const TOPIC_PILL =
+  "inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-surface px-3.5 py-2 text-sm font-semibold text-ink/70 hover:border-coral-300 hover:text-coral-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2";
 
 export default function HomeDashboard() {
   const { user, status } = useAuth();
@@ -38,72 +45,80 @@ export default function HomeDashboard() {
             Chào mừng trở lại
           </p>
           <h1 className="font-display font-extrabold text-3xl mt-2 break-all">{user.email}</h1>
+          <p className="mt-1 text-sm text-ink/50">Mục tiêu học: {GOAL_LABELS[user.goal]}</p>
 
           <div className="mt-8">
-            <HomeLearningOverview goal={user.goal} />
+            <HomeLearningOverview />
           </div>
 
-          <section className="mt-10">
-            <h2 className="font-display font-bold text-xl">Học từ vựng</h2>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <section className="mt-12">
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="font-display font-bold text-xl">Từ vựng</h2>
               <Link
                 href="/vocabularies"
-                className="bg-surface rounded-3xl shadow-card border border-ink/5 p-6 hover:border-coral-300 hover:-translate-y-1 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2"
+                className="text-sm font-semibold text-coral-600 hover:underline shrink-0"
               >
-                <div className="text-3xl" aria-hidden="true">
-                  📖
-                </div>
-                <p className="font-display font-bold text-lg mt-2">Khám phá từ vựng</p>
-                <p className="mt-1 text-sm text-ink/50">
-                  Tìm kiếm và lọc theo cấp độ, loại từ, chủ đề.
-                </p>
-              </Link>
-
-              <Link
-                href="/me/vocabularies"
-                className="bg-surface rounded-3xl shadow-card border border-ink/5 p-6 hover:border-coral-300 hover:-translate-y-1 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2"
-              >
-                <div className="text-3xl" aria-hidden="true">
-                  ❤️
-                </div>
-                <p className="font-display font-bold text-lg mt-2">Từ vựng của tôi</p>
-                <p className="mt-1 text-sm text-ink/50">Xem lại các từ bạn đã lưu và yêu thích.</p>
+                Xem tất cả →
               </Link>
             </div>
-          </section>
-
-          <section className="mt-10">
-            <h2 className="font-display font-bold text-xl">Khám phá theo chủ đề</h2>
-            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <p className="mt-1 text-sm text-ink/50">
+              Khám phá theo chủ đề hoặc xem lại những từ bạn đã lưu.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/vocabularies" className={PRIMARY_VOCAB_PILL}>
+                📖 Khám phá từ vựng
+              </Link>
+              <Link href="/me/vocabularies" className={PRIMARY_VOCAB_PILL}>
+                ❤️ Từ vựng của tôi
+              </Link>
               {TOPIC_LIST.map((topic) => (
-                <Link
-                  key={topic}
-                  href={`/vocabularies?topic=${topic}`}
-                  className="bg-surface rounded-2xl shadow-card border border-ink/5 p-4 text-center hover:border-coral-300 hover:-translate-y-1 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2"
-                >
-                  <div className="text-2xl" aria-hidden="true">
-                    {TOPIC_ICONS[topic]}
-                  </div>
-                  <p className="mt-1.5 text-sm font-semibold">{TOPIC_LABELS[topic]}</p>
+                <Link key={topic} href={`/vocabularies?topic=${topic}`} className={TOPIC_PILL}>
+                  {TOPIC_ICONS[topic]} {TOPIC_LABELS[topic]}
                 </Link>
               ))}
             </div>
           </section>
 
-          <div className="mt-10 max-w-md">
-            <Card className="rounded-3xl shadow-card border-ink/5 p-6 gap-0 relative text-center">
-              <Badge className="absolute top-4 right-4 bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
+          <section className="mt-12">
+            <div className="flex items-center gap-2">
+              <h2 className="font-display font-bold text-xl">IELTS</h2>
+              <Badge className="bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
                 SẮP RA MẮT
               </Badge>
-              <div className="flex justify-center my-4">
-                <div className="text-7xl animate-float select-none">🐶</div>
-              </div>
-              <p className="font-display font-bold text-lg">Thú cưng của bạn</p>
-              <p className="mt-1 text-sm text-ink/50">
-                Chỉ số Nghe/Nói/Đọc/Viết và quá trình tiến hoá sẽ sớm xuất hiện ở đây.
-              </p>
-            </Card>
-          </div>
+            </div>
+            <p className="mt-1 text-sm text-ink/50">
+              4 kỹ năng Nghe, Đọc, Viết, Nói bám sát format đề thi thật.
+            </p>
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {IELTS_SKILLS.map((skill) => (
+                <div
+                  key={skill}
+                  className="rounded-xl border border-dashed border-ink/15 px-4 py-3 text-center text-sm font-semibold text-ink/35"
+                  aria-disabled="true"
+                >
+                  {skill}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-12 mb-4">
+            <div className="flex items-center gap-2">
+              <h2 className="font-display font-bold text-xl">Luyện nói cùng AI</h2>
+              <Badge className="bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
+                SẮP RA MẮT
+              </Badge>
+            </div>
+            <p className="mt-1 text-sm text-ink/50">
+              AI chấm điểm phát âm và phản hồi chi tiết từng buổi luyện nói.
+            </p>
+            <div
+              className="mt-4 rounded-xl border border-dashed border-ink/15 px-4 py-6 text-center text-sm font-semibold text-ink/35"
+              aria-disabled="true"
+            >
+              Sắp ra mắt — quay lại sau nhé
+            </div>
+          </section>
         </div>
       </div>
     </div>

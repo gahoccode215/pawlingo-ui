@@ -20,9 +20,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PawLingo — Học tiếng Anh, nuôi lớn thú cưng",
+  title: "PawLingo — Học tiếng Anh, luyện thi IELTS, nói chuẩn cùng AI",
   description:
-    "PawLingo là ứng dụng học tiếng Anh nơi thú cưng của bạn lớn lên nhờ tiến bộ Nghe, Nói, Đọc, Viết thực sự — không phải nhờ mua coin.",
+    "PawLingo giúp bạn học từ vựng, luyện 4 kỹ năng IELTS và luyện nói cùng AI — tiến bộ được đo bằng kỹ năng thật, không phải streak hay số ngày liên tiếp.",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

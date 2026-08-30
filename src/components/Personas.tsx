@@ -18,13 +18,13 @@ const PERSONAS = [
     icon: Briefcase,
     title: "Người đi làm",
     quote:
-      "Thú cưng dễ thương thật, nhưng tôi cần đo lường kỹ năng thực sự. App này không hề trẻ con.",
+      "Giao diện thân thiện thật, nhưng tôi cần đo lường kỹ năng thực sự. App này không hề trẻ con.",
   },
   {
     icon: Target,
     title: "Người luyện thi",
     quote:
-      "Bộ từ vựng có cấu trúc và mục tiêu rõ ràng — chỉ số thú cưng gần như là một kế hoạch học tập.",
+      "Bộ từ vựng có cấu trúc và lộ trình IELTS rõ ràng — đúng thứ mình cần để luyện thi có kế hoạch.",
   },
 ];
 
