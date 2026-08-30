@@ -30,11 +30,10 @@ export default function HomeDashboard() {
   return (
     <div className="min-h-screen">
       <HomeTopBar />
+      <HomeSidebar />
 
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 grid lg:grid-cols-[220px_1fr] gap-8">
-        <HomeSidebar />
-
-        <div>
+      <div className="lg:pl-[220px]">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10">
           <p className="text-sm font-bold text-coral-600 uppercase tracking-wide">
             Chào mừng trở lại
           </p>
