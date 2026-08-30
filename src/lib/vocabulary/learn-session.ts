@@ -1,4 +1,9 @@
-import type { DifficultyLevel, VocabularyTopic, WordSummaryResponse } from "@/types/vocabulary";
+import type {
+  DifficultyLevel,
+  VocabularyTopic,
+  WordDetailResponse,
+  WordSummaryResponse,
+} from "@/types/vocabulary";
 import { vocabularyService } from "./service";
 
 export const SESSION_TARGET_SIZE = 6;
@@ -15,7 +20,9 @@ const POOL_FETCH_SIZE = 20;
 const SAVED_LOOKUP_SIZE = 100;
 
 export interface SessionWord {
-  word: WordSummaryResponse;
+  // Full detail, not just a summary — Presentation and Context stages need
+  // `examples`/`audioUrl`, which `listVocabularies` doesn't return.
+  word: WordDetailResponse;
   distractors: WordSummaryResponse[];
 }
 
@@ -52,7 +59,7 @@ export function pickDistractors(
   return shuffle(source).slice(0, count);
 }
 
-export function buildSessionWords(words: WordSummaryResponse[], distractorPool: WordSummaryResponse[]): SessionWord[] {
+export function buildSessionWords(words: WordDetailResponse[], distractorPool: WordSummaryResponse[]): SessionWord[] {
   return words.map((word) => ({
     word,
     distractors: pickDistractors(word, distractorPool),
@@ -72,9 +79,13 @@ export async function buildLearnSession(filters: LearnSessionFilters): Promise<S
   ]);
 
   const savedWordIds = new Set(saved.data.map((record) => record.wordId));
-  const sessionWords = selectUnsavedWords(pool.data, savedWordIds);
+  const sessionSummaries = selectUnsavedWords(pool.data, savedWordIds);
 
-  if (sessionWords.length < SESSION_MIN_SIZE) return null;
+  if (sessionSummaries.length < SESSION_MIN_SIZE) return null;
 
-  return buildSessionWords(sessionWords, pool.data);
+  const sessionDetails = await Promise.all(
+    sessionSummaries.map((summary) => vocabularyService.getVocabularyDetail(summary.id)),
+  );
+
+  return buildSessionWords(sessionDetails, pool.data);
 }
