@@ -65,6 +65,9 @@ export default function HomeDashboard() {
               Khám phá theo chủ đề hoặc xem lại những từ bạn đã lưu.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/vocabularies/learn" className={PRIMARY_VOCAB_PILL}>
+                🎯 Học từ mới
+              </Link>
               <Link href="/vocabularies" className={PRIMARY_VOCAB_PILL}>
                 📖 Khám phá từ vựng
               </Link>

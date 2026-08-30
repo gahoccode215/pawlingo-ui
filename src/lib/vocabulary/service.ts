@@ -3,6 +3,7 @@ import type {
   ListVocabulariesParams,
   PaginatedResponse,
   UserVocabularyResponse,
+  VocabularyStatus,
   WordDetailResponse,
   WordSummaryResponse,
 } from "@/types/vocabulary";
@@ -15,6 +16,7 @@ export interface VocabularyService {
   addToMyVocabulary(wordId: string): Promise<UserVocabularyResponse>;
   removeFromMyVocabulary(wordId: string): Promise<void>;
   setFavorite(wordId: string, isFavorite: boolean): Promise<UserVocabularyResponse>;
+  setStatus(wordId: string, status: VocabularyStatus): Promise<UserVocabularyResponse>;
   listMyVocabularies(params?: ListMyVocabulariesParams): Promise<PaginatedResponse<UserVocabularyResponse>>;
 }
 
@@ -32,6 +34,7 @@ const realVocabularyService: VocabularyService = {
   addToMyVocabulary: realServiceUnavailable,
   removeFromMyVocabulary: realServiceUnavailable,
   setFavorite: realServiceUnavailable,
+  setStatus: realServiceUnavailable,
   listMyVocabularies: realServiceUnavailable,
 };
 

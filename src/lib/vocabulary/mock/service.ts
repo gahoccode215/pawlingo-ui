@@ -210,6 +210,30 @@ async function setFavorite(wordId: string, isFavorite: boolean): Promise<UserVoc
   return { ...record };
 }
 
+async function setStatus(wordId: string, status: VocabularyStatus): Promise<UserVocabularyResponse> {
+  await delay();
+  throwForcedErrorIfRequested();
+
+  if (!findWord(wordId)) rejectWith(404, "WORD_NOT_FOUND", "Không tìm thấy từ vựng này.");
+
+  const existing = findRecord(wordId);
+  if (existing) {
+    existing.status = status;
+    return { ...existing };
+  }
+
+  const record: UserVocabularyRecord = {
+    id: createRecordId(),
+    userId: MOCK_USER_ID,
+    wordId,
+    isFavorite: false,
+    status,
+    createdAt: new Date().toISOString(),
+  };
+  userVocabularies.push(record);
+  return { ...record };
+}
+
 async function listMyVocabularies(
   params: ListMyVocabulariesParams = {},
 ): Promise<PaginatedResponse<UserVocabularyResponse>> {
@@ -237,5 +261,6 @@ export const mockVocabularyService = {
   addToMyVocabulary,
   removeFromMyVocabulary,
   setFavorite,
+  setStatus,
   listMyVocabularies,
 };
