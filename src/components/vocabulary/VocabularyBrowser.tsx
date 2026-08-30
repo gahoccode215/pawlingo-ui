@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -151,6 +152,12 @@ export default function VocabularyBrowser() {
   const hasActiveFilters =
     Boolean(urlSearch) || difficultyLevel !== "all" || partOfSpeech !== "all" || topic !== "all";
 
+  // Learn Session only understands topic + difficultyLevel (not q/partOfSpeech).
+  const learnParams = new URLSearchParams();
+  if (topic !== "all") learnParams.set("topic", topic);
+  if (difficultyLevel !== "all") learnParams.set("difficultyLevel", difficultyLevel);
+  const learnHref = learnParams.toString() ? `/vocabularies/learn?${learnParams.toString()}` : "/vocabularies/learn";
+
   function clearFilters() {
     setSearchInput("");
     router.replace(pathname, { scroll: false });
@@ -173,6 +180,15 @@ export default function VocabularyBrowser() {
           topic={topic}
           onTopicChange={(value) => updateParams({ topic: value }, true)}
         />
+      </div>
+
+      <div className="mt-4">
+        <Link
+          href={learnHref}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-coral-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2 rounded"
+        >
+          🎯 Học từ mới theo bộ lọc này
+        </Link>
       </div>
 
       <div className="mt-8">
