@@ -2,7 +2,7 @@
 
 ## Project
 
-PawLingo is an English vocabulary learning application.
+PawLingo is an English learning application.
 
 ## Stack
 

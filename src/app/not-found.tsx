@@ -11,7 +11,7 @@ export default function NotFound() {
         <p className="mt-3 text-ink/60">
           Trang bạn tìm không tồn tại, hoặc đã bị di chuyển đi nơi khác.
         </p>
-        <Button asChild variant="pop" className="h-auto mt-6 px-6 py-3">
+        <Button asChild variant="pop" size="custom" className="h-auto mt-6 px-6 py-3">
           <Link href="/">Về trang chủ 🐾</Link>
         </Button>
       </div>

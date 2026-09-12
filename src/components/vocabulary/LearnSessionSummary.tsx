@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { vocabularyService } from "@/lib/vocabulary/service";
 import type { LearnSessionWordResult } from "./LearnSession";
 
@@ -19,7 +18,7 @@ type SaveState = "saving" | "done" | "error";
 // next to a primary `pop` button (e.g. VocabularyDetail.tsx's "Đã lưu — Xóa"),
 // not shadcn's default `outline` variant, which is squared and off-brand here.
 const SECONDARY_PILL =
-  "bg-surface border border-ink/10 hover:border-coral-300 font-display font-semibold text-sm rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2";
+  "bg-surface border border-ink/10 hover:border-coral-300 font-display font-semibold text-sm rounded-full py-3 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2";
 
 export default function LearnSessionSummary({ results, onLearnMore, homeHref = "/home" }: LearnSessionSummaryProps) {
   const [saveState, setSaveState] = useState<SaveState>("saving");
@@ -83,14 +82,16 @@ export default function LearnSessionSummary({ results, onLearnMore, homeHref = "
       )}
 
       <div className="mt-8 flex flex-col gap-3">
-        <button
+        <Button
           type="button"
+          variant="pop"
+          size="custom"
           onClick={onLearnMore}
-          className={cn(buttonVariants({ variant: "pop" }), "h-auto w-full py-3")}
+          className="h-auto w-full px-4 py-3"
         >
           Học thêm
-        </button>
-        <Link href={homeHref} className={cn(SECONDARY_PILL, "py-3")}>
+        </Button>
+        <Link href={homeHref} className={SECONDARY_PILL}>
           Về trang chủ
         </Link>
       </div>

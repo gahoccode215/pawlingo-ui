@@ -47,10 +47,10 @@ export default function Features() {
         {FEATURES.map((feature) => (
           <Card
             key={feature.title}
-            className="rounded-3xl border-ink/10 p-6 gap-0 hover:-translate-y-1.5 transition-transform relative"
+            className="rounded-3xl border-ink/10 bg-card p-6 gap-0 shadow-sm hover:-translate-y-1.5 transition-transform relative"
           >
             {feature.badge && (
-              <Badge className="absolute top-4 right-4 bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
+              <Badge variant="highlight" className="absolute top-4 right-4">
                 {feature.badge}
               </Badge>
             )}

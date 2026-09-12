@@ -43,7 +43,7 @@ export default function Personas() {
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {PERSONAS.map((persona) => (
-            <Card key={persona.title} className="rounded-3xl bg-cream p-6 border-ink/10 gap-0">
+            <Card key={persona.title} className="rounded-3xl bg-cream p-6 border-ink/10 gap-0 shadow-sm">
               <div className="w-11 h-11 rounded-xl bg-ink/5 flex items-center justify-center mb-3">
                 <persona.icon className="size-5 text-ink" />
               </div>

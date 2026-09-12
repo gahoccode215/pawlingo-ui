@@ -1,6 +1,7 @@
 import type { ApiEnvelope, ApiErrorCode } from "@/types/auth";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8080";
+// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8080";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "https://pawlingo-api.onrender.com";
 const API_BASE_URL = `${BACKEND_URL}/api/v1`;
 
 // AuthContext listens for this to sign out and redirect to /login.

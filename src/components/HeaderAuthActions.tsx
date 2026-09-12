@@ -2,21 +2,14 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { cn } from "@/lib/utils";
 
-const AUTH_LINK_ACTIVE = cn(
-  buttonVariants({ variant: "pop" }),
-  "h-auto text-sm px-4 sm:px-5 py-2.5 whitespace-nowrap",
-);
+const AUTH_LINK_ACTIVE = "h-auto px-4 sm:px-5 py-2.5";
 const AUTH_LINK_INACTIVE =
   "hidden sm:inline-block text-sm font-semibold text-foreground/70 hover:text-foreground px-3 py-2 transition-colors";
 
-const AUTH_LINK_ACTIVE_MOBILE = cn(
-  buttonVariants({ variant: "pop" }),
-  "h-auto w-full text-center text-sm px-4 py-2.5",
-);
+const AUTH_LINK_ACTIVE_MOBILE = "h-auto w-full px-4 py-2.5 text-center";
 const AUTH_LINK_INACTIVE_MOBILE =
   "text-center px-4 py-2.5 rounded-full text-sm font-semibold text-foreground/70 hover:bg-surface transition-colors";
 
@@ -61,9 +54,9 @@ export default function HeaderAuthActions({
         >
           {user.email}
         </Link>
-        <button type="button" onClick={handleLogout} className={activeClass}>
+        <Button type="button" variant="pop" size="custom" onClick={handleLogout} className={activeClass}>
           Đăng xuất
-        </button>
+        </Button>
       </>
     );
   }
@@ -75,22 +68,24 @@ export default function HeaderAuthActions({
           never plays a CSS transition (no "before" state to animate from),
           which is what previously caused a visible square-to-pill radius
           flash when swapping between the plain-text and pill-button styles. */}
-      <Link
-        key={isLoginActive ? "login-active" : "login-inactive"}
-        href="/login"
-        onClick={onNavigate}
-        className={isLoginActive ? activeClass : inactiveClass}
-      >
-        Đăng nhập
-      </Link>
-      <Link
-        key={isLoginActive ? "register-inactive" : "register-active"}
-        href="/register"
-        onClick={onNavigate}
-        className={isLoginActive ? inactiveClass : activeClass}
-      >
-        Đăng ký miễn phí
-      </Link>
+      {isLoginActive ? (
+        <Button key="login-active" asChild variant="pop" size="custom" className={activeClass}>
+          <Link href="/login" onClick={onNavigate}>Đăng nhập</Link>
+        </Button>
+      ) : (
+        <Link key="login-inactive" href="/login" onClick={onNavigate} className={inactiveClass}>
+          Đăng nhập
+        </Link>
+      )}
+      {isLoginActive ? (
+        <Link key="register-inactive" href="/register" onClick={onNavigate} className={inactiveClass}>
+          Đăng ký miễn phí
+        </Link>
+      ) : (
+        <Button key="register-active" asChild variant="pop" size="custom" className={activeClass}>
+          <Link href="/register" onClick={onNavigate}>Đăng ký miễn phí</Link>
+        </Button>
+      )}
     </>
   );
 }

@@ -67,7 +67,7 @@ export default function RegisterForm() {
           <h1 className="font-display font-extrabold text-3xl mt-2">Đăng ký PawLingo</h1>
         </div>
 
-        <Card className="rounded-3xl shadow-card border-ink/10 p-6 gap-0">
+        <Card className="rounded-3xl bg-card shadow-card border-ink/10 p-6 gap-0">
           {formError && (
             <p className="mb-4 text-sm font-semibold text-destructive bg-destructive/10 rounded-xl px-3 py-2">
               {formError}
@@ -172,6 +172,7 @@ export default function RegisterForm() {
             <Button
               type="submit"
               variant="pop"
+              size="custom"
               disabled={isSubmitting}
               className="h-auto mt-2 text-sm px-5 py-2.5 disabled:opacity-60"
             >
@@ -182,7 +183,8 @@ export default function RegisterForm() {
 
         <Button
           asChild
-          variant="outline"
+          variant="outline-pill"
+          size="custom"
           className="w-full mt-4 rounded-full h-auto text-sm px-5 py-2.5 border-ink/15"
         >
           <Link href="/login">Đã có tài khoản? Đăng nhập</Link>

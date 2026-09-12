@@ -25,7 +25,7 @@ export default function Error({
         <p className="mt-3 text-ink/60">
           Vui lòng thử lại — nếu vẫn lỗi, hãy quay lại sau ít phút.
         </p>
-        <Button type="button" variant="pop" onClick={reset} className="h-auto mt-6 px-6 py-3">
+        <Button type="button" variant="pop" size="custom" onClick={reset} className="h-auto mt-6 px-6 py-3">
           Thử lại
         </Button>
       </div>

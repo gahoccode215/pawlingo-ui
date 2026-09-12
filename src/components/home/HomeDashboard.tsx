@@ -85,7 +85,7 @@ export default function HomeDashboard() {
           <section className="mt-12">
             <div className="flex items-center gap-2">
               <h2 className="font-display font-bold text-xl">IELTS</h2>
-              <Badge className="bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
+              <Badge variant="highlight">
                 SẮP RA MẮT
               </Badge>
             </div>
@@ -108,7 +108,7 @@ export default function HomeDashboard() {
           <section className="mt-12 mb-4">
             <div className="flex items-center gap-2">
               <h2 className="font-display font-bold text-xl">Luyện nói cùng AI</h2>
-              <Badge className="bg-honey-300 text-charcoal text-[10px] font-bold px-2 py-1">
+              <Badge variant="highlight">
                 SẮP RA MẮT
               </Badge>
             </div>

@@ -50,14 +50,14 @@ export default function HomeTopBar() {
             <DropdownMenuItem disabled>
               <User />
               Hồ sơ
-              <Badge className="ml-auto bg-sand-100 text-ink/40 text-[9px] font-bold px-1.5 py-0.5">
+              <Badge variant="muted" className="ml-auto">
                 SẮP RA MẮT
               </Badge>
             </DropdownMenuItem>
             <DropdownMenuItem disabled>
               <Settings />
               Cài đặt
-              <Badge className="ml-auto bg-sand-100 text-ink/40 text-[9px] font-bold px-1.5 py-0.5">
+              <Badge variant="muted" className="ml-auto">
                 SẮP RA MẮT
               </Badge>
             </DropdownMenuItem>

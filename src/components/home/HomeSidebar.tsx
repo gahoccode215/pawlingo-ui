@@ -55,7 +55,7 @@ export default function HomeSidebar() {
               >
                 <item.icon className="size-4.5 shrink-0" />
                 <span className="whitespace-nowrap">{item.label}</span>
-                <Badge className="ml-auto hidden lg:inline-flex bg-sand-100 text-ink/40 text-[9px] font-bold px-1.5 py-0.5 whitespace-nowrap">
+                <Badge variant="muted" className="ml-auto hidden lg:inline-flex">
                   SẮP RA MẮT
                 </Badge>
               </div>

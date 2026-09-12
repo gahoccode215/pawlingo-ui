@@ -43,7 +43,7 @@ export default function WhySection() {
         </div>
 
         <div className="mt-14 grid md:grid-cols-2 gap-6">
-          <Card className="rounded-3xl border-ink/10 p-7 bg-surface gap-0">
+          <Card className="rounded-3xl border-ink/10 p-7 bg-surface gap-0 shadow-sm">
             <p className="font-display font-bold text-ink/50 text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
               <X className="size-4" /> App khác
             </p>
@@ -56,7 +56,7 @@ export default function WhySection() {
               ))}
             </ul>
           </Card>
-          <Card className="rounded-3xl border border-coral-300 p-7 bg-surface relative gap-0">
+          <Card className="rounded-3xl border border-coral-300 p-7 bg-surface relative gap-0 shadow-sm">
             <p className="font-display font-bold text-coral-600 text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
               <PawPrint className="size-4" /> PawLingo
             </p>

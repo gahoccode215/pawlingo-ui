@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import type { SessionWord } from "@/lib/vocabulary/learn-session";
-import { cn } from "@/lib/utils";
 
 export interface LearnSessionWordResult {
   wordId: string;
@@ -146,13 +145,15 @@ export default function LearnSession({ words, onFinish, exitHref = "/vocabularie
                 )}
               </div>
             )}
-            <button
+            <Button
               type="button"
+              variant="pop"
+              size="custom"
               onClick={() => setStage("recognition")}
-              className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-8 px-8 py-3")}
+              className="h-auto mt-8 px-8 py-3"
             >
               Tiếp theo
-            </button>
+            </Button>
           </div>
         )}
 
@@ -178,13 +179,15 @@ export default function LearnSession({ words, onFinish, exitHref = "/vocabularie
             {selected !== null && (
               <>
                 <FeedbackBanner isCorrect={selected === current.word.primaryMeaning} example={null} />
-                <button
+                <Button
                   type="button"
+                  variant="pop"
+                  size="custom"
                   onClick={handleContinueFromRecognition}
-                  className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-4 w-full py-3")}
+                  className="h-auto mt-4 w-full px-4 py-3"
                 >
                   Tiếp tục
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -215,13 +218,15 @@ export default function LearnSession({ words, onFinish, exitHref = "/vocabularie
                   isCorrect={selected === current.word.word}
                   example={firstExample}
                 />
-                <button
+                <Button
                   type="button"
+                  variant="pop"
+                  size="custom"
                   onClick={handleContinueFromContext}
-                  className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-4 w-full py-3")}
+                  className="h-auto mt-4 w-full px-4 py-3"
                 >
                   Tiếp tục
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -255,10 +260,7 @@ function OptionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={cn(
-        "w-full text-left px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors flex items-center justify-between gap-2 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2",
-        stateClass[state],
-      )}
+      className={`w-full text-left px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors flex items-center justify-between gap-2 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral-500 focus-visible:outline-offset-2 ${stateClass[state]}`}
     >
       <span>{label}</span>
       {(state === "selected-correct" || state === "correct-reveal") && <span aria-hidden="true">✓</span>}
@@ -275,12 +277,12 @@ function FeedbackBanner({
   example: { sentence: string; translation: string | null } | null;
 }) {
   return (
-    <div className={cn("mt-6 rounded-2xl p-4 flex items-start gap-3", isCorrect ? "bg-teal-50" : "bg-destructive/10")}>
-      <span className={cn("text-lg font-bold", isCorrect ? "text-teal-600" : "text-destructive")} aria-hidden="true">
+    <div className={`mt-6 rounded-2xl p-4 flex items-start gap-3 ${isCorrect ? "bg-teal-50" : "bg-destructive/10"}`}>
+      <span className={`text-lg font-bold ${isCorrect ? "text-teal-600" : "text-destructive"}`} aria-hidden="true">
         {isCorrect ? "✓" : "✕"}
       </span>
       <div className="flex-1">
-        <p className={cn("font-semibold", isCorrect ? "text-teal-600" : "text-destructive")}>
+        <p className={`font-semibold ${isCorrect ? "text-teal-600" : "text-destructive"}`}>
           {isCorrect ? "Chính xác" : "Chưa đúng"}
         </p>
         {example && <p className="mt-1 text-sm text-ink/60 italic">&ldquo;{example.sentence}&rdquo;</p>}

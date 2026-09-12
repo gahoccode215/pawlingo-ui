@@ -26,7 +26,7 @@ export default function Hero() {
             vựng, 4 kỹ năng IELTS, và nói chuyện cùng AI. Tiến bộ thật, đo được thật.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button asChild variant="pop" className="h-auto px-7 py-3.5">
+            <Button asChild variant="pop" size="custom" className="h-auto px-7 py-3.5">
               <a href="/register">Bắt đầu miễn phí 🐾</a>
             </Button>
             <a
@@ -40,7 +40,7 @@ export default function Hero() {
 
         {/* Pet stat card mockup */}
         <div className="relative flex justify-center md:justify-end">
-          <Card className="w-full max-w-sm rounded-3xl shadow-card p-6 border-ink/10 relative gap-0">
+          <Card className="w-full max-w-sm rounded-3xl bg-card shadow-card p-6 border-ink/10 relative gap-0">
             <div className="flex items-center justify-between mb-1">
               <div>
                 <p className="font-display font-bold text-lg">Tiến độ của bạn</p>

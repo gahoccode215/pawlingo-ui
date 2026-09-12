@@ -3,10 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { getVocabularyErrorMessage, isVocabularyServiceError } from "@/lib/vocabulary/errors";
-import { cn } from "@/lib/utils";
 import { vocabularyService } from "@/lib/vocabulary/service";
 import type {
   DifficultyLevel,
@@ -207,13 +206,15 @@ export default function VocabularyBrowser() {
             </p>
             <p className="font-display font-bold text-lg">Đã có lỗi xảy ra.</p>
             <p className="mt-1 text-sm text-ink/60">{outcome.message}</p>
-            <button
+            <Button
               type="button"
+              variant="pop"
+              size="custom"
               onClick={() => setRetryToken((token) => token + 1)}
-              className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-5 px-5 py-2.5")}
+              className="h-auto mt-5 px-5 py-2.5"
             >
               Thử lại
-            </button>
+            </Button>
           </div>
         )}
 

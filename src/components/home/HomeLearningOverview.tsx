@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookMarked, CheckCircle2, type LucideIcon, Sparkles } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import DifficultyBadge from "@/components/vocabulary/DifficultyBadge";
 import { getVocabularyErrorMessage, isVocabularyServiceError } from "@/lib/vocabulary/errors";
 import { PART_OF_SPEECH_LABELS } from "@/lib/vocabulary/labels";
 import { vocabularyService } from "@/lib/vocabulary/service";
-import { cn } from "@/lib/utils";
 import type { Goal } from "@/types/auth";
 import type { UserVocabularyResponse } from "@/types/vocabulary";
 
@@ -112,24 +111,20 @@ export default function HomeLearningOverview() {
                 </p>
               )}
             </div>
-            <Link
-              href={`/vocabularies/${outcome.continueTarget.wordId}?back=${encodeURIComponent("/home")}`}
-              className={cn(buttonVariants({ variant: "pop" }), "h-auto px-6 py-3 shrink-0")}
-            >
-              {outcome.continueTarget.status === "LEARNING" ? "Tiếp tục" : "Bắt đầu"} →
-            </Link>
+            <Button asChild variant="pop" size="custom" className="h-auto px-6 py-3 shrink-0">
+              <Link href={`/vocabularies/${outcome.continueTarget.wordId}?back=${encodeURIComponent("/home")}`}>
+                {outcome.continueTarget.status === "LEARNING" ? "Tiếp tục" : "Bắt đầu"} →
+              </Link>
+            </Button>
           </div>
         )}
 
         {outcome?.status === "success" && !outcome.continueTarget && (
           <div className="mt-3 rounded-3xl bg-surface border border-ink/10 p-6 text-center">
             <p className="text-sm text-ink/60">Bạn chưa lưu từ nào để học.</p>
-            <Link
-              href="/vocabularies"
-              className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-3 inline-flex px-6 py-3")}
-            >
-              Khám phá từ vựng
-            </Link>
+            <Button asChild variant="pop" size="custom" className="h-auto mt-3 px-6 py-3">
+              <Link href="/vocabularies">Khám phá từ vựng</Link>
+            </Button>
           </div>
         )}
       </div>

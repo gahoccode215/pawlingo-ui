@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getVocabularyErrorMessage, isVocabularyServiceError } from "@/lib/vocabulary/errors";
 import { buildLearnSession, type SessionWord } from "@/lib/vocabulary/learn-session";
-import { cn } from "@/lib/utils";
 import type { DifficultyLevel, VocabularyTopic } from "@/types/vocabulary";
 import LearnSession, { type LearnSessionWordResult } from "./LearnSession";
 import LearnSessionSummary from "./LearnSessionSummary";
@@ -85,12 +84,9 @@ export default function VocabularyLearn() {
         </p>
         <p className="font-display font-bold text-lg">Không đủ từ mới cho bộ lọc này.</p>
         <p className="mt-1 text-sm text-ink/60">Hãy thử chủ đề hoặc cấp độ khác.</p>
-        <Link
-          href="/vocabularies"
-          className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-5 inline-flex px-5 py-2.5")}
-        >
-          Quay lại danh sách từ vựng
-        </Link>
+        <Button asChild variant="pop" size="custom" className="h-auto mt-5 px-5 py-2.5">
+          <Link href="/vocabularies">Quay lại danh sách từ vựng</Link>
+        </Button>
       </div>
     );
   }
@@ -103,13 +99,15 @@ export default function VocabularyLearn() {
         </p>
         <p className="font-display font-bold text-lg">Đã có lỗi xảy ra.</p>
         <p className="mt-1 text-sm text-ink/60">{outcome.message}</p>
-        <button
+        <Button
           type="button"
+          variant="pop"
+          size="custom"
           onClick={() => setRetryToken((token) => token + 1)}
-          className={cn(buttonVariants({ variant: "pop" }), "h-auto mt-5 px-5 py-2.5")}
+          className="h-auto mt-5 px-5 py-2.5"
         >
           Thử lại
-        </button>
+        </Button>
       </div>
     );
   }
