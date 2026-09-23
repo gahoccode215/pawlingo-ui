@@ -1,153 +1,195 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ApiError } from "@/lib/api";
-import { useAuth } from "@/lib/auth/AuthContext";
-import { getAuthErrorMessage } from "@/lib/auth/errors";
-import { loginSchema } from "@/lib/validation/auth";
-import GoogleSignInButton from "./GoogleSignInButton";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
-export default function LoginForm() {
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  loginSchema,
+  type LoginFormValues,
+} from "@/schemas/auth.schema";
+
+const fieldClassName =
+  "h-12 w-full rounded-[10px] border border-line bg-canvas px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-cobalt focus:ring-2 focus:ring-cobalt/20";
+
+const secondaryButtonClassName =
+  "flex h-12 w-full items-center justify-center rounded-[10px] border border-line bg-canvas px-4 text-[15px] font-medium text-ink transition-[border-color,background-color,transform] hover:border-ink hover:bg-surface active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt";
+
+type LoginFormProps = {
+  callbackUrl?: string;
+  sessionExpired?: boolean;
+};
+
+export default function LoginForm({
+  callbackUrl = "/my-profile",
+  sessionExpired = false,
+}: LoginFormProps) {
   const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
     setFormError(null);
 
-    const parsed = loginSchema.safeParse({ email, password });
-    if (!parsed.success) {
-      const errors = parsed.error.flatten().fieldErrors;
-      setFieldErrors({ email: errors.email?.[0], password: errors.password?.[0] });
-      return;
-    }
-    setFieldErrors({});
-    setIsSubmitting(true);
-
     try {
-      await login(parsed.data.email, parsed.data.password);
-      router.push("/home");
-    } catch (error) {
-      setFormError(
-        error instanceof ApiError
-          ? getAuthErrorMessage(error.code)
-          : getAuthErrorMessage("INTERNAL_ERROR"),
-      );
-    } finally {
-      setIsSubmitting(false);
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (!result || result.error) {
+        setFormError("Email hoặc mật khẩu không chính xác.");
+        return;
+      }
+
+      router.push(callbackUrl);
+    } catch {
+      setFormError("Không thể đăng nhập lúc này. Vui lòng thử lại.");
     }
-  }
+  };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-5 py-12">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-6">
-          <p className="text-sm font-bold text-coral-600 uppercase tracking-wide">
-            Chào mừng trở lại
+    <div className="w-full max-w-[420px]">
+      <div>
+        <h1 className="text-[38px] font-semibold leading-tight tracking-[-0.045em]">
+          Đăng nhập
+        </h1>
+
+        <p className="mt-2 text-[15px] leading-6 text-muted">
+          Tiếp tục lộ trình học của bạn trên PawLingo.
+        </p>
+      </div>
+
+      <form
+        className="mt-8"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {(formError || sessionExpired) && (
+          <p
+            role="alert"
+            className="mb-5 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700"
+          >
+            {formError ?? "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."}
           </p>
-          <h1 className="font-display font-extrabold text-3xl mt-2">Đăng nhập</h1>
+        )}
+
+        <button
+          type="button"
+          className={secondaryButtonClassName}
+        >
+          Tiếp tục với Google
+        </button>
+
+        <div
+          className="my-7 flex items-center gap-4"
+          aria-hidden="true"
+        >
+          <span className="h-px flex-1 bg-line" />
+          <span className="text-[13px] text-muted">
+            hoặc dùng email
+          </span>
+          <span className="h-px flex-1 bg-line" />
         </div>
 
-        <Card className="rounded-3xl bg-card shadow-card border-ink/10 p-6 gap-0">
-          {formError && (
-            <p className="mb-4 text-sm font-semibold text-destructive bg-destructive/10 rounded-xl px-3 py-2">
-              {formError}
-            </p>
-          )}
+        <div className="grid gap-5">
+          <div className="grid gap-2">
+            <label
+              htmlFor="email"
+              className="text-[14px] font-medium"
+            >
+              Email
+            </label>
 
-          <GoogleSignInButton />
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="ban@example.com"
+              className={fieldClassName}
+              {...register("email")}
+            />
 
-          <div className="flex items-center gap-3 my-5">
-            <div className="h-px flex-1 bg-ink/10" />
-            <span className="text-xs text-ink/40">hoặc</span>
-            <div className="h-px flex-1 bg-ink/10" />
+            {errors.email && (
+              <p className="text-[13px] text-red-500">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-            <div>
-              <Label htmlFor="email" className="text-sm font-semibold text-ink/70 mb-1">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="rounded-xl focus-visible:ring-coral-300"
-              />
-              {fieldErrors.email && (
-                <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor="password" className="text-sm font-semibold text-ink/70 mb-1">
-                Mật khẩu
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={isPasswordVisible ? "text" : "password"}
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="rounded-xl pr-10 focus-visible:ring-coral-300"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsPasswordVisible((visible) => !visible)}
-                  aria-label={isPasswordVisible ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink transition-colors"
-                >
-                  {isPasswordVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
-              </div>
-              {fieldErrors.password && (
-                <p className="mt-1 text-xs text-destructive">{fieldErrors.password}</p>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              variant="pop"
-              size="custom"
-              disabled={isSubmitting}
-              className="h-auto mt-2 text-sm px-5 py-2.5 disabled:opacity-60"
+          <div className="grid gap-2">
+            <label
+              htmlFor="password"
+              className="text-[14px] font-medium"
             >
-              {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
-            </Button>
-          </form>
+              Mật khẩu
+            </label>
 
-          {/* No password-reset endpoint exists yet — kept as a visible,
-              clearly non-interactive note rather than a dead link. */}
-          <p className="mt-4 text-center text-xs text-ink/40">
-            Quên mật khẩu? <span className="italic">Tính năng sắp ra mắt</span>
-          </p>
-        </Card>
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              placeholder="Nhập mật khẩu"
+              className={fieldClassName}
+              {...register("password")}
+            />
 
-        <Button
-          asChild
-          variant="outline-pill"
-          size="custom"
-          className="w-full mt-4 rounded-full h-auto text-sm px-5 py-2.5 border-ink/15"
+            {errors.password && (
+              <p className="text-[13px] text-red-500">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[14px] text-muted">
+            <input
+              type="checkbox"
+              name="remember"
+              className="h-4 w-4 rounded-[4px] border-line accent-cobalt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
+            />
+            Ghi nhớ đăng nhập
+          </label>
+
+          <button
+            type="button"
+            className="min-h-11 whitespace-nowrap text-[14px] font-medium text-cobalt hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
+          >
+            Quên mật khẩu?
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-5 flex h-12 w-full items-center justify-center rounded-[10px] bg-cobalt px-4 text-[15px] font-medium text-[#f9fbff] transition-[background-color,transform] hover:bg-[#064fca] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <Link href="/register">Chưa có tài khoản? Đăng ký ngay</Link>
-        </Button>
-      </div>
+          {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+        </button>
+
+        <p className="mt-7 text-center text-[14px] text-muted">
+          Chưa có tài khoản?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-cobalt hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
+          >
+            Đăng ký
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

@@ -1,48 +1,24 @@
 import type { Metadata } from "next";
-import { Baloo_2, Inter } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
-import SiteChrome from "@/components/SiteChrome";
-import { AuthProvider } from "@/lib/auth/AuthContext";
-import { auth } from "@/lib/auth/next-auth";
+import { Geist } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 
-const baloo = Baloo_2({
-  variable: "--font-baloo",
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const geist = Geist({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-geist",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "PawLingo — Học tiếng Anh, luyện thi IELTS, nói chuẩn cùng AI",
+  title: "PawLingo | Học từ vựng có lộ trình",
   description:
-    "PawLingo giúp bạn học từ vựng, luyện 4 kỹ năng IELTS và luyện nói cùng AI — tiến bộ được đo bằng kỹ năng thật, không phải streak hay số ngày liên tiếp.",
+    "PawLingo giúp người Việt học từ vựng theo lộ trình, luyện gợi nhớ và ôn lại đúng lúc.",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  // Resolved server-side (reads the session cookie) so SessionProvider never
-  // starts at "loading" — without this, Header briefly renders the logged-out
-  // Đăng nhập/Đăng ký buttons on every page load before flipping to the real
-  // user info once the client-side session fetch resolves. This opts every
-  // route out of static prerendering (all become server-rendered per
-  // request) — an accepted tradeoff to kill the auth-state flash sitewide.
-  const session = await auth();
-
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="vi" className={`${baloo.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-cream text-ink">
-        <SessionProvider session={session}>
-          <AuthProvider>
-            <SiteChrome>{children}</SiteChrome>
-          </AuthProvider>
-        </SessionProvider>
-      </body>
+    <html lang="vi" className={geist.variable}>
+      <body className="bg-canvas text-ink antialiased">{children}</body>
     </html>
   );
 }

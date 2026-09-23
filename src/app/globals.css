@@ -1,125 +1,126 @@
 @import "tailwindcss";
 
-@theme {
-  /* Minimal neutral base (Salix-inspired redesign, 2026-08-29) — near-white
-     page background, near-black neutral text, barely-off-white card surface.
-     Coral remains the one restrained brand accent; teal/honey stay defined
-     for the Hero pet-card's informative skill bars/XP badge only, not for
-     decorative chrome. */
-  --color-cream: #ffffff;
-  --color-ink: #171717;
-  --color-surface: #fafafa;
-  --color-charcoal: #171717;
-
-  --color-coral-50: #fff1ec;
-  --color-coral-100: #ffe1d6;
-  --color-coral-300: #ffb199;
-  --color-coral-400: #ff8f6e;
-  --color-coral-500: #ff6f4c;
-  --color-coral-600: #f0532f;
-  --color-coral-700: #c93f21;
-
-  --color-teal-50: #eaf9f5;
-  --color-teal-100: #cff1e7;
-  --color-teal-300: #7fd9c4;
-  --color-teal-400: #4cc3aa;
-  --color-teal-500: #2fa88f;
-  --color-teal-600: #1e8874;
-
-  --color-honey-100: #fff3d1;
-  --color-honey-300: #ffe08a;
-  --color-honey-400: #ffcf57;
-  --color-honey-500: #f7b733;
-
-  /* Neutral chip background for tile/badge fills. Named "sand" rather than
-     "slate" to avoid colliding with Tailwind's built-in slate scale, since
-     only one step is defined here. */
-  --color-sand-100: #f4f4f5;
-
-  /* shadcn/ui semantic tokens, mapped onto the palette above rather than
-     replacing it — shadcn primitives (Button, Card, Input, Badge, ...) pick
-     up the PawLingo brand automatically. */
-  --color-background: var(--color-cream);
-  --color-foreground: var(--color-ink);
-  --color-card: var(--color-surface);
-  --color-card-foreground: var(--color-ink);
-  --color-popover: var(--color-surface);
-  --color-popover-foreground: var(--color-ink);
-  --color-primary: var(--color-coral-500);
-  --color-primary-foreground: #ffffff;
-  --color-secondary: var(--color-teal-500);
-  --color-secondary-foreground: #ffffff;
-  --color-muted: var(--color-sand-100);
-  --color-muted-foreground: color-mix(in srgb, var(--color-ink) 60%, transparent);
-  --color-accent: var(--color-honey-400);
-  --color-accent-foreground: var(--color-ink);
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
-  --color-border: color-mix(in srgb, var(--color-ink) 10%, transparent);
-  --color-input: color-mix(in srgb, var(--color-ink) 15%, transparent);
-  --color-ring: var(--color-coral-400);
-  --radius: 1rem;
-
-  --font-display: var(--font-baloo), ui-rounded, sans-serif;
-  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-
-  /* Flatter, neutral-tinted card shadow — thin-border-first look, shadow only
-     for a subtle lift rather than the old warm heavy drop shadow. */
-  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.1);
-  /* Soft coral-tinted glow (replaces the old hard Duolingo-style offset
-     shadow) — sits behind the solid-ink "pop" button on hover, echoing
-     Salix's glow-under-button CTA treatment while keeping coral as PawLingo's
-     one accent color. */
-  --shadow-pop: 0 10px 30px -8px color-mix(in srgb, var(--color-coral-500) 55%, transparent);
-
-  --animate-float: float 5s ease-in-out infinite;
-  --animate-floatSlow: floatSlow 4s ease-in-out infinite;
-  --animate-wiggle: wiggle 1.8s ease-in-out infinite;
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0px) rotate(-2deg);
-    }
-    50% {
-      transform: translateY(-14px) rotate(2deg);
-    }
-  }
-  @keyframes floatSlow {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
-  @keyframes wiggle {
-    0%,
-    100% {
-      transform: rotate(-3deg);
-    }
-    50% {
-      transform: rotate(3deg);
-    }
-  }
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-auth-backdrop: var(--auth-backdrop);
+  --color-line: var(--line);
+  --color-cobalt: var(--cobalt);
+  --font-sans: var(--font-geist), Arial, sans-serif;
 }
 
 :root {
+  --canvas: #fbfbfa;
+  --ink: #11110f;
+  --muted: #5d5d58;
+  --surface: #f4f4f1;
+  --auth-backdrop: #e7ebfb;
+  --line: #d7d7d1;
+  --cobalt: #075ee8;
   color-scheme: light;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #121211;
+    --ink: #f3f3ef;
+    --muted: #b9b9b2;
+    --surface: #1b1b19;
+    --auth-backdrop: #101526;
+    --line: #353531;
+    --cobalt: #075ee8;
+    color-scheme: dark;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: var(--font-body);
+  min-height: 100vh;
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-geist), Arial, sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
-input,
-select,
-textarea {
-  color: var(--color-ink);
-  background-color: transparent;
+::selection {
+  background: var(--cobalt);
+  color: #f9fbff;
 }
 
-.bar-fill {
-  transition: width 1.2s ease;
+.button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  transition-property: color, background-color, border-color, transform;
+  transition-duration: 180ms;
+  transition-timing-function: ease-out;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 3px;
+}
+
+.button-primary {
+  background: var(--cobalt);
+  color: #f9fbff;
+}
+
+.button-primary:hover {
+  background: #064fca;
+}
+
+.button-dark {
+  background: var(--ink);
+  color: var(--canvas);
+}
+
+.button-dark:hover {
+  opacity: 0.88;
+}
+
+.button-ghost {
+  border-color: var(--line);
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.button-ghost:hover {
+  border-color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

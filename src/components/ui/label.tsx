@@ -1,19 +1,11 @@
-"use client"
+import type { ComponentProps } from "react";
 
-import * as React from "react"
-import { Label as LabelPrimitive } from "radix-ui"
-
-function Label({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+export function Label({ className = "", ...props }: ComponentProps<"label">) {
   return (
-    <LabelPrimitive.Root
+    <label
       data-slot="label"
-      className={`flex items-center gap-2 leading-none select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 ${className ?? "text-sm font-medium"}`}
+      className={`text-[14px] font-medium leading-none ${className}`}
       {...props}
     />
-  )
+  );
 }
-
-export { Label }
