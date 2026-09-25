@@ -1,201 +1,261 @@
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import type { JWT } from "next-auth/jwt";
 
-const REFRESH_SKEW_MS = 30_000;
-const REFRESH_RESULT_TTL_MS = 10_000;
-const MAX_REFRESH_RESULTS = 100;
+import { loginSchema } from "@/schemas/auth.schema";
 
-type RefreshTokenResponse = {
+type TokenData = {
     accessToken: string;
     refreshToken: string;
     expiresIn: number;
 };
 
-type CachedRefreshResult = {
-    value: RefreshTokenResponse;
-    expiresAt: number;
+type ApiResponse<T> = {
+    success: boolean;
+    data: T | null;
+    error: {
+        code: string;
+        message: string;
+    } | null;
+    meta: unknown | null;
 };
 
-// A rotating refresh token may only be used once. Deduplicate requests that
-// reach the server at nearly the same time (prefetches, parallel RSC requests,
-// or multiple tabs) so they all reuse the same rotated token pair.
-const refreshRequests = new Map<string, Promise<RefreshTokenResponse>>();
-const refreshResults = new Map<string, CachedRefreshResult>();
+const API_URL = process.env.BACKEND_API_URL;
+const REFRESH_PATH = "/api/v1/auth/refresh";
+const REFRESH_BUFFER_MS = 3_000;
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-    session: { strategy: "jwt" },
-    pages: { signIn: "/login" },
-    providers: [
-        Credentials({
-            credentials: {
-                email: {},
-                password: {},
-            },
+// Lưu kết quả refresh ngắn hạn để những request
+// dùng cùng token cũ nhận cùng một kết quả.
+const REFRESH_CACHE_MS = 60_000;
 
-            authorize: async (credentials) => {
-                if (
-                    typeof credentials.email !== "string" ||
-                    typeof credentials.password !== "string"
-                ) {
-                    return null;
-                }
+type RefreshResult = {
+    promise: Promise<JWT>;
+    createdAt: number;
+};
 
-                const response = await fetch(
-                    `${process.env.BACKEND_URL}/api/v1/auth/login`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            email: credentials.email,
-                            password: credentials.password,
-                        }),
-                        cache: "no-store",
-                    }
-                );
+const refreshCache = new Map<string, RefreshResult>();
 
-                if (!response.ok) {
-                    return null;
-                }
+function failedRefresh(token: JWT): JWT {
+    return {
+        ...token,
+        accessToken: undefined,
+        refreshToken: undefined,
+        accessTokenExpiresAt: undefined,
+        error: "RefreshTokenError",
+    };
+}
 
-                const result = await response.json();
-
-                if (!result.success || !result.data) {
-                    return null;
-                }
-
-                return {
-                    id: credentials.email,
-                    email: credentials.email,
-
-                    accessToken: result.data.accessToken,
-                    refreshToken: result.data.refreshToken,
-                    expiresIn: result.data.expiresIn,
-                };
-            },
-        }),
-    ],
-
-    callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.accessToken = user.accessToken;
-                token.refreshToken = user.refreshToken;
-                token.accessTokenExpiresAt =
-                    Date.now() + user.expiresIn * 1000;
-                return token;
-            }
-
-            if (
-                !token.accessToken ||
-                !token.refreshToken ||
-                typeof token.accessTokenExpiresAt !== "number"
-            ) {
-                return null;
-            }
-
-            if (Date.now() < token.accessTokenExpiresAt - REFRESH_SKEW_MS) {
-                return token;
-            }
-
-            try {
-                const refreshed = await refreshAccessTokenOnce(
-                    token.refreshToken
-                );
-
-                return {
-                    ...token,
-                    accessToken: refreshed.accessToken,
-                    refreshToken: refreshed.refreshToken,
-                    accessTokenExpiresAt:
-                        Date.now() + refreshed.expiresIn * 1000,
-                };
-            } catch {
-                // Returning null makes Auth.js clear the broken JWT cookie.
-                // The route proxy then redirects protected requests to login.
-                return null;
-            }
-        },
-
-        async session({ session, token }) {
-            session.accessToken = token.accessToken;
-            return session;
-        },
-    },
-});
-
-async function refreshAccessTokenOnce(
-    refreshToken: string
-): Promise<RefreshTokenResponse> {
-    const now = Date.now();
-    const cached = refreshResults.get(refreshToken);
-
-    if (cached && cached.expiresAt > now) {
-        return cached.value;
+async function performRefresh(token: JWT): Promise<JWT> {
+    if (!API_URL || !token.refreshToken) {
+        return failedRefresh(token);
     }
+
+    try {
+        console.log("[AUTH] Refresh started");
+
+        const response = await fetch(
+            `${API_URL}${REFRESH_PATH}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    refreshToken: token.refreshToken,
+                }),
+                cache: "no-store",
+            }
+        );
+
+        if (!response.ok) {
+            console.error(
+                "[AUTH] Refresh HTTP status:",
+                response.status
+            );
+            return failedRefresh(token);
+        }
+
+        const result: ApiResponse<TokenData> =
+            await response.json();
+
+        if (
+            !result.success ||
+            !result.data?.accessToken ||
+            !result.data?.refreshToken ||
+            !Number.isFinite(result.data.expiresIn) ||
+            result.data.expiresIn <= 0
+        ) {
+            console.error(
+                "[AUTH] Invalid refresh response:",
+                result.error?.code
+            );
+            return failedRefresh(token);
+        }
+
+        console.log("[AUTH] Refresh successful");
+
+        return {
+            ...token,
+            accessToken: result.data.accessToken,
+            refreshToken: result.data.refreshToken,
+            accessTokenExpiresAt:
+                Date.now() + result.data.expiresIn * 1000,
+            error: undefined,
+        };
+    } catch (error) {
+        console.error("[AUTH] Refresh failed:", error);
+        return failedRefresh(token);
+    }
+}
+
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+    if (!token.refreshToken) {
+        return failedRefresh(token);
+    }
+
+    const key = token.refreshToken;
+    const now = Date.now();
+
+    // Dọn các kết quả quá cũ.
+    for (const [cacheKey, entry] of refreshCache) {
+        if (now - entry.createdAt > REFRESH_CACHE_MS) {
+            refreshCache.delete(cacheKey);
+        }
+    }
+
+    const cached = refreshCache.get(key);
 
     if (cached) {
-        refreshResults.delete(refreshToken);
+        console.log("[AUTH] Reusing refresh result");
+        return cached.promise;
     }
 
-    const existingRequest = refreshRequests.get(refreshToken);
+    const promise = performRefresh(token);
 
-    if (existingRequest) {
-        return existingRequest;
-    }
+    refreshCache.set(key, {
+        promise,
+        createdAt: now,
+    });
 
-    const request = refreshAccessToken(refreshToken)
-        .then((value) => {
-            if (refreshResults.size >= MAX_REFRESH_RESULTS) {
-                const oldestKey = refreshResults.keys().next().value;
-
-                if (oldestKey) {
-                    refreshResults.delete(oldestKey);
-                }
-            }
-
-            refreshResults.set(refreshToken, {
-                value,
-                expiresAt: Date.now() + REFRESH_RESULT_TTL_MS,
-            });
-
-            return value;
-        })
-        .finally(() => {
-            refreshRequests.delete(refreshToken);
-        });
-
-    refreshRequests.set(refreshToken, request);
-    return request;
+    return promise;
 }
 
-async function refreshAccessToken(
-    refreshToken: string
-): Promise<RefreshTokenResponse> {
-    const response = await fetch(
-        `${process.env.BACKEND_URL}/api/v1/auth/refresh`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                refreshToken,
+export const { handlers, auth, signIn, signOut } =
+    NextAuth({
+        session: {
+            strategy: "jwt",
+            maxAge: 30 * 24 * 60 * 60,
+        },
+
+        pages: {
+            signIn: "/login",
+        },
+
+        providers: [
+            Credentials({
+                credentials: {
+                    email: {
+                        label: "Email",
+                        type: "email",
+                    },
+                    password: {
+                        label: "Password",
+                        type: "password",
+                    },
+                },
+
+                async authorize(credentials) {
+                    const parsed =
+                        loginSchema.safeParse(credentials);
+
+                    if (!parsed.success || !API_URL) {
+                        return null;
+                    }
+
+                    try {
+                        const response = await fetch(
+                            `${API_URL}/api/v1/auth/login`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(parsed.data),
+                                cache: "no-store",
+                            }
+                        );
+
+                        if (!response.ok) {
+                            console.error(
+                                "[AUTH] Login HTTP status:",
+                                response.status
+                            );
+                            return null;
+                        }
+
+                        const result: ApiResponse<TokenData> =
+                            await response.json();
+
+                        if (
+                            !result.success ||
+                            !result.data?.accessToken ||
+                            !result.data?.refreshToken ||
+                            !Number.isFinite(result.data.expiresIn) ||
+                            result.data.expiresIn <= 0
+                        ) {
+                            return null;
+                        }
+
+                        return {
+                            id: "temporary-auth-user",
+                            accessToken: result.data.accessToken,
+                            refreshToken: result.data.refreshToken,
+                            expiresIn: result.data.expiresIn,
+                        };
+                    } catch (error) {
+                        console.error("[AUTH] Login failed:", error);
+                        return null;
+                    }
+                },
             }),
-            cache: "no-store",
-        }
-    );
+        ],
 
-    if (!response.ok) {
-        throw new Error("Failed to refresh access token");
-    }
+        callbacks: {
+            async jwt({ token, user }) {
+                if (user) {
+                    return {
+                        ...token,
+                        accessToken: user.accessToken,
+                        refreshToken: user.refreshToken,
+                        accessTokenExpiresAt:
+                            Date.now() + user.expiresIn * 1000,
+                        error: undefined,
+                    };
+                }
 
-    const result = await response.json();
+                if (token.error === "RefreshTokenError") {
+                    return token;
+                }
 
-    if (!result.success || !result.data) {
-        throw new Error("Invalid refresh response");
-    }
+                if (
+                    token.accessToken &&
+                    token.accessTokenExpiresAt &&
+                    Date.now() <
+                    token.accessTokenExpiresAt -
+                    REFRESH_BUFFER_MS
+                ) {
+                    return token;
+                }
 
-    return result.data;
-}
+                return refreshAccessToken(token);
+            },
+
+            async session({ session, token }) {
+                session.accessToken = token.accessToken;
+                session.error = token.error;
+
+                return session;
+            },
+        },
+    });

@@ -1,12 +1,16 @@
+
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import {
   loginSchema,
@@ -15,9 +19,6 @@ import {
 
 const fieldClassName =
   "h-12 w-full rounded-[10px] border border-line bg-canvas px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-cobalt focus:ring-2 focus:ring-cobalt/20";
-
-const secondaryButtonClassName =
-  "flex h-12 w-full items-center justify-center rounded-[10px] border border-line bg-canvas px-4 text-[15px] font-medium text-ink transition-[border-color,background-color,transform] hover:border-ink hover:bg-surface active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt";
 
 type LoginFormProps = {
   callbackUrl?: string;
@@ -29,7 +30,10 @@ export default function LoginForm({
   sessionExpired = false,
 }: LoginFormProps) {
   const router = useRouter();
+
   const [formError, setFormError] = useState<string | null>(null);
+  const [showSessionExpired, setShowSessionExpired] =
+    useState(sessionExpired);
 
   const {
     register,
@@ -37,31 +41,52 @@ export default function LoginForm({
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (data: LoginFormValues) => {
     setFormError(null);
+    setShowSessionExpired(false);
 
     try {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
+        redirectTo: callbackUrl,
       });
 
-      if (!result || result.error) {
-        setFormError("Email hoặc mật khẩu không chính xác.");
+      // NextAuth không xác thực thành công.
+      if (!result || result.error || !result.ok) {
+        setFormError(
+          result?.error === "CredentialsSignin"
+            ? "Email hoặc mật khẩu không chính xác."
+            : "Đăng nhập thất bại. Vui lòng thử lại."
+        );
+
         return;
       }
 
-      router.push(callbackUrl);
-    } catch {
-      setFormError("Không thể đăng nhập lúc này. Vui lòng thử lại.");
+      // Session đã được NextAuth tạo.
+      // Chuyển người dùng về trang họ muốn truy cập.
+      router.replace(callbackUrl);
+      router.refresh();
+    } catch (error) {
+      console.error("[LOGIN] Sign in failed:", error);
+
+      setFormError(
+        "Không thể kết nối đến hệ thống. Vui lòng thử lại sau."
+      );
     }
   };
 
   return (
     <div className="w-full max-w-[420px]">
+      {/* Header */}
       <div>
         <h1 className="text-[38px] font-semibold leading-tight tracking-[-0.045em]">
           Đăng nhập
@@ -72,114 +97,113 @@ export default function LoginForm({
         </p>
       </div>
 
+      {/* Login Form */}
       <form
         className="mt-8"
         noValidate
         onSubmit={handleSubmit(onSubmit)}
       >
-        {(formError || sessionExpired) && (
-          <p
+        {/* Authentication errors */}
+        {(formError || showSessionExpired) && (
+          <div
             role="alert"
-            className="mb-5 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700"
+            className="mb-5 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] leading-5 text-red-700"
           >
-            {formError ?? "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."}
-          </p>
+            {formError ??
+              "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."}
+          </div>
         )}
 
-        <button
-          type="button"
-          className={secondaryButtonClassName}
-        >
-          Tiếp tục với Google
-        </button>
+        {/* Email */}
+        <div className="grid gap-2">
+          <label
+            htmlFor="email"
+            className="text-[14px] font-medium"
+          >
+            Email
+          </label>
 
-        <div
-          className="my-7 flex items-center gap-4"
-          aria-hidden="true"
-        >
-          <span className="h-px flex-1 bg-line" />
-          <span className="text-[13px] text-muted">
-            hoặc dùng email
-          </span>
-          <span className="h-px flex-1 bg-line" />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            placeholder="ban@example.com"
+            aria-invalid={!!errors.email}
+            aria-describedby={
+              errors.email ? "email-error" : undefined
+            }
+            className={fieldClassName}
+            {...register("email")}
+          />
+
+          {errors.email && (
+            <p
+              id="email-error"
+              role="alert"
+              className="text-[13px] text-red-500"
+            >
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
-        <div className="grid gap-5">
-          <div className="grid gap-2">
-            <label
-              htmlFor="email"
-              className="text-[14px] font-medium"
-            >
-              Email
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="ban@example.com"
-              className={fieldClassName}
-              {...register("email")}
-            />
-
-            {errors.email && (
-              <p className="text-[13px] text-red-500">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
+        {/* Password */}
+        <div className="mt-5 grid gap-2">
+          <div className="flex items-center justify-between">
             <label
               htmlFor="password"
               className="text-[14px] font-medium"
             >
               Mật khẩu
             </label>
-
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="Nhập mật khẩu"
-              className={fieldClassName}
-              {...register("password")}
-            />
-
-            {errors.password && (
-              <p className="text-[13px] text-red-500">
-                {errors.password.message}
-              </p>
-            )}
           </div>
+
+          <Input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Nhập mật khẩu"
+            aria-invalid={!!errors.password}
+            aria-describedby={
+              errors.password ? "password-error" : undefined
+            }
+            className={fieldClassName}
+            {...register("password")}
+          />
+
+          {errors.password && (
+            <p
+              id="password-error"
+              role="alert"
+              className="text-[13px] text-red-500"
+            >
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-4">
-          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[14px] text-muted">
-            <input
-              type="checkbox"
-              name="remember"
-              className="h-4 w-4 rounded-[4px] border-line accent-cobalt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
-            />
-            Ghi nhớ đăng nhập
-          </label>
-
-          <button
-            type="button"
-            className="min-h-11 whitespace-nowrap text-[14px] font-medium text-cobalt hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
-          >
-            Quên mật khẩu?
-          </button>
-        </div>
-
-        <button
+        {/* Submit */}
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="mt-5 flex h-12 w-full items-center justify-center rounded-[10px] bg-cobalt px-4 text-[15px] font-medium text-[#f9fbff] transition-[background-color,transform] hover:bg-[#064fca] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt disabled:cursor-not-allowed disabled:opacity-60"
+          aria-busy={isSubmitting}
+          className="mt-7 flex h-12 w-full items-center justify-center rounded-[10px] bg-cobalt px-4 text-[15px] font-medium text-[#f9fbff] transition-[background-color,transform] hover:bg-[#064fca] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
-        </button>
+          {isSubmitting ? (
+            <span className="flex items-center gap-2">
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              />
+              Đang đăng nhập...
+            </span>
+          ) : (
+            "Đăng nhập"
+          )}
+        </Button>
 
+        {/* Register */}
         <p className="mt-7 text-center text-[14px] text-muted">
           Chưa có tài khoản?{" "}
           <Link

@@ -1,34 +1,40 @@
-const futureModules = ["Listening", "Reading", "Speaking", "Grammar", "Writing"];
+const futureModules = [
+  { name: "Listening", label: "Nghe" },
+  { name: "Reading", label: "Đọc" },
+  { name: "Speaking", label: "Nói" },
+  { name: "Grammar", label: "Ngữ pháp" },
+  { name: "Writing", label: "Viết" },
+];
 
 export default function EcosystemSection() {
   return (
-    <section id="he-sinh-thai" className="bg-canvas py-20 sm:py-28">
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-        <div className="max-w-[700px]">
-          <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.052em]">
-            Bắt đầu với từ vựng. Mở rộng theo thời gian.
+    <section id="he-sinh-thai" className="border-y border-line bg-surface py-24 sm:py-32">
+      <div className="mx-auto max-w-[1320px] px-4 sm:px-7 lg:px-10">
+        <div className="landing-reveal max-w-[850px]">
+          <h2 className="landing-display text-[clamp(2.8rem,5vw,5rem)] font-semibold leading-[0.96] tracking-[-0.055em]">
+            Bắt đầu bằng từ vựng. Đi xa hơn bằng ngôn ngữ.
           </h2>
-          <p className="mt-5 max-w-[560px] text-[17px] leading-7 text-muted">
-            Vocabulary là module đang được tập trung phát triển. Các kỹ năng khác thuộc định hướng tiếp theo của PawLingo.
+          <p className="landing-copy mt-5 max-w-[610px] text-[18px] leading-8 text-muted">
+            Vocabulary là module đầu tiên. Các kỹ năng còn lại sẽ cùng dùng một lộ trình học thống nhất.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
-          <article className="flex min-h-[330px] flex-col justify-between rounded-[16px] bg-cobalt p-7 text-[#f9fbff] sm:p-9">
+        <div className="mt-14 grid gap-3 lg:grid-cols-[1.08fr_0.92fr]">
+          <article className="landing-reveal flex min-h-[420px] flex-col justify-between rounded-[18px] bg-cobalt p-7 text-on-cobalt sm:p-10">
+            <p className="text-[15px] font-medium text-on-cobalt/75">Đang tập trung phát triển</p>
             <div>
-              <p className="text-[14px] text-[#e8f0ff]">Đang phát triển</p>
-              <h3 className="mt-3 text-[42px] font-semibold tracking-[-1.5px]">Vocabulary</h3>
+              <h3 className="text-[clamp(3.4rem,7vw,7rem)] font-semibold leading-none tracking-[-0.07em]">Vocabulary</h3>
+              <p className="landing-copy mt-5 max-w-[510px] text-[17px] leading-7 text-on-cobalt/80">
+                Học từ trong ngữ cảnh, luyện gợi nhớ và quay lại theo lịch ôn.
+              </p>
             </div>
-            <p className="max-w-[440px] text-[18px] leading-7 text-[#e8f0ff]">
-              Lộ trình từ vựng, phiên học chủ động, lịch ôn và hướng dẫn bước tiếp theo.
-            </p>
           </article>
 
-          <div className="border-t border-line">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 rounded-[18px] border border-line bg-surface-raised p-7 sm:p-10">
             {futureModules.map((module) => (
-              <div key={module} className="flex min-h-16 items-center justify-between gap-4 border-b border-line py-4">
-                <p className="text-[19px] font-medium tracking-[-0.3px]">{module}</p>
-                <p className="text-[14px] text-muted">Sắp có</p>
+              <div key={module.name} className="landing-reveal min-h-[110px]">
+                <p className="text-[clamp(1.5rem,3vw,2.6rem)] font-semibold tracking-[-0.045em]">{module.name}</p>
+                <p className="mt-2 text-[14px] text-muted">{module.label} · tiếp theo</p>
               </div>
             ))}
           </div>

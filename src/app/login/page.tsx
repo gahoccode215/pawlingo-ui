@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import AuthShell from "@/components/auth/AuthShell";
 import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
   title: "Đăng nhập | PawLingo",
-  description: "Đăng nhập để tiếp tục lộ trình học tiếng Anh trên PawLingo.",
+  description:
+    "Đăng nhập để tiếp tục lộ trình học tiếng Anh trên PawLingo.",
 };
 
 type LoginPageProps = {
@@ -14,30 +14,64 @@ type LoginPageProps = {
   }>;
 };
 
-function safeCallbackUrl(value: string | string[] | undefined) {
-  const callbackUrl = Array.isArray(value) ? value[0] : value;
+function safeCallbackUrl(
+  value: string | string[] | undefined
+): string {
+  const fallback = "/my-profile";
 
-  if (
-    callbackUrl &&
-    callbackUrl.startsWith("/") &&
-    !callbackUrl.startsWith("//") &&
-    !callbackUrl.startsWith("/login")
-  ) {
-    return callbackUrl;
+  if (typeof value !== "string") {
+    return fallback;
   }
 
-  return "/my-profile";
+  // Chỉ chấp nhận đường dẫn nội bộ
+  if (
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    /[\u0000-\u001F\u007F]/.test(value)
+  ) {
+    return fallback;
+  }
+
+  try {
+    const url = new URL(value, "http://localhost");
+
+    if (url.origin !== "http://localhost") {
+      return fallback;
+    }
+
+    // Tránh chuyển hướng quay lại trang login
+    if (
+      url.pathname === "/login" ||
+      url.pathname.startsWith("/login/")
+    ) {
+      return fallback;
+    }
+
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return fallback;
+  }
 }
 
-export default async function LoginPage({ searchParams }: LoginPageProps) {
+export default async function LoginPage({
+  searchParams,
+}: LoginPageProps) {
   const params = await searchParams;
 
+  const callbackUrl = safeCallbackUrl(
+    params.callbackUrl
+  );
+
+  const sessionExpired =
+    params.reason === "session_expired";
+
   return (
-    <AuthShell>
+    <main className="flex min-h-[100dvh] items-center justify-center bg-auth-backdrop px-5 py-12 sm:px-8">
       <LoginForm
-        callbackUrl={safeCallbackUrl(params.callbackUrl)}
-        sessionExpired={params.reason === "session_expired"}
+        callbackUrl={callbackUrl}
+        sessionExpired={sessionExpired}
       />
-    </AuthShell>
+    </main>
   );
 }

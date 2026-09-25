@@ -37,6 +37,8 @@ PawLingo is an English learning application.
 
 ## UI Components
 
+* Read `context/ui-guidelines.md` before implementing or modifying frontend UI.
+
 * Use shadcn/ui for common UI components when an appropriate component exists.
 * Prefer existing shadcn/ui components over creating custom equivalents.
 * Customize shadcn/ui components when necessary to match the PawLingo design.

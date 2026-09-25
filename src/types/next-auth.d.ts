@@ -7,15 +7,18 @@ declare module "next-auth" {
         refreshToken: string;
         expiresIn: number;
     }
+
     interface Session {
-        accessToken: string;
+        accessToken?: string;
+        error?: "RefreshTokenError";
     }
 }
 
 declare module "next-auth/jwt" {
     interface JWT {
-        accessToken: string;
-        refreshToken: string;
-        accessTokenExpiresAt: number;
+        accessToken?: string;
+        refreshToken?: string;
+        accessTokenExpiresAt?: number;
+        error?: "RefreshTokenError";
     }
 }

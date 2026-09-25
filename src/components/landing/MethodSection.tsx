@@ -1,52 +1,82 @@
-const learningFlow = ["Khám phá", "Hiểu nghĩa", "Gợi nhớ", "Ôn lại", "Ghi nhớ"];
+const learningFlow = [
+  {
+    verb: "Gặp",
+    cue: "trong câu",
+    detail: "Từ mới xuất hiện trong một câu có nghĩa, không đứng một mình.",
+  },
+  {
+    verb: "Hiểu",
+    cue: "đủ lớp nghĩa",
+    detail: "Nghĩa, cách dùng và phát âm được đặt cạnh nhau để dễ kết nối.",
+  },
+  {
+    verb: "Gợi nhớ",
+    cue: "tự trả lời",
+    detail: "Bạn tự trả lời trước khi xem đáp án, thay vì chỉ đọc lại.",
+  },
+  {
+    verb: "Quay lại",
+    cue: "theo lịch ôn",
+    detail: "Từ chưa chắc được đưa về đúng buổi ôn tiếp theo.",
+  },
+];
 
 export default function MethodSection() {
   return (
     <>
-      <section id="tu-vung" className="border-y border-line bg-surface py-20 sm:py-24">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-          <h2 className="max-w-[940px] text-[clamp(2.25rem,4.8vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.05em]">
-            Ghi nhớ một danh sách từ chưa đủ. Bạn cần gặp từ trong ngữ cảnh và quay lại đúng lúc.
-          </h2>
+      <section id="tu-vung" className="border-y border-line bg-surface py-24 sm:py-32">
+        <div className="mx-auto max-w-[1320px] px-4 sm:px-7 lg:px-10">
+          <div className="landing-reveal max-w-[1040px]">
+            <h2 className="landing-display text-[clamp(2.8rem,6.2vw,6.2rem)] font-medium leading-[0.94] tracking-[-0.06em]">
+              Bạn không cần học nhiều hơn. Bạn cần học đúng lúc.
+            </h2>
+          </div>
 
-          <div className="mt-16 grid gap-8 border-t border-line pt-8 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
-            <h3 className="text-[24px] font-semibold tracking-[-0.5px]">PawLingo giải quyết điều gì?</h3>
-            <div className="grid gap-8 sm:grid-cols-2">
-              <div>
-                <p className="font-medium">Không còn học ngẫu nhiên</p>
-                <p className="mt-2 max-w-[340px] leading-6 text-muted">
-                  Từ vựng được sắp xếp để bạn luôn biết nội dung phù hợp tiếp theo.
-                </p>
-              </div>
-              <div>
-                <p className="font-medium">Không bỏ quên từ đã học</p>
-                <p className="mt-2 max-w-[340px] leading-6 text-muted">
-                  Các từ cần luyện lại được đưa về đúng phiên ôn tập.
-                </p>
-              </div>
+          <div className="mt-16 grid gap-10 border-t border-line pt-8 md:grid-cols-2 md:gap-20 lg:ml-[25%]">
+            <div>
+              <h3 className="text-[20px] font-semibold tracking-[-0.35px]">Bỏ cách học theo danh sách</h3>
+              <p className="landing-copy mt-3 max-w-[430px] text-[17px] leading-7 text-muted">
+                Một từ chỉ thật sự hữu ích khi bạn hiểu nó trong câu và có thể tự gọi lại khi cần.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-[20px] font-semibold tracking-[-0.35px]">Giữ một nhịp học rõ ràng</h3>
+              <p className="landing-copy mt-3 max-w-[430px] text-[17px] leading-7 text-muted">
+                PawLingo chọn nội dung tiếp theo để mỗi buổi học nối tiếp buổi trước, không bắt đầu lại từ đầu.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="cach-hoc" className="bg-canvas py-20 sm:py-28">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-          <div className="max-w-[650px]">
-            <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.052em]">
-              Một vòng học hoàn chỉnh.
+      <section id="cach-hoc" className="bg-canvas py-24 sm:py-32">
+        <div className="mx-auto max-w-[1320px] px-4 sm:px-7 lg:px-10">
+          <div className="landing-reveal max-w-[760px]">
+            <h2 className="landing-display text-[clamp(2.7rem,5vw,5rem)] font-semibold leading-[0.96] tracking-[-0.055em]">
+              Một vòng học khép kín.
             </h2>
-            <p className="mt-5 max-w-[540px] text-[17px] leading-7 text-muted">
-              Mỗi từ đi qua nhiều lần gợi nhớ thay vì chỉ xuất hiện một lần trong danh sách.
+            <p className="landing-copy mt-5 max-w-[560px] text-[18px] leading-8 text-muted">
+              Mỗi lần gặp lại đều có mục đích, từ làm quen đến sử dụng chủ động.
             </p>
           </div>
 
-          <ol className="mt-14 grid border-y border-line md:grid-cols-5">
-            {learningFlow.map((step) => (
+          <ol className="mt-14 grid overflow-hidden rounded-[18px] border border-line bg-line md:grid-cols-4">
+            {learningFlow.map((item) => (
               <li
-                key={step}
-                className="flex min-h-24 items-center border-b border-line py-5 md:min-h-36 md:border-r md:border-b-0 md:px-5 md:last:border-r-0"
+                key={item.verb}
+                className="group min-h-[220px] bg-surface-raised p-6 transition-colors hover:bg-cobalt-soft sm:p-7 md:min-h-[290px]"
               >
-                <span className="text-[18px] font-medium tracking-[-0.25px]">{step}</span>
+                <div className="flex h-full flex-col justify-between">
+                  <span className="text-[14px] font-medium text-muted">{item.cue}</span>
+                  <div className="mt-16">
+                    <h3 className="text-[clamp(1.8rem,3vw,2.7rem)] font-semibold tracking-[-0.045em]">
+                      {item.verb}
+                    </h3>
+                    <p className="landing-copy mt-3 max-w-[250px] text-[15px] leading-6 text-muted">
+                      {item.detail}
+                    </p>
+                  </div>
+                </div>
               </li>
             ))}
           </ol>

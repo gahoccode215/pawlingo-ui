@@ -1,18 +1,23 @@
 export default function FinalCtaSection() {
   return (
-    <section id="bat-dau" className="border-t border-line bg-surface py-20 sm:py-24">
-      <div className="mx-auto grid max-w-[1240px] gap-8 px-5 sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
-        <div>
-          <h2 className="max-w-[700px] text-[clamp(2.4rem,4.8vw,4.25rem)] font-semibold leading-[0.98] tracking-[-0.052em]">
-            Xây nền từ vựng vững hơn, từng buổi một.
-          </h2>
-          <p className="mt-5 max-w-[520px] text-[17px] leading-7 text-muted">
-            Thử một bài học mẫu để xem cách PawLingo tổ chức việc học và ôn từ.
-          </p>
+    <section id="bat-dau" className="bg-cobalt py-24 text-on-cobalt sm:py-32">
+      <div className="mx-auto max-w-[1320px] px-4 sm:px-7 lg:px-10">
+        <div className="landing-reveal flex flex-col items-start justify-between gap-10 md:flex-row md:items-end">
+          <div>
+            <h2 className="landing-display max-w-[850px] text-[clamp(3rem,6vw,6.5rem)] font-semibold leading-[0.91] tracking-[-0.065em]">
+              Một từ hôm nay. Một nền tảng vững ngày mai.
+            </h2>
+            <p className="landing-copy mt-6 max-w-[520px] text-[18px] leading-8 text-on-cobalt/80">
+              Bắt đầu bằng một lượt gợi nhớ ngắn và cảm nhận cách PawLingo tổ chức việc học.
+            </p>
+          </div>
+          <a
+            href="#hoc-thu"
+            className="button shrink-0 whitespace-nowrap bg-on-cobalt text-cobalt hover:-translate-y-1 focus-visible:outline-on-cobalt"
+          >
+            Học thử
+          </a>
         </div>
-        <a href="#hoc-thu" className="button button-primary w-full whitespace-nowrap sm:w-auto">
-          Học thử
-        </a>
       </div>
     </section>
   );

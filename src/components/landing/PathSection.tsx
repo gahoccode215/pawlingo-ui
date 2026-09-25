@@ -1,40 +1,57 @@
 const pathSignals = [
   {
-    title: "Trình độ",
-    detail: "Bắt đầu từ nhóm từ phù hợp với nền tảng hiện tại.",
+    title: "Trình độ hiện tại",
+    detail: "Bắt đầu từ nơi bạn đang đứng, không học lại những gì đã chắc.",
+    className: "bg-cobalt text-on-cobalt md:col-span-7 md:row-span-2",
+    detailClassName: "text-on-cobalt/80",
   },
   {
-    title: "Chủ đề",
-    detail: "Học theo những tình huống bạn thực sự cần sử dụng.",
+    title: "Tình huống cần dùng",
+    detail: "Ưu tiên ngôn ngữ cho giao tiếp, học tập hoặc công việc.",
+    className: "bg-cobalt-soft text-ink md:col-span-5",
+    detailClassName: "text-muted",
   },
   {
-    title: "Mức độ phổ biến",
-    detail: "Ưu tiên những từ xuất hiện thường xuyên trong tiếng Anh.",
+    title: "Tần suất xuất hiện",
+    detail: "Gặp những từ phổ biến trước khi đi vào nhóm chuyên sâu.",
+    className: "bg-surface-raised text-ink md:col-span-5",
+    detailClassName: "text-muted",
   },
   {
-    title: "Mục tiêu",
-    detail: "Đi tiếp theo hướng giao tiếp, học tập hoặc công việc.",
+    title: "Kết quả mỗi buổi",
+    detail: "Luôn biết mình vừa học gì và nội dung nào cần quay lại.",
+    className: "bg-surface text-ink md:col-span-12",
+    detailClassName: "text-muted",
   },
 ];
 
 export default function PathSection() {
   return (
-    <section id="lo-trinh" className="bg-surface py-20 sm:py-28">
-      <div className="mx-auto grid max-w-[1240px] gap-14 px-5 sm:px-8 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
-        <div className="max-w-[460px] md:sticky md:top-24 md:self-start">
-          <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.052em]">
-            Không phải một danh sách ngẫu nhiên.
+    <section id="lo-trinh" className="bg-canvas py-24 sm:py-32">
+      <div className="mx-auto max-w-[1320px] px-4 sm:px-7 lg:px-10">
+        <div className="landing-reveal max-w-[820px]">
+          <h2 className="landing-display text-[clamp(2.7rem,5vw,5rem)] font-semibold leading-[0.96] tracking-[-0.055em]">
+            Lộ trình được chọn, không được đoán.
           </h2>
-          <p className="mt-5 max-w-[420px] text-[17px] leading-7 text-muted">
-            Lộ trình kết hợp trình độ, chủ đề, tần suất và mục tiêu để chọn nội dung tiếp theo.
+          <p className="landing-copy mt-5 max-w-[590px] text-[18px] leading-8 text-muted">
+            Bốn tín hiệu giúp PawLingo quyết định nội dung phù hợp tiếp theo.
           </p>
         </div>
 
-        <div className="grid gap-px overflow-hidden rounded-[16px] border border-line bg-line sm:grid-cols-2">
+        <div className="mt-14 grid auto-rows-[minmax(230px,auto)] gap-3 md:grid-cols-12">
           {pathSignals.map((signal) => (
-            <article key={signal.title} className="min-h-48 bg-canvas p-6 sm:p-8">
-              <h3 className="text-[21px] font-semibold tracking-[-0.4px]">{signal.title}</h3>
-              <p className="mt-3 max-w-[300px] leading-6 text-muted">{signal.detail}</p>
+            <article
+              key={signal.title}
+              className={`landing-reveal flex min-h-[230px] flex-col justify-between rounded-[18px] p-6 sm:p-8 ${signal.className}`}
+            >
+              <div className="mt-auto pt-16">
+                <h3 className="max-w-[520px] text-[clamp(1.8rem,3.4vw,3.3rem)] font-semibold leading-[1.02] tracking-[-0.045em]">
+                  {signal.title}
+                </h3>
+                <p className={`landing-copy mt-4 max-w-[440px] text-[16px] leading-7 ${signal.detailClassName}`}>
+                  {signal.detail}
+                </p>
+              </div>
             </article>
           ))}
         </div>
