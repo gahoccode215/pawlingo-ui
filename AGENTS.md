@@ -1,139 +1,112 @@
-# PawLingo UI - Coding Guidelines
+# PawLingo Frontend — Codex Instructions
 
-## Project
+## Mission
+Build and maintain PawLingo as a consistent, accessible English-learning application. Make focused changes that fit the existing architecture. Do not introduce dependencies, redesign unrelated screens, or modify authentication contracts without a clear reason.
 
-PawLingo is an English learning application.
+## Source of truth: inspect before implementing
+At the beginning of each task, inspect only the relevant parts of the repository:
+1. Read `package.json` and the lockfile to identify installed packages, versions, scripts, and package manager. Never assume the inventory below is up to date.
+2. Read the relevant routes, components, styles, configuration, and nearby patterns. Check `components.json` to understand shadcn/ui setup, if present.
+3. Discover available Codex skills and read the relevant `SKILL.md` before following it. Do not assume a skill exists solely because it is named here.
+4. Check `git status` and preserve pre-existing user changes. Never overwrite unrelated work.
 
-## Stack
+## Known project context (verify against the repository)
+- Next.js App Router, React, TypeScript, Tailwind CSS.
+- NextAuth/Auth.js for authentication; Spring Boot provides the backend REST API and application JWTs.
+- The project may use shadcn/ui, React Hook Form, Zod, and other packages. Verify actual installation and existing usage before importing them.
+- Treat `package.json`, the lockfile, and actual source code as authoritative for exact versions and current conventions.
 
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-* shadcn/ui
-* Zod
-* Zustand
-* TanStack Query
+## Routing and layouts
+- `src/app/(guest)` contains the landing page and `(auth)` login/register pages. The current guest layout is a transparent wrapper; `AuthPageShell` owns the full login/register presentation. Inspect the layout before changing this arrangement.
+- `src/app/(user)` contains authenticated user pages.
+- `src/app/(admin)` contains administrative pages.
+- Route groups do not appear in URLs and do not enforce access control.
+- Preserve existing URLs and nested-layout behavior. Confirm the actual structure before making changes.
 
-## General Rules
+## Library-first implementation
+- Prefer existing installed packages, shared components, utilities, and established patterns.
+- Before adding a package, explain the unmet need, why current dependencies are insufficient, its maintenance and compatibility considerations, and its expected bundle/runtime cost.
+- Suggest at most 1–2 reasonable packages with a brief trade-off comparison when they materially improve the task.
+- Ask for approval before installing, removing, or upgrading dependencies or changing the lockfile. Do not install merely to implement a trivial utility.
+- Do not duplicate functionality already covered by existing packages.
 
-* Use TypeScript.
-* Prefer existing patterns over introducing new abstractions.
-* Do not install new dependencies without approval.
-* Do not modify unrelated files.
-* Keep components small and focused.
-* Reuse existing components whenever possible.
-* Do not duplicate existing functionality.
-* Follow the existing project structure and naming conventions.
-* Do not refactor unrelated code while implementing a feature.
+## Design and Taste Skill
+- For any UI/UX task, discover and read the installed Taste Skill (`design-taste-frontend` or its actual installed name). Apply its instructions alongside existing project conventions. If unavailable, say so and follow the design principles below; do not pretend to have used it.
+- Inspect the current brand, landing page, design tokens, typography, assets, and existing shadcn/ui components before designing.
+- Preserve visual consistency across landing, login, register, user dashboard, and admin dashboard while allowing each area an appropriate layout.
+- Favor deliberate spacing, clear hierarchy, restrained color, accessible contrast, purposeful motion, and responsive behavior.
+- Avoid generic AI-looking gradients, excessive cards, decorative animation, and inconsistent component variants.
+- For substantial redesigns, propose the design direction and affected files before implementation.
+- Do not generate or replace brand assets without permission.
 
-## Architecture
+## Authentication and security
+- Preserve existing NextAuth providers, callbacks, Spring Boot endpoints, and JWT/refresh-token behavior unless the task explicitly requires changes.
+- Keep server secrets and refresh tokens out of client-exposed session data and browser bundles.
+- Never trust client-side role checks as the only authorization mechanism. Spring Boot must enforce access to protected APIs.
+- Do not log credentials, ID tokens, access tokens, refresh tokens, or secrets.
+- Never invent backend response fields: inspect existing DTOs and API client types.
 
-* Follow the existing project architecture.
-* Organize code by feature when the existing project structure supports it.
-* Keep UI components separate from business logic.
-* Keep API/data-access logic separate from presentation components.
-* Prefer composition over deeply nested or overly generic components.
+## Code quality and UX
+- Use TypeScript types; avoid `any` and `@ts-ignore` unless justified and documented.
+- Prefer accessible semantic elements, keyboard support, visible focus, loading/error/empty states, and mobile-first layouts.
+- Reuse shared UI primitives instead of creating near-duplicates.
+- Keep server-only logic on the server. Do not add `use client` without a concrete need.
+- Follow existing formatting, naming, file organization, and data-fetching patterns.
 
-## UI Components
+## Workflow and delivery
+1. Inspect the relevant code, dependencies, available skills, and `git status`.
+2. Briefly summarize the approach. For broad changes, list affected files and wait for approval; for small, well-scoped changes, proceed.
+3. Implement the smallest coherent change while preserving existing behavior.
+4. Run the relevant scripts available in `package.json` (such as lint, typecheck, and tests). Do not claim a check passed unless it ran.
+5. Report changed files, dependency suggestions or changes, verification results, and remaining limitations.
+6. Never commit, push, delete user work, or change backend contracts unless explicitly requested.
 
-* Read `context/ui-guidelines.md` before implementing or modifying frontend UI.
+## Design Skill Selection
 
-* Use shadcn/ui for common UI components when an appropriate component exists.
-* Prefer existing shadcn/ui components over creating custom equivalents.
-* Customize shadcn/ui components when necessary to match the PawLingo design.
-* Do not install another UI component library without explicit approval.
-* Do not recreate components that already exist in the shadcn/ui component set.
-* Keep reusable UI components in the existing project component structure.
-* Follow the existing shadcn/ui conventions for component imports, variants, and composition.
+Before implementing frontend UI:
 
-## Data Fetching
+1. Identify the page type and design requirements.
+2. Select the most appropriate installed skill.
+3. Read its SKILL.md before implementation.
+4. Avoid combining multiple design skills
+   unless they serve distinct purposes.
 
-* Use TanStack Query for server state.
-* Do not use Zustand for server state.
-* Do not fetch data directly inside presentational components when an existing data-access pattern is available.
-* Reuse existing API clients and query patterns.
+Preferred skills:
 
-## State Management
+- Landing pages: design-taste-frontend
+- Login/Register: design-taste-frontend
+- Existing UI redesign: redesign-existing-projects
+- Advanced UX/motion: gpt-taste
+- Visual references: imagegen-frontend-web
 
-* Use Zustand only for client/global state.
-* Prefer local React state for component-local state.
-* Do not introduce global state when local state is sufficient.
+For dashboards and complex interfaces:
+- Prioritize established application UI patterns.
+- Reuse existing shadcn/ui components.
+- Do not force marketing-oriented design patterns
+  into data-heavy application interfaces.
 
-## Forms & Validation
+Always preserve existing branding and architecture.
 
-* Use Zod for validation.
-* Follow existing form-handling patterns.
-* Reuse existing validation schemas when possible.
-* Use shadcn/ui form-related components when appropriate.
 
-## Styling
+## Mandatory PawLingo Design System
 
-* Use Tailwind CSS.
-* Use shadcn/ui as the primary UI component foundation.
-* Follow existing Tailwind conventions.
-* Reuse existing UI components.
-* Do not introduce another styling solution without approval.
-* Avoid unnecessary custom CSS when Tailwind or existing shadcn/ui components can solve the problem.
+PawLingo uses the Forest & Cream design system.
 
-## Dependencies
+Before creating or modifying any frontend UI:
 
-* Do not install new dependencies without explicit approval.
-* Before suggesting a new dependency, check whether the existing stack can solve the problem.
-* Prefer the existing dependencies and shadcn/ui components whenever possible.
+1. Read `docs/design-system/README.md`.
+2. Read the relevant detailed documentation: `colors.md`, `typography.md`, and/or `components.md` in `docs/design-system/`.
+3. Inspect the current semantic tokens in `src/app/globals.css`.
+4. Reuse existing tokens and shared UI components.
+5. Follow the existing typography, spacing and component conventions.
+6. Do not introduce new colors, a new color palette, or a competing theme without explicit approval.
+7. Do not hardcode colors when a suitable semantic token exists.
+8. Preserve accessibility and responsive behavior.
+9. Do not expand use of temporary legacy aliases; use their documented semantic replacements.
 
-## Code Quality
+If a design requirement is not covered by the documentation,
+propose an extension rather than silently inventing new rules.
 
-* Avoid unnecessary abstractions.
-* Avoid `any` unless there is a strong technical reason.
-* Handle loading, error, and empty states where appropriate.
-* Keep TypeScript types explicit and meaningful.
-* Do not leave debug code such as `console.log` in production code.
-
-## Testing & Verification
-
-Before reporting a task as complete, run:
-
-```bash
-npm run lint
-npm run typecheck
-npm run build
-```
-
-If a command fails:
-
-1. Investigate the root cause.
-2. Fix the issue.
-3. Run the command again.
-
-Do not report the task as complete while known errors remain.
-
-## Git / Changes
-
-* Do not modify unrelated files.
-* Keep changes focused on the requested feature.
-* Do not create commits unless explicitly requested.
-* Do not modify `.env` files or secrets.
-* Do not remove existing functionality unless explicitly required.
-
-## Task Execution
-
-Before implementing a non-trivial feature:
-
-1. Inspect the existing codebase.
-2. Identify relevant existing patterns.
-3. Create an implementation plan.
-4. Explain the plan before making significant changes.
-5. Implement the feature.
-6. Run validation commands.
-7. Review the final diff.
-8. Report what changed and any remaining issues.
-
-## Backend Integration
-
-Before implementing features that depend on the backend:
-
-1. Read `docs/backend-contract.md`.
-2. If the contract is incomplete or potentially outdated, inspect `../pawlingo-api`.
-3. Never guess backend API behavior.
-4. Treat the backend repository as read-only unless explicitly instructed otherwise.
+The documentation describes design intent.
+The current source code defines actual implementation.
+If they disagree, report the inconsistency before making changes.

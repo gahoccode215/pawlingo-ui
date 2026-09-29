@@ -1,0 +1,10 @@
+import { AuthPageShell } from "@/components/auth/AuthPageShell";
+import { LoginFormUI } from "@/components/auth/LoginFormUI";
+
+export default function LoginPage() {
+    return (
+        <AuthPageShell mode="login">
+            <LoginFormUI />
+        </AuthPageShell>
+    );
+}

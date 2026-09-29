@@ -68,7 +68,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         session({ session, token, user }) {
             if (token.user) {
+                //@ts-ignore
                 session.accessToken = token.accessToken;
+                //@ts-ignore
                 session.refreshToken = token.refreshToken;
                 session.user = token.user;
             }

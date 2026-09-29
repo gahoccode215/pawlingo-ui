@@ -1,0 +1,10 @@
+import { AuthPageShell } from "@/components/auth/AuthPageShell";
+import { RegisterFormUI } from "@/components/auth/RegisterFormUI";
+
+export default function RegisterPage() {
+    return (
+        <AuthPageShell mode="register">
+            <RegisterFormUI />
+        </AuthPageShell>
+    );
+}

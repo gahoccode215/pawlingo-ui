@@ -1,0 +1,143 @@
+"use client";
+
+import type { FormEvent } from "react";
+import Link from "next/link";
+
+import { PasswordField } from "@/components/auth/PasswordField";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export type RegisterFormUIState = "idle" | "error" | "loading" | "disabled";
+
+type RegisterFormUIProps = {
+  state?: RegisterFormUIState;
+};
+
+export function RegisterFormUI({ state = "idle" }: RegisterFormUIProps) {
+  const isLoading = state === "loading";
+  const isDisabled = state === "disabled" || isLoading;
+  const hasError = state === "error";
+
+  const preventSubmission = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
+
+  return (
+    <div>
+      <header>
+        <h1 className="text-[clamp(2.25rem,8vw,3rem)] font-semibold leading-[1.05] tracking-[-0.055em] text-ink">
+          Create your account
+        </h1>
+        <p className="mt-3 max-w-[38ch] text-[15px] leading-6 text-muted">
+          Start a learning routine built around practical English.
+        </p>
+      </header>
+
+      <form className="mt-9" noValidate onSubmit={preventSubmission}>
+        {hasError && (
+          <div
+            role="alert"
+            className="mb-6 rounded-[12px] border border-red-300 bg-red-50 px-4 py-3 text-sm leading-5 text-red-800 dark:border-red-900 dark:bg-red-950/60 dark:text-red-200"
+          >
+            Check the highlighted details and try again.
+          </div>
+        )}
+
+        <div className="grid gap-5">
+          <div className="grid gap-2">
+            <Label htmlFor="register-name">Full name</Label>
+            <Input
+              id="register-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="Your full name"
+              disabled={isDisabled}
+              required
+              className="h-[52px] rounded-[12px] bg-canvas"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="register-email">Email</Label>
+            <Input
+              id="register-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              disabled={isDisabled}
+              required
+              className="h-[52px] rounded-[12px] bg-canvas"
+            />
+          </div>
+
+          <PasswordField
+            id="register-password"
+            autoComplete="new-password"
+            placeholder="Create a password"
+            disabled={isDisabled}
+            errorMessage={hasError ? "Use at least 8 characters." : undefined}
+          />
+        </div>
+
+        {!hasError && (
+          <p className="mt-2 text-sm leading-5 text-muted">
+            Use at least 8 characters.
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          disabled={isDisabled}
+          aria-busy={isLoading}
+          className="mt-7 h-[52px] w-full rounded-[12px] font-semibold shadow-[0_12px_30px_-18px_rgba(36,87,214,0.9)]"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2" role="status">
+              <span
+                aria-hidden="true"
+                className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current motion-reduce:animate-none"
+              />
+              Creating account...
+            </span>
+          ) : (
+            "Sign up"
+          )}
+        </Button>
+
+        <div className="my-7 flex items-center gap-4">
+          <span className="h-px flex-1 bg-line" aria-hidden="true" />
+          <span className="text-xs font-medium text-muted">or</span>
+          <span className="h-px flex-1 bg-line" aria-hidden="true" />
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isDisabled}
+          className="h-[52px] w-full rounded-[12px] font-semibold"
+        >
+          <span
+            aria-hidden="true"
+            className="mr-2.5 flex size-5 items-center justify-center rounded-full border border-line text-xs font-bold text-ink"
+          >
+            G
+          </span>
+          Continue with Google
+        </Button>
+      </form>
+
+      <p className="mt-8 text-center text-sm leading-6 text-muted">
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="rounded-sm font-semibold text-cobalt underline-offset-4 hover:text-cobalt-strong hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
+        >
+          Sign in
+        </Link>
+      </p>
+    </div>
+  );
+}
