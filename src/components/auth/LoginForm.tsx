@@ -1,16 +1,20 @@
-
 "use client";
 
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+
+import GoogleSignInButton, {
+  googleSignInAvailable,
+} from "@/components/auth/GoogleSignInButton";
 
 import {
   loginSchema,
@@ -18,22 +22,14 @@ import {
 } from "@/schemas/auth.schema";
 
 const fieldClassName =
-  "h-12 w-full rounded-[10px] border border-line bg-canvas px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-cobalt focus:ring-2 focus:ring-cobalt/20";
+  "h-[52px] rounded-[12px] bg-canvas px-4 text-[15px] shadow-[inset_0_1px_0_rgba(255,255,255,0.28)] placeholder:text-muted/80 focus:border-cobalt focus:ring-4 focus:ring-cobalt/15";
 
-type LoginFormProps = {
-  callbackUrl?: string;
-  sessionExpired?: boolean;
-};
 
-export default function LoginForm({
-  callbackUrl = "/my-profile",
-  sessionExpired = false,
-}: LoginFormProps) {
+export default function LoginForm() {
   const router = useRouter();
 
   const [formError, setFormError] = useState<string | null>(null);
-  const [showSessionExpired, setShowSessionExpired] =
-    useState(sessionExpired);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -48,172 +44,162 @@ export default function LoginForm({
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    setFormError(null);
-    setShowSessionExpired(false);
+  const onSubmit = async (formData: LoginFormValues) => {
+    setFormError("");
 
     try {
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-        redirectTo: callbackUrl,
-      });
+      const data = await login(formData);
 
-      // NextAuth không xác thực thành công.
-      if (!result || result.error || !result.ok) {
-        setFormError(
-          result?.error === "CredentialsSignin"
-            ? "Email hoặc mật khẩu không chính xác."
-            : "Đăng nhập thất bại. Vui lòng thử lại."
-        );
-
-        return;
+      if (data.success) {
+        setSuccess(data.success);
+        router.push("/setup");
+      } else if (data.error) {
+        setError(data.error);
       }
-
-      // Session đã được NextAuth tạo.
-      // Chuyển người dùng về trang họ muốn truy cập.
-      router.replace(callbackUrl);
-      router.refresh();
-    } catch (error) {
-      console.error("[LOGIN] Sign in failed:", error);
-
-      setFormError(
-        "Không thể kết nối đến hệ thống. Vui lòng thử lại sau."
-      );
+    } catch {
+      setError("Đăng nhập thất bại");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-[420px]">
-      {/* Header */}
-      <div>
-        <h1 className="text-[38px] font-semibold leading-tight tracking-[-0.045em]">
-          Đăng nhập
-        </h1>
+    <div className="mx-auto w-full max-w-[420px]">
+      <Link
+        href="/"
+        className="inline-flex rounded-md text-[22px] font-semibold tracking-[-0.045em] text-ink transition-colors hover:text-cobalt focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt"
+      >
+        PawLingo
+      </Link>
 
-        <p className="mt-2 text-[15px] leading-6 text-muted">
+      <header className="mt-10 sm:mt-12">
+        <h1
+          id="login-heading"
+          className="text-[clamp(2rem,8vw,2.5rem)] font-semibold leading-[1.08] tracking-[-0.05em] text-ink"
+        >
+          Chào mừng bạn trở lại
+        </h1>
+        <p className="mt-3 max-w-[38ch] text-[15px] leading-6 text-muted">
           Tiếp tục lộ trình học của bạn trên PawLingo.
         </p>
-      </div>
+      </header>
 
-      {/* Login Form */}
-      <form
-        className="mt-8"
-        noValidate
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {/* Authentication errors */}
+      <div className="mt-9">
         {(formError || showSessionExpired) && (
           <div
             role="alert"
-            className="mb-5 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] leading-5 text-red-700"
+            className="mb-6 rounded-[12px] border border-red-300 bg-red-50 px-4 py-3.5 text-[13px] leading-5 text-red-800 dark:border-red-900 dark:bg-red-950/60 dark:text-red-200"
           >
             {formError ??
               "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."}
           </div>
         )}
 
-        {/* Email */}
-        <div className="grid gap-2">
-          <label
-            htmlFor="email"
-            className="text-[14px] font-medium"
-          >
-            Email
-          </label>
+        {googleSignInAvailable && (
+          <>
+            <GoogleSignInButton callbackUrl={callbackUrl} />
+            <div className="my-7 flex items-center gap-4" aria-hidden="true">
+              <span className="h-px flex-1 bg-line" />
+              <span className="text-[12px] font-medium text-muted">
+                hoặc đăng nhập bằng email
+              </span>
+              <span className="h-px flex-1 bg-line" />
+            </div>
+          </>
+        )}
 
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            autoFocus
-            placeholder="ban@example.com"
-            aria-invalid={!!errors.email}
-            aria-describedby={
-              errors.email ? "email-error" : undefined
-            }
-            className={fieldClassName}
-            {...register("email")}
-          />
-
-          {errors.email && (
-            <p
-              id="email-error"
-              role="alert"
-              className="text-[13px] text-red-500"
-            >
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Password */}
-        <div className="mt-5 grid gap-2">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="text-[14px] font-medium"
-            >
-              Mật khẩu
-            </label>
+        <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="ban@example.com"
+              aria-invalid={!!errors.email}
+              aria-describedby={
+                errors.email ? "email-error" : undefined
+              }
+              className={fieldClassName}
+              {...register("email")}
+            />
+            {errors.email && (
+              <p
+                id="email-error"
+                role="alert"
+                className="text-[13px] leading-5 text-red-700 dark:text-red-300"
+              >
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Nhập mật khẩu"
-            aria-invalid={!!errors.password}
-            aria-describedby={
-              errors.password ? "password-error" : undefined
-            }
-            className={fieldClassName}
-            {...register("password")}
-          />
-
-          {errors.password && (
-            <p
-              id="password-error"
-              role="alert"
-              className="text-[13px] text-red-500"
-            >
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit */}
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          aria-busy={isSubmitting}
-          className="mt-7 flex h-12 w-full items-center justify-center rounded-[10px] bg-cobalt px-4 text-[15px] font-medium text-[#f9fbff] transition-[background-color,transform] hover:bg-[#064fca] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSubmitting ? (
-            <span className="flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+          <div className="mt-5 grid gap-2">
+            <Label htmlFor="password">Mật khẩu</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Nhập mật khẩu"
+                aria-invalid={!!errors.password}
+                aria-describedby={
+                  errors.password ? "password-error" : undefined
+                }
+                className={`${fieldClassName} pr-20`}
+                {...register("password")}
               />
-              Đang đăng nhập...
-            </span>
-          ) : (
-            "Đăng nhập"
-          )}
-        </Button>
+              <button
+                type="button"
+                aria-controls="password"
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((current) => !current)}
+                className="absolute inset-y-1.5 right-1.5 rounded-[9px] px-3 text-[13px] font-medium text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-cobalt"
+              >
+                {showPassword ? "Ẩn" : "Hiện"}
+              </button>
+            </div>
+            {errors.password && (
+              <p
+                id="password-error"
+                role="alert"
+                className="text-[13px] leading-5 text-red-700 dark:text-red-300"
+              >
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-        {/* Register */}
-        <p className="mt-7 text-center text-[14px] text-muted">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            className="mt-7 h-[52px] w-full rounded-[12px] bg-cobalt text-[15px] font-semibold text-on-cobalt shadow-[0_12px_30px_-18px_rgba(36,87,214,0.9)] transition-[background-color,box-shadow,transform] hover:bg-cobalt-strong hover:shadow-[0_14px_34px_-18px_rgba(36,87,214,0.95)] active:scale-[0.985] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current motion-reduce:animate-none"
+                />
+                Đang đăng nhập...
+              </span>
+            ) : (
+              "Đăng nhập"
+            )}
+          </Button>
+        </form>
+
+        <p className="mt-8 border-t border-line pt-6 text-center text-[14px] leading-6 text-muted">
           Chưa có tài khoản?{" "}
           <Link
             href="/register"
-            className="font-medium text-cobalt hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
+            className="rounded-sm font-semibold text-cobalt underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt"
           >
             Đăng ký
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

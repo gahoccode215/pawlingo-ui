@@ -9,6 +9,7 @@ Read this file before implementing or modifying frontend UI.
 - Use native HTML elements when no appropriate shadcn/ui component exists or when a specialized interactive element would become less accessible or harder to maintain.
 - Do not recreate a component already available in `src/components/ui`.
 - Do not install another component library or new dependency without explicit approval.
+- If a suitable shadcn/ui component is not installed, ask the user for approval to add it instead of recreating it or silently choosing a different library.
 
 ## Styling
 

@@ -11,8 +11,8 @@ export const registerSchema = z.object({
         .min(1, "Vui lòng nhập mật khẩu")
         .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 });
-export type RegisterFormValues = z.infer<typeof registerSchema>;
 
+export type RegisterFormValues = z.infer<typeof registerSchema>;
 
 
 export const loginSchema = z.object({

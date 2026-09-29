@@ -1,17 +1,30 @@
 "use client";
 
 import Image from "next/image";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { ApiResponse } from "@/types/api-response";
 import { DashboardIcon, type DashboardIconName } from "./DashboardIcon";
 import { DashboardSidebar } from "./DashboardSidebar";
 
-type UserDashboardProps = {
+type DashboardUser = {
+  id: string;
   email: string;
+  goal: string | null;
+  authProvider: "LOCAL" | "GOOGLE";
+  createdAt: string;
 };
+
+type ProfileState =
+  | { status: "loading" }
+  | { status: "success"; user: DashboardUser }
+  | { status: "error" };
+
+const DASHBOARD_LOGIN_URL = "/login?callbackUrl=%2Fdashboard";
 
 type Lesson = {
   title: string;
@@ -62,7 +75,7 @@ function DashboardSkeleton() {
   );
 }
 
-export default function UserDashboard({ email }: UserDashboardProps) {
+export default function UserDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
@@ -71,7 +84,66 @@ export default function UserDashboard({ email }: UserDashboardProps) {
   const [search, setSearch] = useState("");
   const [completed, setCompleted] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const name = displayName(email);
+  const [profileRetry, setProfileRetry] = useState(0);
+  const [profileState, setProfileState] = useState<ProfileState>({ status: "loading" });
+  const email = profileState.status === "success" ? profileState.user.email : null;
+  const name = email ? displayName(email) : "Bạn";
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCurrentUser() {
+      setProfileState({ status: "loading" });
+
+      try {
+        // Gọi session trước để Auth.js refresh access token khi cần và cập nhật cookie.
+        const session = await getSession();
+        if (cancelled) return;
+
+        if (!session) {
+          router.replace(DASHBOARD_LOGIN_URL);
+          return;
+        }
+
+        if (session.error === "RefreshTemporaryError") {
+          setProfileState({ status: "error" });
+          return;
+        }
+
+        if (session.error === "RefreshTokenError" || !session.accessToken) {
+          router.replace(`${DASHBOARD_LOGIN_URL}&reason=session_expired`);
+          return;
+        }
+
+        const response = await fetch("/api/profile", { cache: "no-store" });
+        if (cancelled) return;
+
+        if (response.status === 401) {
+          router.replace(`${DASHBOARD_LOGIN_URL}&reason=session_expired`);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Profile request failed");
+        }
+
+        const result: ApiResponse<DashboardUser> = await response.json();
+        if (!result.success || !result.data) {
+          throw new Error("Profile response is invalid");
+        }
+
+        if (!cancelled) setProfileState({ status: "success", user: result.data });
+      } catch {
+        if (!cancelled) setProfileState({ status: "error" });
+      }
+    }
+
+    void loadCurrentUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profileRetry, router]);
 
   const searchResults = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("vi");
@@ -126,8 +198,47 @@ export default function UserDashboard({ email }: UserDashboardProps) {
               {notificationsOpen ? <div className="absolute right-0 top-12 w-[min(330px,calc(100vw-32px))] rounded-[18px] border border-[#dde2e9] bg-white p-2 shadow-[0_24px_60px_-32px_rgba(24,39,68,0.5)]"><p className="px-3 py-2 text-xs font-semibold">Nhắc học hôm nay</p><div className="rounded-xl bg-[#f3f6fc] px-3 py-3"><p className="text-xs font-medium">Bạn còn 8 phút để đạt mục tiêu ngày.</p><p className="mt-1 text-[10px] leading-4 text-[#778396]">Hoàn thành bài “Chào hỏi tự nhiên” để duy trì chuỗi học.</p></div></div> : null}
             </div>
             <div className="relative">
-              <button type="button" aria-label="Mở tài khoản" aria-expanded={profileOpen} onClick={() => { setProfileOpen((value) => !value); setNotificationsOpen(false); }} className="flex items-center gap-2 rounded-[13px] p-1.5 pr-2 text-left hover:bg-white active:scale-[0.98]"><span className="grid size-8 place-items-center rounded-[11px] bg-[#17294f] text-[11px] font-semibold text-white">{name.slice(0, 2).toLocaleUpperCase("vi")}</span><span className="hidden text-[11px] font-semibold sm:block">{name}</span><DashboardIcon name="chevron" className="hidden size-3.5 rotate-90 text-[#7c8796] sm:block" /></button>
-              {profileOpen ? <div className="absolute right-0 top-12 w-56 rounded-[16px] border border-[#dde2e9] bg-white p-2 shadow-[0_24px_60px_-32px_rgba(24,39,68,0.5)]"><div className="border-b border-[#edf0f3] px-3 py-2"><p className="truncate text-xs font-semibold">{name}</p><p className="mt-1 truncate text-[10px] text-[#7d8796]">{email}</p></div><button type="button" onClick={() => router.push("/")} className="mt-1 w-full rounded-xl px-3 py-2.5 text-left text-xs font-medium text-[#7e4235] hover:bg-[#f8efec]">Về trang chủ</button></div> : null}
+              <button type="button" aria-label="Mở tài khoản" aria-expanded={profileOpen} onClick={() => { setProfileOpen((value) => !value); setNotificationsOpen(false); }} className="flex items-center gap-2 rounded-[13px] p-1.5 pr-2 text-left hover:bg-white active:scale-[0.98]">
+                <span className={`grid size-8 place-items-center rounded-[11px] text-[11px] font-semibold text-white ${profileState.status === "error" ? "bg-[#a84f42]" : "bg-[#17294f]"}`}>
+                  {profileState.status === "loading" ? <span className="size-3.5 animate-pulse rounded-full bg-white/70" /> : name.slice(0, 2).toLocaleUpperCase("vi")}
+                </span>
+                <span className="hidden min-w-0 sm:block">
+                  <span className="block max-w-40 truncate text-[11px] font-semibold">
+                    {profileState.status === "loading" ? "Đang tải tài khoản..." : profileState.status === "error" ? "Không tải được tài khoản" : name}
+                  </span>
+                  {email ? <span className="block max-w-40 truncate text-[9px] font-medium text-[#7d8796]">{email}</span> : null}
+                </span>
+                <DashboardIcon name="chevron" className="hidden size-3.5 rotate-90 text-[#7c8796] sm:block" />
+              </button>
+              {profileOpen ? (
+                <div className="absolute right-0 top-14 w-64 rounded-[16px] border border-[#dde2e9] bg-white p-2 shadow-[0_24px_60px_-32px_rgba(24,39,68,0.5)]">
+                  {profileState.status === "success" ? (
+                    <div className="border-b border-[#edf0f3] px-3 py-2.5">
+                      <div className="flex items-center gap-2 text-[10px] font-semibold text-[#4e7656]">
+                        <span className="size-1.5 rounded-full bg-[#5d9468]" /> Đã xác thực
+                      </div>
+                      <p className="mt-2 truncate text-xs font-semibold">{name}</p>
+                      <p className="mt-1 truncate text-[10px] text-[#7d8796]">{profileState.user.email}</p>
+                      <p className="mt-2 text-[9px] font-medium uppercase tracking-[0.12em] text-[#9aa2ae]">
+                        {profileState.user.authProvider === "GOOGLE" ? "Tài khoản Google" : "Tài khoản email"}
+                      </p>
+                    </div>
+                  ) : profileState.status === "loading" ? (
+                    <div className="px-3 py-4" role="status">
+                      <div className="h-3 w-24 animate-pulse rounded-full bg-[#e8ebef]" />
+                      <div className="mt-3 h-2.5 w-44 animate-pulse rounded-full bg-[#eef0f3]" />
+                    </div>
+                  ) : (
+                    <div className="px-3 py-3" role="alert">
+                      <p className="text-xs font-semibold text-[#87483e]">Không thể tải thông tin tài khoản.</p>
+                      <button type="button" onClick={() => setProfileRetry((value) => value + 1)} className="mt-2 text-[11px] font-semibold text-[#295fc7] hover:underline">
+                        Thử lại
+                      </button>
+                    </div>
+                  )}
+                  <button type="button" onClick={() => router.push("/")} className="mt-1 w-full rounded-xl px-3 py-2.5 text-left text-xs font-medium text-[#7e4235] hover:bg-[#f8efec]">Về trang chủ</button>
+                </div>
+              ) : null}
             </div>
           </div>
         </header>

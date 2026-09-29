@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  return <UserDashboard email="hocvien@pawlingo.vn" />;
+  return <UserDashboard />;
 }
