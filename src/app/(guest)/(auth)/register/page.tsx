@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { AuthPageShell } from "@/components/auth/AuthPageShell";
-import { RegisterFormUI } from "@/components/auth/RegisterFormUI";
+import { RegisterForm } from "@/components/auth/RegisterForm";
 
 export const metadata: Metadata = {
   title: "Create an account | PawLingo",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <AuthPageShell mode="register">
-      <RegisterFormUI />
+      <RegisterForm />
     </AuthPageShell>
   );
 }

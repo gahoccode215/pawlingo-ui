@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import type { ComponentPropsWithRef } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type PasswordFieldProps = {
+type PasswordFieldProps = Omit<
+  ComponentPropsWithRef<typeof Input>,
+  "type" | "id" | "autoComplete"
+> & {
   id: string;
   autoComplete: "current-password" | "new-password";
-  placeholder: string;
-  disabled?: boolean;
   errorMessage?: string;
   helperText?: string;
 };
@@ -21,8 +23,14 @@ export function PasswordField({
   disabled = false,
   errorMessage,
   helperText,
+  name,
+  onChange,
+  onBlur,
+  ref,
+  ...inputProps
 }: PasswordFieldProps) {
   const [isVisible, setIsVisible] = useState(false);
+
   const descriptionId = errorMessage
     ? `${id}-error`
     : helperText
@@ -32,10 +40,15 @@ export function PasswordField({
   return (
     <div className="grid gap-2">
       <Label htmlFor={id}>Password</Label>
+
       <div className="relative">
         <Input
+          {...inputProps}
+          ref={ref}
           id={id}
-          name="password"
+          name={name}
+          onChange={onChange}
+          onBlur={onBlur}
           type={isVisible ? "text" : "password"}
           autoComplete={autoComplete}
           placeholder={placeholder}
@@ -45,18 +58,24 @@ export function PasswordField({
           aria-describedby={descriptionId}
           className="h-[52px] pr-[5.25rem]"
         />
+
         <button
           type="button"
           aria-controls={id}
-          aria-label={`${isVisible ? "Hide" : "Show"} password`}
+          aria-label={
+            `${isVisible ? "Hide" : "Show"} password`
+          }
           aria-pressed={isVisible}
           disabled={disabled}
-          onClick={() => setIsVisible((current) => !current)}
+          onClick={() =>
+            setIsVisible((current) => !current)
+          }
           className="absolute inset-y-1.5 right-1.5 min-w-16 rounded-[10px] px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-50"
         >
           {isVisible ? "Hide" : "Show"}
         </button>
       </div>
+
       {errorMessage ? (
         <p
           id={`${id}-error`}
@@ -66,7 +85,10 @@ export function PasswordField({
           {errorMessage}
         </p>
       ) : helperText ? (
-        <p id={`${id}-help`} className="text-sm leading-5 text-muted-foreground">
+        <p
+          id={`${id}-help`}
+          className="text-sm leading-5 text-muted-foreground"
+        >
           {helperText}
         </p>
       ) : null}

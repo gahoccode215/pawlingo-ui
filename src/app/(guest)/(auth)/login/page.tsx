@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { AuthPageShell } from "@/components/auth/AuthPageShell";
-import { LoginFormUI } from "@/components/auth/LoginFormUI";
+import LoginForm from "@/components/auth/LoginForm";
+
 
 export const metadata: Metadata = {
   title: "Sign in | PawLingo",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthPageShell mode="login">
-      <LoginFormUI />
+      <LoginForm />;
     </AuthPageShell>
   );
 }

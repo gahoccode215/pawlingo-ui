@@ -46,17 +46,4 @@ declare global {
         error: IApiError | null;
         meta: IPageMeta | null;
     }
-
-    interface IUser {
-        id: string;
-        username: string;
-        role: string;
-    }
-
-    interface ILoginResponse {
-        accessToken: string;
-        refreshToken: string;
-        expiresIn: number;
-        user: IUser;
-    }
 }

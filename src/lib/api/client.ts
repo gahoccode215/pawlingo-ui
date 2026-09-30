@@ -42,5 +42,26 @@ export async function sendRequest<
         signal,
     });
 
-    return response.json() as Promise<IApiResponse<TResponse>>;
+    // 1. Kiểm tra response có phải JSON không
+    const contentType = response.headers.get("content-type");
+
+    if (!contentType?.includes("application/json")) {
+        throw new Error(
+            `Invalid API response: HTTP ${response.status}`
+        );
+    }
+
+    // 2. Chuyển JSON thành object
+    const result =
+        (await response.json()) as IApiResponse<TResponse>;
+
+    // 3. Kiểm tra HTTP status có khớp với kết quả không
+    if (!response.ok && result.success) {
+        throw new Error(
+            `Unexpected API response: HTTP ${response.status}`
+        );
+    }
+
+    // 4. Trả kết quả về cho nơi gọi
+    return result;
 }

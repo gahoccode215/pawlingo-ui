@@ -1,25 +1,51 @@
-import NextAuth from "next-auth";
-import { JWT } from "next-auth";
+// import NextAuth from "next-auth";
+// import { JWT } from "next-auth";
 
 
-declare module "next-auth/jwt" {
+// declare module "next-auth/jwt" {
 
-    interface JWT {
-        accessToken: string;
-        refreshToken: string;
-        user: IUser;
-    }
+//     interface JWT {
+//         accessToken: string;
+//         refreshToken: string;
+//         user: IUser;
+//     }
 
 
-}
+// }
+
+// declare module "next-auth" {
+
+//     interface Session {
+//         accessToken: string;
+//         refreshToken: string;
+//         user: IUser & DefaultSession["user"];
+//     }
+
+// }
+
+// src/types/next-auth.d.ts
+
+import type { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
-
-    interface Session {
-        accessToken: string;
-        refreshToken: string;
-        user: IUser & DefaultSession["user"];
+    interface User {
+        accessToken?: string;
+        refreshToken?: string;
+        expiresIn?: number;
+        backendUser?: IUser;
     }
 
+    interface Session {
+        accessToken?: string;
+        user: IUser & DefaultSession["user"];
+    }
 }
 
+declare module "next-auth/jwt" {
+    interface JWT {
+        accessToken?: string;
+        refreshToken?: string;
+        accessTokenExpiresAt?: number;
+        backendUser?: IUser;
+    }
+}
